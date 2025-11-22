@@ -38,3 +38,4 @@ tsconfig.tsbuildinfo
 knip.jsonc
 bun.lock
 package-lock.json
+android
