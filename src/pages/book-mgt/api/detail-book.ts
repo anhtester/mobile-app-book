@@ -7,6 +7,6 @@ export const getDetailBook = (id: string) =>
         .get(`/book/${id}`, { params: { view: 'true' } })
         .then((res) => res.data as BookForm)
         .catch((err) => {
-            toast.error(err.response.data.msg);
+            toast.error(err?.response?.data?.msg ?? 'Network error');
             throw err;
         });

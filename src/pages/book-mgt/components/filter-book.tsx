@@ -196,7 +196,7 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
                         setSearch('');
                         return res.data.msg;
                       },
-                      error: (err) => err.response.data.msg,
+                      error: (err) => err?.response?.data?.msg ?? 'Network error',
                     });
                   }}
                   color="inherit"
@@ -246,7 +246,7 @@ const saveChange = (name: string, newName: string, success: () => void, error: (
     },
     error: (err) => {
       error();
-      return err.response.data.msg;
+      return err?.response?.data?.msg ?? 'Network error';
     },
   });
 
@@ -331,7 +331,7 @@ const Row = ({
               await request();
               return res.data.msg;
             },
-            error: (err) => err.response.data.msg,
+            error: (err) => err?.response?.data?.msg ?? 'Network error',
           })
         }
       />

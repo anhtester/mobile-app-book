@@ -16,6 +16,8 @@ import {
 import { useRequest } from 'src/hooks/use-request';
 import { useDebounce } from 'src/hooks/use-debound';
 
+import { formatFilePath } from 'src/utils/format-filepath';
+
 import { getBooks } from 'src/pages/book-mgt/api/get-books';
 
 import { Iconify } from 'src/components/iconify';
@@ -105,7 +107,7 @@ export function CardBook() {
               {selected.map((item) => (
                 <Chip
                   avatar={
-                    <Avatar src={item.picture[0]}>
+                    <Avatar src={item.picture?.[0] ? formatFilePath(item.picture[0]) : undefined}>
                       <Iconify width={0.6} icon="solar:album-outline" />
                     </Avatar>
                   }

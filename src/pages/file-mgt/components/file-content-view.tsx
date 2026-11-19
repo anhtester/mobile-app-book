@@ -104,7 +104,8 @@ export default function FileContentView({
   });
 
   const { list: _dataList, fileList: _fileList } = useMemo(() => {
-    let _list = list;
+    // Sort trên bản sao, không sửa trực tiếp mảng `list` đang nằm trong state
+    let _list = [...list];
     if (config.order) {
       _list = _list.sort((a, b) => {
         if (a[config.order!] < b[config.order!]) return config.orderBy === 'asc' ? -1 : 1;
@@ -319,9 +320,13 @@ export default function FileContentView({
               (x, i) =>
                 i !== breadcrumbs.length - 1 && (
                   <Link
-                    onClick={() => setPath(breadcrumbs.slice(0, i + 1).join('/'))}
+                    onClick={() =>
+                      setPath(
+                        `${rootPath.replace(/\/$/, '')}/${breadcrumbs.slice(0, i + 1).join('/')}`
+                      )
+                    }
                     color="textDisabled"
-                    key={x}
+                    key={breadcrumbs.slice(0, i + 1).join('/')}
                     sx={{ cursor: 'pointer' }}
                   >
                     {x}
@@ -398,7 +403,9 @@ export default function FileContentView({
           {!value && !onChange && auth && (
             <ButtonDelete
               sx={{ mr: 'auto' }}
-              onDelete={() => deleteFile(file?.path ?? '').then(() => request())}
+              onDelete={() =>
+                file?.path ? deleteFile(file.path).then(() => request()) : Promise.resolve()
+              }
             />
           )}
           <Button color="inherit" onClick={() => setOpen(false)}>

@@ -190,7 +190,7 @@ export default function Setting() {
               await axios
                 .patch(`/profile`, { config })
                 .then((res) => toast.success(res.data.msg))
-                .catch((err) => toast.error(err.response.data.msg));
+                .catch((err) => toast.error(err?.response?.data?.msg ?? 'Network error'));
             })}
           >
             Save

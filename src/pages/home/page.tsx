@@ -25,8 +25,8 @@ import { useRequest } from 'src/hooks/use-request';
 
 import { formatFilePath } from 'src/utils/format-filepath';
 
-import { axios } from 'src/api/axios';
 import { useAuth } from 'src/store/auth';
+import { axios, URLBASE } from 'src/api/axios';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { toast } from 'src/components/toast';
@@ -174,15 +174,18 @@ export default function Page() {
   const handleAction = (item: { code: number; msg: string; time?: number }) => () => {
     toast.loading(
       () =>
-        api.post('/api/status', {
+        // Dùng axios gốc (không qua interceptor) để test mã 401 không kích hoạt làm mới token
+        // rồi đăng xuất người dùng. Phải ghép URLBASE: trên thiết bị, đường dẫn tương đối
+        // `/api/status` trỏ vào chính WebView chứ không phải server.
+        api.post(`${URLBASE}/api/status`, {
           code: item.code,
           msg: item.msg,
           time: item.time,
         }),
       {
         loading: 'Loading ...',
-        success: (t) => t.data.msg,
-        error: (t) => t.response.data.msg,
+        success: (t) => t.data?.msg ?? `${item.code}`,
+        error: (t) => t?.response?.data?.msg ?? t?.message ?? 'Network error',
       }
     );
   };
@@ -325,27 +328,32 @@ export default function Page() {
               control={form.control}
               name="code"
               defaultValue={200}
-              render={({ field }) => (
+              // Xoá trống ô thì code thành 0, server trả 500 RangeError. Chặn ngay ở form.
+              rules={{ required: 'Status code is required.' }}
+              render={({ field, fieldState: { error } }) => (
                 <Autocomplete
                   options={status}
                   getOptionLabel={(option) => `${option.code} - ${option.msg}`}
                   value={status.find((s) => s.code === field.value) || null}
                   onChange={(_, newValue) => field.onChange(newValue?.code ?? '')}
-                  renderOption={(props, option) => (
-                    <li {...props}>
+                  renderOption={({ key, ...props }, option) => (
+                    <li key={key} {...props}>
                       <Avatar
                         sx={{ bgcolor: option.color, color: 'white', mr: 1, width: 24, height: 24 }}
                       >
-                        <Iconify
-                          width={16}
-                          icon={Icon[parseInt((option.code / 100).toFixed(0), 10)]}
-                        />
+                        <Iconify width={16} icon={Icon[Math.floor(option.code / 100)]} />
                       </Avatar>
                       <strong style={{ marginRight: '0.5rem' }}>{option.code}</strong> {option.msg}
                     </li>
                   )}
                   renderInput={(params) => (
-                    <TextField {...params} label="Status Code" variant="outlined" />
+                    <TextField
+                      {...params}
+                      label="Status Code"
+                      variant="outlined"
+                      error={!!error}
+                      helperText={error?.message}
+                    />
                   )}
                 />
               )}

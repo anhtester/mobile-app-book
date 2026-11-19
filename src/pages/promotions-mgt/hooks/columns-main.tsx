@@ -56,7 +56,17 @@ export const columns: () => Columns<PromotionType>[] = () => [
   {
     label: 'Value',
     sort: 'value',
-    render: (row) => <Label>{row?.value}</Label>,
+    render: (row) => {
+      if (row?.type === 'FREE_SHIPPING') return <Label>-</Label>;
+      if (row?.type === 'PERCENTAGE') return <Label>{row.value}%</Label>;
+      return (
+        <Label>
+          {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
+            row?.value ?? 0
+          )}
+        </Label>
+      );
+    },
   },
   {
     label: 'Start',
@@ -108,7 +118,7 @@ export const columns: () => Columns<PromotionType>[] = () => [
     label: 'Created',
     sort: 'createdAt',
     render: (row) => {
-      const day = dayjs(row?.endDate);
+      const day = dayjs(row?.createdAt);
       return (
         <Stack>
           <Typography variant="body2" noWrap>

@@ -2,6 +2,8 @@ import dayjs from 'dayjs';
 
 import { Stack, Avatar, Typography } from '@mui/material';
 
+import { formatFilePath } from 'src/utils/format-filepath';
+
 import { Iconify } from 'src/components/iconify';
 
 export const columns: () => Columns<BookView>[] = () => [
@@ -10,7 +12,7 @@ export const columns: () => Columns<BookView>[] = () => [
     sort: 'name',
     render: ({ name, picture, description }) => (
       <Stack overflow="hidden" direction="row" gap={2}>
-        <Avatar src={picture[0]} variant="rounded">
+        <Avatar src={picture?.[0] ? formatFilePath(picture[0]) : undefined} variant="rounded">
           <Iconify icon="solar:album-outline" />
         </Avatar>
         <Stack flex={1} overflow="hidden">

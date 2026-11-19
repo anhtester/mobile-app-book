@@ -24,6 +24,6 @@ export const getBooks = (params: {
         }
     )
     .catch((err) => {
-      toast.error(err.response.data.msg);
+      toast.error(err?.response?.data?.msg ?? 'Network error');
       throw err;
     });

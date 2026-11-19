@@ -16,7 +16,8 @@ import { Iconify } from 'src/components/iconify';
 
 import { control, TypePromotion } from '../hooks/form-control';
 
-export function CardDetail() {
+/** `originalCode`: mã hiện có khi sửa. Dữ liệu cũ có mã khác 6 ký tự, giữ nguyên thì không bắt lại. */
+export function CardDetail({ originalCode }: { originalCode?: string }) {
   const [expen, setExpen] = useState(true);
   const [type] = useWatch({
     control,
@@ -70,21 +71,22 @@ export function CardDetail() {
             defaultValue=""
             rules={{
               required: 'Code is required.',
-              validate: (value) => value.length === 6 || 'Code must be 6 characters.',
+              validate: (value) =>
+                (!!originalCode && value === originalCode) ||
+                value.trim().length === 6 ||
+                'Code must be 6 characters.',
             }}
             render={({ field, fieldState: { invalid, error } }) => (
               <TextField
                 sx={{ flex: 1 }}
-                label="Code book"
+                label="Promotion code"
                 error={invalid}
                 helperText={error?.message}
                 required
                 {...field}
-                slotProps={{
-                  input: {
-                    sx: { textTransform: 'uppercase' },
-                  },
-                }}
+                // Server lưu đúng chuỗi gửi lên, nên chuyển chữ hoa ngay khi nhập (không chỉ hiển thị).
+                onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                slotProps={{ htmlInput: { maxLength: 6, autoCapitalize: 'characters' } }}
               />
             )}
           />
@@ -115,6 +117,7 @@ export function CardDetail() {
               control={control}
               name="type"
               defaultValue="FIXED_AMOUNT"
+              rules={{ deps: ['value'] }}
               render={({ field, fieldState: { invalid, error } }) => (
                 <TextField
                   fullWidth
@@ -127,7 +130,7 @@ export function CardDetail() {
                   helperText={error?.message}
                 >
                   {TypePromotion.map((t) => (
-                    <MenuItem value={t} sx={{ textTransform: 'capitalize' }}>
+                    <MenuItem key={t} value={t} sx={{ textTransform: 'capitalize' }}>
                       {t.toLocaleLowerCase().replace('_', ' ')}
                     </MenuItem>
                   ))}
@@ -137,6 +140,16 @@ export function CardDetail() {
             <Controller
               control={control}
               name="value"
+              rules={{
+                validate: (v, values) => {
+                  if (values.type === 'FREE_SHIPPING') return true;
+                  if (v === undefined || v === null || String(v) === '') return 'Value is required.';
+                  const n = Number(v);
+                  if (!Number.isFinite(n) || n <= 0) return 'Value must be greater than 0.';
+                  if (values.type === 'PERCENTAGE' && n > 100) return 'Percentage must be at most 100.';
+                  return true;
+                },
+              }}
               render={({ field, fieldState: { invalid, error } }) => (
                 <TextField
                   disabled={type === 'FREE_SHIPPING'}
@@ -145,7 +158,15 @@ export function CardDetail() {
                   required={type !== 'FREE_SHIPPING'}
                   {...field}
                   error={invalid}
-                  helperText={error?.message}
+                  helperText={
+                    error?.message ??
+                    (type === 'PERCENTAGE'
+                      ? 'Percent (1 - 100)'
+                      : type === 'FIXED_AMOUNT'
+                        ? 'Amount in VND'
+                        : undefined)
+                  }
+                  slotProps={{ htmlInput: { min: 0, inputMode: 'decimal' } }}
                 />
               )}
             />

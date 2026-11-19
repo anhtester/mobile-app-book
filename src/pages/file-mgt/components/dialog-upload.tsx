@@ -24,13 +24,21 @@ type UploadForm = {
 
 export function DialogUpload({ reload }: { reload: () => void }) {
   const { open, setOpen, path, rootPath } = useDialogUpload();
-  const { control, handleSubmit, reset, setValue, watch } = useForm<UploadForm>();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { isSubmitting },
+  } = useForm<UploadForm>();
   const [lstFiles] = watch(['files']);
   const hanldeClose = useCallback(() => {
     setOpen(false);
   }, [setOpen]);
 
-  const upload = handleSubmit((data) => {
+  // Đợi upload xong (isSubmitting) để chặn bấm Upload hai lần, tránh upload trùng file.
+  const upload = handleSubmit(async (data) => {
     const form = new FormData();
     form.append('path', (rootPath + '/' + data.path).replace(/\/\//g, '/'));
 
@@ -38,11 +46,14 @@ export function DialogUpload({ reload }: { reload: () => void }) {
       form.append('files', data.files[i]);
     }
 
-    uploadFile(form).then(() => {
+    try {
+      await uploadFile(form);
       setOpen(false);
       reset();
       reload();
-    });
+    } catch {
+      // uploadFile đã toast lỗi, giữ dialog mở để thử lại
+    }
   });
 
   useEffect(() => {
@@ -121,13 +132,14 @@ export function DialogUpload({ reload }: { reload: () => void }) {
             Remove all
           </Button>
         )}
-        <Button onClick={hanldeClose} color="inherit">
+        <Button onClick={hanldeClose} color="inherit" disabled={isSubmitting}>
           Cancel
         </Button>
         <Button
           color="inherit"
           variant="contained"
           startIcon={<Iconify icon="solar:cloud-upload-bold" />}
+          loading={isSubmitting}
           onClick={upload}
         >
           Upload
