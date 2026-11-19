@@ -8,14 +8,14 @@ import { useRouter } from './use-router';
 import { usePathname } from './use-pathname';
 
 export const useAuthCheck = () => {
-  const { auth } = useAuth();
+  const { auth, authChecked } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!auth) {
+    if (authChecked && !auth) {
       toast.error('Please login first');
       router.replace(`/sign-in?redirect=${pathname}`);
     }
-  }, [auth, pathname, router]);
+  }, [auth, authChecked, pathname, router]);
 };

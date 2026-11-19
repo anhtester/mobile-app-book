@@ -15,8 +15,42 @@ export const slugify = (s: string) =>
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
 
+// Upload can take long on mobile networks (up to 20 files x 5MB)
+export const UPLOAD_TIMEOUT = 60000;
+
+/** Delete uploaded files one by one (never the folder, it may belong to another book). */
+export const deleteFiles = (paths: string[]) =>
+  Promise.allSettled(
+    paths.filter(Boolean).map((path) => axios.delete('/file', { params: { path } }))
+  );
+
+// Backend field name -> form field name
+const FIELD_MAP: Record<string, keyof BookForm> = {
+  name: 'name',
+  slug: 'slug',
+  description: 'description',
+  status: 'status',
+  pictures: 'picture',
+  categories: 'categories',
+  price: 'price',
+  promotions: 'promotions',
+};
+
+/** Set backend 422 `{ fields }` errors on the book form, ignoring unknown keys. */
+export const setFieldErrors = (fields?: Record<string, string[]>) => {
+  if (!fields || typeof fields !== 'object') return;
+  for (const [key, value] of Object.entries(fields)) {
+    const name = FIELD_MAP[key.split('/')[0]];
+    const message = Array.isArray(value) ? value[0] : undefined;
+    if (name && message) {
+      setError(name, { type: 'manual', message });
+    }
+  }
+};
+
 export const handleCreateBook = async (book: BookForm) => {
   const id = 'create-book';
+  let paths: string[] = [];
   try {
     toast.custom('Uploading image...', 'loading', { hiddenCloseButton: true, id });
     const form = new FormData();
@@ -29,39 +63,30 @@ export const handleCreateBook = async (book: BookForm) => {
       }
     });
     form.append('path', `/$book-image/${book.slug}`);
-    const paths = await axios.post('/file', form).then((res) => res.data.paths);
+    paths = await axios
+      .post('/file', form, { timeout: UPLOAD_TIMEOUT })
+      .then((res) => res.data.paths ?? []);
     // upload book
     toast.custom('Uploading book...', 'loading', { hiddenCloseButton: true, id });
-    return axios
-      .post('/book', {
-        name: book.name,
-        description: book.description,
-        status: book.status,
-        categories: book.categories,
-        slug: book.slug,
-        price: Number(book.price),
-        pictures: paths,
-        promotions: book.promotions.map(x => x.id),
-      })
-      .then((res) => {
-        toast.success(res.data.msg, { id, duration: 3000 });
-        return res;
-      })
-      .catch((err) => {
-        toast.error(err.response.data.msg, { id, duration: 3000 });
-        axios.delete('/file', { params: { path: `/$book-image/${book.slug}` } });
-        throw err;
-      });
+    const res = await axios.post('/book', {
+      name: book.name,
+      description: book.description,
+      status: book.status,
+      categories: book.categories,
+      slug: book.slug,
+      price: Number(book.price),
+      pictures: paths,
+      promotions: (book.promotions ?? []).map((x) => x.id),
+    });
+    toast.success(res.data.msg, { id, duration: 3000 });
+    return res;
   } catch (err: any) {
-    if (err.response.status === 422) {
-      for (const [key, value] of Object.entries(err.response.data.fields)) {
-        setError(key as keyof BookForm, {
-          type: 'manual',
-          message: (value as string[])[0],
-        });
-      }
+    // rollback only the files just uploaded
+    if (paths.length > 0) deleteFiles(paths);
+    if (err?.response?.status === 422) {
+      setFieldErrors(err.response.data?.fields);
     }
-    toast.error(err.response.data.msg, { id, duration: 3000 });
+    toast.error(err?.response?.data?.msg || 'Error in create book', { id, duration: 3000 });
     throw err;
   }
 };

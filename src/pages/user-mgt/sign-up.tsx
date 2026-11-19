@@ -19,7 +19,7 @@ import { ContentUser } from './components/content-user';
 export default function SignUp() {
   const t = useTheme();
   const router = useRouter();
-  const { isSubmitSuccessful } = useFormState({ control: formControl.control });
+  const { isSubmitting, isSubmitSuccessful } = useFormState({ control: formControl.control });
   const { reset } = useForm({ formControl: formControl.formControl });
 
   useEffect(() => {
@@ -66,6 +66,7 @@ export default function SignUp() {
         size="large"
         variant="contained"
         color="inherit"
+        loading={isSubmitting}
         startIcon={<Iconify icon="solar:user-plus-bold" />}
         sx={{ mt: 3, mb: -2, alignSelf: 'flex-end' }}
         onClick={formControl.handleSubmit(handleRegisterUser)}

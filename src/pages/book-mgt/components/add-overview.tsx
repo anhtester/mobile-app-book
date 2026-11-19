@@ -1,5 +1,5 @@
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { useMemo, useState, useEffect } from 'react';
 import { Controller, useFormState } from 'react-hook-form';
 
 import {
@@ -33,7 +33,7 @@ import { deleteBook } from '../api/delete-book';
 import { CardPromotion } from './card-promotion';
 import { handleCreateBook } from '../api/create-book';
 import { handleUpdateBook } from '../api/modify-book';
-import { reset, control, setFocus, getValues, handleSubmit } from '../stores/form-add';
+import { reset, control, setFocus, handleSubmit } from '../stores/form-add';
 
 export function AddOverview() {
   const [search] = useSearchParams();
@@ -41,7 +41,7 @@ export function AddOverview() {
   const [loadingPage, setLoadingPage] = useState(true);
   const router = useRouter();
   const id = search.get('id');
-  const rootName = useMemo(() => getValues('name'), []);
+  const [rootName, setRootName] = useState('');
 
   useEffect(() => {
     if (isSubmitted) {
@@ -71,11 +71,13 @@ export function AddOverview() {
         slug: '',
         price: '',
         picture: [],
+        promotions: [],
       });
     } else {
       getBook(id)
         .then((res) => {
           reset(res);
+          setRootName(res.name ?? '');
         })
         .finally(() => setLoadingPage(false));
     }
@@ -125,7 +127,7 @@ export function AddOverview() {
                   checked={field.value === 'AVAILABLE'}
                   onChange={(_, c) => field.onChange(c ? 'AVAILABLE' : 'UNAVAILABLE')}
                   control={<Switch />}
-                  label={field.value ? 'Available book' : 'Unavailable book'}
+                  label={field.value === 'AVAILABLE' ? 'Available book' : 'Unavailable book'}
                   sx={{ ml: 2 }}
                 />
               )}

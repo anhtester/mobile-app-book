@@ -2,17 +2,24 @@ import { axios } from 'src/api/axios';
 
 import { toast } from 'src/components/toast';
 
-export const getBook = (id: string) =>
+// GET /book/:id does not return slug, the list endpoint does
+const getSlug = (id: string) =>
   axios
-    .get(`/book/${id}`)
+    .get('/book', { params: { search: JSON.stringify({ id }), limit: 1 } })
+    .then((res) => (res.data?.list?.[0]?.slug as string | undefined) ?? '')
+    .catch(() => '');
+
+export const getBook = (id: string) =>
+  Promise.all([axios.get(`/book/${id}`), getSlug(id)])
     .then(
-      (res) =>
+      ([res, slug]) =>
         ({
           ...res.data,
+          slug,
         }) as BookForm
     )
     .catch((err) => {
-      toast.error(err.response.data.msg);
+      toast.error(err?.response?.data?.msg || 'Error in get book');
 
       return {} as BookForm;
     });

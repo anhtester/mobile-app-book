@@ -14,9 +14,10 @@ export async function loginHanle(prop: { email: string; password: string }) {
       toast.success(res.data.msg);
     })
     .catch((err) => {
-      toast.error(err.response.data.msg);
-      if (err.response.status === 422) {
-        for (const [key, value] of Object.entries(err.response.data.fields)) {
+      toast.error(err.response?.data?.msg ?? 'Network error');
+      const fields = err.response?.data?.fields;
+      if (fields) {
+        for (const [key, value] of Object.entries(fields)) {
           formControl.setError(key as keyof SignInForm, {
             type: 'manual',
             message: (value as string[])[0],

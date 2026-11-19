@@ -4,15 +4,17 @@ import { axios } from 'src/api/axios';
 
 import { toast } from 'src/components/toast';
 
-import { formControl } from '../store/form';
+import { setFieldErrors } from './field-errors';
 
 import type { UserForm } from '../store/form';
 
 export const handleUpdateUser = async (id: string, user: UserForm) => {
+  // Path of the avatar uploaded by this request (never the user's current avatar)
+  let uploadedPath: string | undefined;
   try {
     // upload Avatar
     if (user.avatar && user.avatar instanceof File) {
-      toast.custom("Upload avatar...", "loading", { id: "upload-user", duration: Infinity });
+      toast.custom('Upload avatar...', 'loading', { id: 'upload-user', duration: Infinity });
       const form = new FormData();
       const f = user.avatar;
       const randomId = Math.random().toString(36).substring(2, 6);
@@ -21,11 +23,12 @@ export const handleUpdateUser = async (id: string, user: UserForm) => {
       form.append('files', newFile);
       form.append('path', `/$avatar-image/${user.email}`);
 
-      await axios.post('/file', form).then((res) => {
+      await axios.post('/file', form, { timeout: 60000 }).then((res) => {
+        uploadedPath = res.data.paths[0];
         user.avatarUrl = res.data.paths[0];
-      })
+      });
     }
-    toast.custom("Upload user...", "loading", { id: "upload-user", duration: Infinity });
+    toast.custom('Upload user...', 'loading', { id: 'upload-user', duration: Infinity });
     await axios
       .patch(`/user/${id}`, {
         name: user.name,
@@ -37,25 +40,22 @@ export const handleUpdateUser = async (id: string, user: UserForm) => {
         isActive: user.isActive,
       })
       .then((res) => {
-        toast.success(res.data.msg, { id: "upload-user" });
+        toast.success(res.data.msg, { id: 'upload-user' });
         return res;
-      })
+      });
   } catch (err) {
-    if (user.avatar instanceof File && user.avatarUrl) {
-      await axios.delete('/file', { params: { path: user.avatarUrl } })
-    }
-    if (err instanceof AxiosError) {
-      toast.error(err.response?.data.msg, { id: "upload-user" });
-      if (err.response?.status === 422) {
-        for (const [key, value] of Object.entries(err.response.data.fields)) {
-          formControl.setError(key as keyof SignInForm, {
-            type: 'manual',
-            message: (value as string[])[0],
-          });
-        }
+    if (uploadedPath) {
+      try {
+        await axios.delete('/file', { params: { path: uploadedPath } });
+      } catch {
+        // ignore rollback error, the original error is reported below
       }
-      throw err;
     }
-
+    const msg = err instanceof AxiosError ? err.response?.data?.msg : undefined;
+    toast.error(msg || 'Update user failed.', { id: 'upload-user' });
+    if (err instanceof AxiosError && err.response?.status === 422) {
+      setFieldErrors(err.response.data?.fields);
+    }
+    throw err;
   }
-}
+};

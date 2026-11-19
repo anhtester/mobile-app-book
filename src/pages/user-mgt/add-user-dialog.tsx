@@ -15,7 +15,7 @@ type AddUserDialogProps = {
   callback: () => void;
 };
 export function AddUserDialog({ callback }: AddUserDialogProps) {
-  const { isLoading, isSubmitSuccessful } = useFormState({ control: formControl.control });
+  const { isSubmitting, isSubmitSuccessful } = useFormState({ control: formControl.control });
   const { setOpen } = useDialog();
   const [id] = useWatch({ control: formControl.control, name: ['id'] });
 
@@ -38,7 +38,7 @@ export function AddUserDialog({ callback }: AddUserDialogProps) {
           Cancel
         </Button>
         <Button
-          loading={isLoading}
+          loading={isSubmitting}
           onClick={formControl.handleSubmit((d) =>
             id ? handleUpdateUser(id, d) : handleCreateUser(d)
           )}

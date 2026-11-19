@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
 import { Controller } from 'react-hook-form';
+import { useMemo, useState, useCallback } from 'react';
 
 import {
   Card,
@@ -25,7 +25,7 @@ import { control } from '../stores/form-add';
 
 export function CardProperty() {
   const [expen, setExpen] = useState(true);
-  const { data = [] } = useRequest(() => Category.get());
+  const { data = [] } = useRequest(useCallback(() => Category.get(), []));
   const mapCategory = data.reduce(
     (acc, cur) => {
       acc[cur.name] = cur;
@@ -64,7 +64,7 @@ export function CardProperty() {
             rules={{
               required: 'Price is required.',
               min: { value: 1000, message: 'Price must be greater than 1000 VNĐ.' },
-              max: { value: 100_000_000_000, message: 'Price must be less than 1 billion VNĐ.' },
+              max: { value: 2_147_483_647, message: 'Price must be at most 2,147,483,647 VNĐ.' },
               pattern: {
                 value: /^\d*\.?\d*$/,
                 message: 'Price must be a number.',

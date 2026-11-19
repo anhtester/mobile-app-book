@@ -81,8 +81,8 @@ export function ContentUser({
           rules={{
             required: 'Name is required.',
             maxLength: {
-              value: 250,
-              message: 'Name must be less than 250 characters.',
+              value: 191,
+              message: 'Name must be at most 191 characters.',
             },
           }}
           render={({ field, fieldState: { invalid, error } }) => (
@@ -148,8 +148,8 @@ export function ContentUser({
               message: 'Invalid email address',
             },
             maxLength: {
-              value: 250,
-              message: 'Email must be less than 250 characters.',
+              value: 191,
+              message: 'Email must be at most 191 characters.',
             },
           }}
           render={({ field, fieldState: { invalid, error } }) => (

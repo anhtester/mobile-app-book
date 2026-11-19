@@ -1,7 +1,16 @@
 import qs from 'qs';
 import rootAxios from 'axios';
 
-export const URLBASE = "https://book.anhtester.com"
+import { useAuth } from 'src/store/auth';
+
+const PRODUCTION_URL = 'https://book.anhtester.com';
+
+// Bản build (build, build:android, build:ios) LUÔN dùng production, bỏ qua mọi .env.
+// Chỉ khi `bun run dev` mới đọc VITE_API_URL từ .env. Đặt rỗng để gọi `/api` tương đối,
+// đi qua proxy của Vite sang backend localhost:4566 (backend không bật CORS).
+export const URLBASE = import.meta.env.PROD
+  ? PRODUCTION_URL
+  : (import.meta.env.VITE_API_URL ?? PRODUCTION_URL);
 
 // Biến để đồng bộ hóa làm mới token
 let isRefreshing = false;
@@ -101,6 +110,7 @@ axios.interceptors.response.use(
         // Xử lý lỗi làm mới token (ví dụ: đăng xuất)
         console.error('Token refresh failed:', refreshError);
         localStorage.removeItem('accessToken');
+        useAuth.getState().setAuth(null);
         // Có thể thêm logic chuyển hướng đến trang đăng nhập
         // window.location.href = '/login';
         return Promise.reject(refreshError);

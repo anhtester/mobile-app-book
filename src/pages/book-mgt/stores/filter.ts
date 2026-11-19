@@ -102,14 +102,10 @@ export function useFilterBook() {
                         },
                     })),
                 }),
-                ...(_price.from && {
+                ...((_price.from || _price.to) && {
                     currentPrice: {
-                        gte: _price.from,
-                    },
-                }),
-                ...(_price.to && {
-                    currentPrice: {
-                        lte: _price.to,
+                        ...(_price.from && { gte: _price.from }),
+                        ...(_price.to && { lte: _price.to }),
                     },
                 }),
                 ...(!auth && {

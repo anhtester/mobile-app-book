@@ -30,7 +30,7 @@ export function ViewUser() {
   const [users, setUsers] = useState<User[]>([]);
   const [total, setTotal] = useState(0);
   const { auth } = useAuth();
-  const { orderBy, order, page, rowsPerPage, filter } = config;
+  const { orderBy, order, page, rowsPerPage, filter, setPage } = config;
 
   const search = useDebounce(filter, 650);
 
@@ -47,10 +47,15 @@ export function ViewUser() {
           },
         })
         .then((res) => {
+          // Page no longer exists (e.g. deleted the last row of the last page): go back
+          if (res.data.list.length === 0 && page > 1) {
+            setPage(Math.max(1, res.data.pagination.totalPage));
+            return;
+          }
           setUsers(res.data.list);
           setTotal(res.data.pagination.total);
         }),
-    [orderBy, order, page, rowsPerPage, search]
+    [orderBy, order, page, rowsPerPage, search, setPage]
   );
 
   useEffect(() => {

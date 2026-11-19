@@ -29,10 +29,11 @@ export const handleRegisterUser = async (user: UserForm) => {
       await axios.delete('/file', { params: { path: user.avatarUrl } })
     }
     if (err instanceof AxiosError) {
-      toast.error(err.response?.data.msg, { id: "upload-user" });
-      if (err.response?.status === 422) {
-        for (const [key, value] of Object.entries(err.response.data.fields)) {
-          formControl.setError(key as keyof SignInForm, {
+      toast.error(err.response?.data?.msg ?? 'Network error', { id: "upload-user" });
+      const fields = err.response?.data?.fields;
+      if (fields) {
+        for (const [key, value] of Object.entries(fields)) {
+          formControl.setError(key as keyof UserForm, {
             type: 'manual',
             message: (value as string[])[0],
           });

@@ -2,7 +2,7 @@ import type { RowComponentProps } from 'react-window';
 
 import { create } from 'zustand';
 import { List as VirtualList } from 'react-window';
-import React, { useState, useDeferredValue } from 'react';
+import React, { useState, useCallback, useDeferredValue } from 'react';
 
 import {
   Box,
@@ -73,7 +73,7 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
 
   const { auth } = useAuth();
   const { setId, id } = useEdit();
-  const { data = [], request, setData } = useRequest(() => Category.get());
+  const { data = [], request, setData } = useRequest(useCallback(() => Category.get(), []));
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
 
@@ -211,7 +211,7 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
               rowComponent={Row}
               rowCount={categories.length}
               rowHeight={52}
-              rowProps={{ list: data, request, setData }}
+              rowProps={{ list: categories, request, setData }}
             />
           </Stack>
         </DialogContent>

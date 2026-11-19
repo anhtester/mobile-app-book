@@ -23,7 +23,9 @@ import { handleUpdateProfileUser } from './api/profile';
 export default function Profile() {
   const { auth, setAuth } = useAuth();
   const router = useRouter();
-  const { isDirty, isSubmitSuccessful, isLoading } = useFormState({ control: formControl.control });
+  const { isDirty, isSubmitSuccessful, isSubmitting } = useFormState({
+    control: formControl.control,
+  });
   useEffect(() => {
     if (auth) {
       formControl.reset({
@@ -85,7 +87,7 @@ export default function Profile() {
             size="large"
             color="inherit"
             variant="contained"
-            loading={isLoading}
+            loading={isSubmitting}
             startIcon={<Iconify icon="solar:diskette-bold" />}
             onClick={formControl.handleSubmit(handleUpdateProfileUser)}
             disabled={!isDirty}

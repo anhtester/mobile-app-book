@@ -17,21 +17,24 @@ import { loginHanle } from '../api/login';
 import { formControl } from '../store/store-fields-login';
 
 export function ContentFieldsLogin() {
-  const { isLoading, isSubmitSuccessful } = useFormState({ control: formControl.control });
+  const { isSubmitting, isSubmitSuccessful } = useFormState({ control: formControl.control });
   const [search] = useSearchParams();
   const redirect = search.get('redirect');
-  const { setAuth } = useAuth();
+  const { setAuth, setAuthChecked } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (isSubmitSuccessful) {
-      axios.get('/api/me').then((res) => {
-        setAuth(res.data);
-        formControl.reset();
-      });
+      formControl.reset();
+      setAuthChecked(false);
+      axios
+        .get('/me')
+        .then((res) => setAuth(res.data))
+        .catch(() => setAuth(null))
+        .finally(() => setAuthChecked(true));
       router.replace(redirect ?? '/');
     }
-  }, [isSubmitSuccessful, redirect, router, setAuth]);
+  }, [isSubmitSuccessful, redirect, router, setAuth, setAuthChecked]);
 
   return (
     <AuthLayout>
@@ -120,7 +123,7 @@ export function ContentFieldsLogin() {
         />
 
         <Button
-          loading={isLoading}
+          loading={isSubmitting}
           fullWidth
           size="large"
           type="submit"

@@ -37,19 +37,23 @@ export function CheckAuth({
 }: React.PropsWithChildren & {
   fallback: React.ReactNode;
 }) {
-  const { setAuth } = useAuth();
+  const { setAuth, setAuthChecked } = useAuth();
   const router = useRouter();
   const { setMode } = useColorScheme();
   const { setPrimary } = useThemeData();
   const { set } = useLayoutPadding();
 
   useEffect(() => {
-    axios.get('/me').then((res) => {
-      setAuth(res.data);
-      setMode(res.data.config?.theme || 'system');
-      setPrimary(res.data.config?.mainColor || '#42BC40');
-      checkStatusBarStyle(res.data.config?.theme || 'system');
-    });
+    axios
+      .get('/me')
+      .then((res) => {
+        setAuth(res.data);
+        setMode(res.data.config?.theme || 'system');
+        setPrimary(res.data.config?.mainColor || '#42BC40');
+        checkStatusBarStyle(res.data.config?.theme || 'system');
+      })
+      .catch(() => setAuth(null))
+      .finally(() => setAuthChecked(true));
 
     const flatform = Capacitor.getPlatform();
     if (flatform === 'android') {
@@ -58,7 +62,7 @@ export function CheckAuth({
     if (flatform === 'ios') {
       set(6, 3);
     }
-  }, [router, set, setAuth, setMode, setPrimary]);
+  }, [router, set, setAuth, setAuthChecked, setMode, setPrimary]);
 
   return children;
 }

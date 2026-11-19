@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useWatch, Controller } from 'react-hook-form';
 
 import {
@@ -25,13 +25,9 @@ import { control, setValue } from '../stores/form-add';
 export function CardDetail() {
   const [expen, setExpen] = useState(true);
   const [isChangeSlug, setIsChangeSlug] = useState(false);
-  const [name] = useWatch({ control, name: ['name'] });
+  const [bookId] = useWatch({ control, name: ['id'] });
   const [pictureDel = []] = useWatch({ control, name: ['pictureDel', 'picture'] });
   const setPictureDel = (value: FileItem[]) => setValue('pictureDel', value);
-
-  useEffect(() => {
-    setValue('slug', slugify(name || ''));
-  }, [name]);
 
   return (
     <Card>
@@ -69,6 +65,11 @@ export function CardDetail() {
                 fullWidth
                 label="Book name"
                 {...field}
+                onChange={(e) => {
+                  field.onChange(e);
+                  // only regenerate slug when the user edits the name
+                  if (!isChangeSlug) setValue('slug', slugify(e.target.value || ''));
+                }}
                 error={invalid}
                 helperText={error?.message}
                 required
@@ -80,10 +81,11 @@ export function CardDetail() {
             control={control}
             defaultValue=""
             rules={{
-              required: 'Name is required.',
+              // edit mode: empty slug is not sent, backend keeps the current one
+              required: bookId ? false : 'Slug is required.',
               maxLength: {
                 value: 100,
-                message: 'Name must be less than 100 characters.',
+                message: 'Slug must be less than 100 characters.',
               },
             }}
             render={({ field, fieldState: { invalid, error } }) => (
@@ -180,7 +182,14 @@ export function CardDetail() {
                       color="inherit"
                       variant="outlined"
                       sx={{ mt: 1, alignSelf: 'flex-end' }}
-                      onClick={() => field.onChange([])}
+                      onClick={() => {
+                        // keep old pictures so they are deleted on save
+                        const oldPictures = field.value.filter(
+                          (f): f is FileItem => !(f instanceof File)
+                        );
+                        if (oldPictures.length > 0) setPictureDel([...pictureDel, ...oldPictures]);
+                        field.onChange([]);
+                      }}
                     >
                       Remove all
                     </Button>
