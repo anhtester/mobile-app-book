@@ -11,6 +11,7 @@
     "build": "bun vite build",
     "build:android": "bun vite build && bunx cap sync android",
     "build:ios": "bun vite build && bunx cap sync ios",
+    "sync:android:live": "CAP_LIVE_URL=http://10.0.2.2:3040 bunx cap sync android",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint:print": "npx eslint --print-config eslint.config.mjs > eslint-show-config.json",
