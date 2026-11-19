@@ -358,7 +358,7 @@ export default function Page() {
                 />
               )}
             />
-            <Button type="submit" size="large" variant="contained" sx={{ alignSelf: 'flex-end' }}>
+            <Button type="submit" size="large" variant="contained" color="secondary" sx={{ alignSelf: 'flex-end' }}>
               Submit
             </Button>
           </Stack>

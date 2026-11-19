@@ -65,7 +65,7 @@ export default function SignUp() {
       <Button
         size="large"
         variant="contained"
-        color="inherit"
+        color="secondary"
         loading={isSubmitting}
         startIcon={<Iconify icon="solar:user-plus-bold" />}
         sx={{ mt: 3, mb: -2, alignSelf: 'flex-end' }}

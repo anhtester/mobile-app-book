@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   Button,
@@ -17,6 +18,7 @@ type DialogConfirm = {
 };
 
 export function DialogDelete({ onDelete, message }: DialogConfirm) {
+  const { t } = useTranslation();
   const [isConfirm, setIsConfirm] = useState(false);
   const { setOpen } = useDialog();
   const handleConfirm = async () => {
@@ -31,7 +33,7 @@ export function DialogDelete({ onDelete, message }: DialogConfirm) {
   };
   return (
     <>
-      <DialogTitle>Confirm delete</DialogTitle>
+      <DialogTitle>{t('dialog.deleteTitle')}</DialogTitle>
       <DialogContent>
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
@@ -42,7 +44,7 @@ export function DialogDelete({ onDelete, message }: DialogConfirm) {
           color="inherit"
           onClick={() => setOpen(false)}
         >
-          Cancel
+          {t('common.cancel')}
         </Button>
         <Button
           id="dialog-delete-action"
@@ -52,7 +54,7 @@ export function DialogDelete({ onDelete, message }: DialogConfirm) {
           color="error"
           startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
         >
-          Delete
+          {t('common.delete')}
         </Button>
       </DialogActions>
     </>

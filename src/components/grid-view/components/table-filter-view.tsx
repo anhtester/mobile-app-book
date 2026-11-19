@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useForm, useWatch, useFieldArray } from 'react-hook-form';
 import React, { useRef, useState, useEffect, useDeferredValue } from 'react';
 
@@ -28,8 +29,9 @@ type TableFilterViewProps<T> = {
 export function TableFilterView<T>({
   config: { filter: filters, setFilter: setFilters },
   filter: fields,
-  placeholder = 'Search...',
+  placeholder,
 }: TableFilterViewProps<T>) {
+  const { t } = useTranslation();
   const [isFilter] = useWatch({
     control: formControl.control,
     name: ['_isFilter'],
@@ -102,7 +104,7 @@ export function TableFilterView<T>({
           <Stack direction="row" spacing={1} alignItems="center">
             <OutlinedInput
               fullWidth
-              placeholder={placeholder}
+              placeholder={placeholder ?? t('common.search')}
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);

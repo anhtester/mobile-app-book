@@ -160,7 +160,7 @@ export default function Handle() {
                 size="large"
                 loading={isSubmitting}
                 variant="contained"
-                color="inherit"
+                color="secondary"
                 type="submit"
               >
                 {id ? 'Save changes' : 'Create promotion'}

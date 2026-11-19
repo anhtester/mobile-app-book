@@ -1,8 +1,7 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 
 import { Box, Grid, Button, Typography } from '@mui/material';
-
-import { RouterLink } from 'src/routes/components';
 
 import { useRequest } from 'src/hooks/use-request';
 import { useThrottle } from 'src/hooks/use-throttle';
@@ -12,6 +11,7 @@ import { useAuth } from 'src/store/auth';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
+import { PageAction } from 'src/components/page-action';
 import { NoData } from 'src/components/grid-view/components/not-data';
 import { ButtonScrollTop } from 'src/components/buttons/button-scroll-top';
 
@@ -23,6 +23,7 @@ import { CardBookViewSmoll } from './components/card-book-view-smoll';
 
 export function BookView() {
   const { auth } = useAuth();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const config = useFilterBook();
   const { filter, sortObj } = config;
@@ -111,15 +112,13 @@ export function BookView() {
           Book Management
         </Typography>
         {auth && (
-          <Button
-            variant="contained"
-            color="inherit"
+          <PageAction
+            id="page-action-new-book"
             startIcon={<Iconify icon="mingcute:add-line" />}
-            LinkComponent={RouterLink}
             href={renderLinkNew}
           >
-            New book
-          </Button>
+            {t('fab.newBook')}
+          </PageAction>
         )}
       </Box>
 

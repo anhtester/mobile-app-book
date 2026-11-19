@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import {
   Box,
   MenuItem,
@@ -22,7 +24,8 @@ export function TablePaginationView<T>({
   type?: 'table' | 'grid';
   labelRowsPerPage?: string;
 }) {
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('sm'));
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+  const { t } = useTranslation();
 
   if (type === 'table') {
     return (
@@ -35,7 +38,10 @@ export function TablePaginationView<T>({
         onPageChange={(_, page) => config.setPage(page + 1)}
         rowsPerPage={config.rowsPerPage}
         onRowsPerPageChange={(e) => config.setRowsPerPage(parseInt(e.target.value, 10))}
-        labelRowsPerPage={labelRowsPerPage}
+        labelRowsPerPage={labelRowsPerPage ?? t('common.rowsPerPage')}
+        labelDisplayedRows={({ from, to, count }) =>
+          t('common.displayedRows', { from, to, count: count === -1 ? to : count })
+        }
         rowsPerPageOptions={rowsPerPageList}
       />
     );

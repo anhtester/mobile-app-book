@@ -34,9 +34,14 @@ export const LabelRoot = styled('span', {
       /**
        * @variant soft
        */
+      // at-pill mặc định: --at-gray-bg + --at-gray-ink
       ...(variant === 'soft' && {
-        color: theme.vars.palette.text.secondary,
-        backgroundColor: varAlpha(theme.vars.palette.grey['500Channel'], 0.16),
+        color: theme.vars.palette.grey[600],
+        backgroundColor: theme.vars.palette.grey[100],
+        ...theme.applyStyles('dark', {
+          color: theme.vars.palette.grey[300],
+          backgroundColor: varAlpha(theme.vars.palette.grey['400Channel'], 0.14),
+        }),
       }),
       /**
        * @variant inverted
@@ -69,11 +74,13 @@ export const LabelRoot = styled('span', {
         /**
          * @variant soft
          */
+        // at-pill--{tone}: nền nhạt --at-{tone}-bg + chữ đậm --at-{tone}-ink
         ...(variant === 'soft' && {
           color: theme.vars.palette[color].dark,
-          backgroundColor: varAlpha(theme.vars.palette[color].mainChannel, 0.16),
+          backgroundColor: theme.vars.palette[color].lighter,
           ...theme.applyStyles('dark', {
             color: theme.vars.palette[color].light,
+            backgroundColor: varAlpha(theme.vars.palette[color].mainChannel, 0.16),
           }),
         }),
         /**
@@ -97,10 +104,11 @@ export const LabelRoot = styled('span', {
     display: 'inline-flex',
     gap: theme.spacing(0.75),
     justifyContent: 'center',
-    padding: theme.spacing(0, 0.75),
-    fontSize: theme.typography.pxToRem(12),
-    fontWeight: theme.typography.fontWeightBold,
-    borderRadius: Number(theme.shape.borderRadius) * 0.75,
+    // Hình dạng at-pill: bo tròn hẳn, 12.5px / 600
+    padding: theme.spacing(0, 1.25),
+    fontSize: theme.typography.pxToRem(12.5),
+    fontWeight: theme.typography.fontWeightSemiBold,
+    borderRadius: 999,
     transition: theme.transitions.create(['all'], { duration: theme.transitions.duration.shorter }),
     ...defaultStyles,
     ...colorStyles,

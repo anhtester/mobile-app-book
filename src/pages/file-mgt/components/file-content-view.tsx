@@ -75,27 +75,34 @@ export default function FileContentView({
     }
   }, [root, rootPath, setPath, setRootPath]);
 
-  const {
-    data: { list, info: { maxStorage, usedStorage } } = {
-      list: [],
-      info: { maxStorage: 1, usedStorage: 0 },
-    },
-    request,
-  } = useRequest(
+  // Danh sách file và dung lượng tải riêng: `/file/info` lỗi (ví dụ server chạy Windows không có
+  // lệnh `du`) thì vẫn phải hiện được danh sách file.
+  const { data: list = [], request: requestList } = useRequest(
+    useCallback(() => getFolder(path, _search), [path, _search])
+  );
+
+  const { data: info, request: requestInfo } = useRequest(
     useCallback(
-      async () => ({
-        list: await getFolder(path, _search),
-        info: await axios.get('/file/info').then((res) => res.data),
-      }),
-      [path, _search]
+      () =>
+        axios
+          .get('/file/info')
+          .then((res) => res.data as { maxStorage: number; usedStorage: number }),
+      []
     )
   );
+
+  const request = useCallback(async () => {
+    await Promise.all([requestList(), requestInfo()]);
+  }, [requestInfo, requestList]);
 
   const { data: allFolder = [] } = useRequest(() =>
     getFolder('/', '*').then((r) => r.filter((f) => !f.isFile))
   );
 
-  const percentStorage = (usedStorage / maxStorage) * 100;
+  const hasStorage = !!info?.maxStorage;
+  const usedStorage = info?.usedStorage ?? 0;
+  const maxStorage = info?.maxStorage ?? 0;
+  const percentStorage = hasStorage ? (usedStorage / maxStorage) * 100 : 0;
 
   const config = useTable<FileItem>({
     rowsPerPage: 1,
@@ -203,7 +210,7 @@ export default function FileContentView({
           orientation="vertical"
           sx={{ mx: 2, display: { xs: 'none', md: 'block' } }}
         />
-        <Box display="flex" gap={1}>
+        <Box display={hasStorage ? 'flex' : 'none'} gap={1}>
           <Box position="relative" display="flex" justifyContent="center" alignItems="center">
             <CircularProgress
               size={50}
@@ -416,7 +423,7 @@ export default function FileContentView({
               href={formatFilePath(file?.path)}
               download={file?.name}
               startIcon={<Iconify icon="solar:cloud-download-bold" />}
-              color="inherit"
+              color="primary"
               variant="contained"
             >
               Download

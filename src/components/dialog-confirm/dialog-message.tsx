@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import {
   Button,
   DialogTitle,
@@ -9,16 +11,17 @@ import {
 import { useDialog } from './store';
 
 export function DialogMessage({ message }: { message: string }) {
+  const { t } = useTranslation();
   const { setOpen } = useDialog();
   return (
     <>
-      <DialogTitle>Message</DialogTitle>
+      <DialogTitle>{t('dialog.messageTitle')}</DialogTitle>
       <DialogContent>
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button color="inherit" onClick={() => setOpen(false)}>
-          Close
+          {t('common.close')}
         </Button>
       </DialogActions>
     </>

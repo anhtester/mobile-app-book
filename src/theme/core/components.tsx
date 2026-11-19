@@ -6,6 +6,8 @@ import SvgIcon from '@mui/material/SvgIcon';
 
 import { Iconify } from 'src/components/iconify';
 
+import { atKit } from '../at-kit';
+
 // ----------------------------------------------------------------------
 
 const MuiBackdrop: Components<Theme>['MuiBackdrop'] = {
@@ -19,40 +21,104 @@ const MuiBackdrop: Components<Theme>['MuiBackdrop'] = {
   },
 };
 
+type GradientColor = 'primary' | 'secondary' | 'info' | 'error' | 'warning' | 'success';
+
+/** Nút gradient của AT UI kit: stop sáng (light) → stop tối (main), glow cùng màu, viền sáng trên. */
+const gradientButton = (theme: Theme, color: GradientColor) => {
+  const c = theme.vars.palette[color];
+  return {
+    color: c.contrastText,
+    backgroundImage: `linear-gradient(135deg, ${c.light}, ${c.main})`,
+    boxShadow: `0 4px 12px ${varAlpha(c.mainChannel, 0.28)}, ${atKit.gloss}`,
+    ...(color === 'secondary' && { textShadow: '0 1px 1px rgba(120, 45, 0, .25)' }),
+    '&:hover': {
+      color: c.contrastText,
+      backgroundColor: c.main,
+      filter: 'brightness(1.06) saturate(1.05)',
+      boxShadow: `0 6px 16px ${varAlpha(c.mainChannel, 0.36)}, ${atKit.gloss}`,
+    },
+    '&.Mui-disabled': {
+      backgroundImage: 'none',
+      boxShadow: 'none',
+      textShadow: 'none',
+    },
+  };
+};
+
 const MuiButton: Components<Theme>['MuiButton'] = {
   defaultProps: {
     disableElevation: true,
   },
   styleOverrides: {
-    containedInherit: ({ theme }) => ({
-      color: theme.vars.palette.common.white,
-      backgroundColor: theme.vars.palette.grey[800],
-      '&:hover': {
-        color: theme.vars.palette.common.white,
-        backgroundColor: theme.vars.palette.grey[800],
-      },
+    root: ({ theme, ownerState: { variant, color = 'primary' } }) => ({
+      borderRadius: atKit.radius.btn,
+      fontWeight: theme.typography.fontWeightSemiBold,
+      transition: `background-color ${atKit.ease}, color ${atKit.ease}, border-color ${atKit.ease}, box-shadow ${atKit.ease}, filter ${atKit.ease}, transform .08s ease`,
+      // Nhấn là thấy: nhún nhẹ khi bấm (at-btn:active)
+      '&:active:not(.Mui-disabled)': { transform: 'translateY(1px) scale(.97)' },
+      '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+      ...(variant === 'contained' &&
+        color !== 'inherit' &&
+        gradientButton(theme, color as GradientColor)),
+      // Không còn nút đen: "inherit" đặc = slate gradient (nút trung tính tối của kit)
+      ...(variant === 'contained' &&
+        color === 'inherit' && {
+          color: theme.vars.palette.common.white,
+          backgroundImage: atKit.grad.slate,
+          boxShadow: `${atKit.glow.slate}, ${atKit.gloss}`,
+          '&:hover': {
+            color: theme.vars.palette.common.white,
+            filter: 'brightness(1.06)',
+            boxShadow: `${atKit.glowHover.slate}, ${atKit.gloss}`,
+          },
+          '&.Mui-disabled': { backgroundImage: 'none', boxShadow: 'none' },
+        }),
+      // Viền màu, hover đổ gradient (at-btn--outline-green / --outline-orange)
+      ...(variant === 'outlined' &&
+        color !== 'inherit' && {
+          borderWidth: 1.5,
+          borderColor: varAlpha(theme.vars.palette[color as GradientColor].mainChannel, 0.32),
+          backgroundColor: theme.vars.palette.background.paper,
+          '&:hover': {
+            borderColor: 'transparent',
+            color: theme.vars.palette[color as GradientColor].contrastText,
+            backgroundImage: `linear-gradient(135deg, ${theme.vars.palette[color as GradientColor].light}, ${theme.vars.palette[color as GradientColor].main})`,
+          },
+        }),
     }),
-    sizeLarge: {
-      minHeight: 48,
-    },
+    // Trung tính (at-btn--ghost): nền trắng, viền --at-line, chữ muted
     outlinedInherit: ({ theme }) => ({
-      color: theme.vars.palette.text.primary,
-      border: `1px solid ${theme.palette.divider}`,
+      color: theme.vars.palette.text.secondary,
+      backgroundColor: theme.vars.palette.background.paper,
+      border: `1.5px solid ${theme.vars.palette.divider}`,
       '&:hover': {
         color: theme.vars.palette.text.primary,
-        border: `1px solid ${theme.vars.palette.grey[800]}`,
+        backgroundColor: theme.vars.palette.background.default,
+        border: `1.5px solid ${theme.vars.palette.divider}`,
       },
     }),
+    sizeSmall: { minHeight: atKit.btnHeight.small, fontSize: 13, borderRadius: atKit.radius.sm },
+    sizeMedium: { minHeight: atKit.btnHeight.medium, paddingLeft: 18, paddingRight: 18 },
+    sizeLarge: {
+      minHeight: atKit.btnHeight.large,
+      fontSize: 14.5,
+      paddingLeft: 22,
+      paddingRight: 22,
+      borderRadius: atKit.radius.md,
+    },
   },
 };
 
+// Panel của kit: bo 16, viền --at-line, bóng nhẹ
 const MuiCard: Components<Theme>['MuiCard'] = {
   styleOverrides: {
     root: ({ theme }) => ({
       zIndex: 0,
       position: 'relative',
-      boxShadow: theme.vars.customShadows.card,
-      borderRadius: Number(theme.shape.borderRadius) * 2,
+      border: `1px solid ${theme.vars.palette.divider}`,
+      boxShadow: atKit.shadow.light,
+      borderRadius: atKit.radius.lg,
+      ...theme.applyStyles('dark', { boxShadow: atKit.shadow.dark }),
     }),
   },
 };
@@ -69,10 +135,31 @@ const MuiCardHeader: Components<Theme>['MuiCardHeader'] = {
   },
 };
 
+// Ô nhập theo .at-input: viền 1.5px --at-line, bo 11, focus viền brand + vòng sáng
 const MuiOutlinedInput: Components<Theme>['MuiOutlinedInput'] = {
   styleOverrides: {
+    root: ({ theme }) => ({
+      borderRadius: atKit.radius.input,
+      backgroundColor: theme.vars.palette.background.paper,
+      transition: `box-shadow ${atKit.ease}`,
+      [`&:hover:not(.Mui-disabled):not(.Mui-error) .MuiOutlinedInput-notchedOutline`]: {
+        borderColor: varAlpha(theme.vars.palette.primary.mainChannel, 0.4),
+      },
+      '&.Mui-focused:not(.Mui-error)': {
+        boxShadow: `0 0 0 3px ${varAlpha(theme.vars.palette.primary.lightChannel, 0.2)}`,
+      },
+      '&.Mui-focused:not(.Mui-error) .MuiOutlinedInput-notchedOutline': {
+        borderWidth: 1.5,
+        borderColor: theme.vars.palette.primary.main,
+      },
+    }),
     notchedOutline: ({ theme }) => ({
-      borderColor: varAlpha(theme.vars.palette.grey['500Channel'], 0.2),
+      borderWidth: 1.5,
+      borderColor: theme.vars.palette.divider,
+    }),
+    // Trên điện thoại chữ trong ô 16px: nhỏ hơn thì trình duyệt tự zoom khi focus
+    input: ({ theme }) => ({
+      [theme.breakpoints.down('sm')]: { fontSize: theme.typography.pxToRem(16) },
     }),
   },
 };
@@ -100,7 +187,7 @@ const MuiPaper: Components<Theme>['MuiPaper'] = {
       },
     }),
     outlined: ({ theme }) => ({
-      borderColor: varAlpha(theme.vars.palette.grey['500Channel'], 0.16),
+      borderColor: theme.vars.palette.divider,
     }),
   },
 };
@@ -286,7 +373,8 @@ const MuiInputBase: Components<Theme>['MuiInputBase'] = {
 
 const MuiTextField: Components<Theme>['MuiTextField'] = {
   defaultProps: {
-    color: 'inherit',
+    // Focus dùng màu brand (xanh lá logo) theo kit, không còn viền đen
+    color: 'primary',
   },
   styleOverrides: {
     root: ({ theme }) => ({

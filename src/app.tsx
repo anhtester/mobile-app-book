@@ -1,12 +1,10 @@
 import 'src/global.css';
-import 'dayjs/locale/vi';
-
-import dayjs from 'dayjs';
-
-dayjs.locale('vi');
+// Khởi tạo i18n (vi/en) + locale của dayjs theo ngôn ngữ đã chọn
+import 'src/locales';
 
 import { Toaster } from 'sonner';
 import { lazy, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
@@ -16,15 +14,16 @@ const ThemeProvider = lazy(() => import('src/theme/theme-provider'));
 
 const ConfigDialog = lazy(() => import('./components/dialog-confirm/confirm-dialog'));
 
-import { Capacitor } from '@capacitor/core';
 import { createPaletteChannel } from 'minimal-shared/utils';
 
-import { useTheme } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
-import { useLayoutPadding } from './layouts/mobile-layout';
 import { useThemeData, generateColorPalette } from './hooks/use-theme-data';
 // ----------------------------------------------------------------------
+
+/** Xanh logo AnhTester (stop sáng / stop tối của gradient AT UI kit). */
+const BRAND_GREEN = '#42BC40';
+const BRAND_COLORS = ['#42BC40', '#268A24'];
 
 type AppProps = {
   children: React.ReactNode;
@@ -32,36 +31,37 @@ type AppProps = {
 
 export default function App({ children }: AppProps) {
   useScrollToTop();
-  const theme = useTheme();
-  const { primary = '#42BC40' } = useThemeData();
-  const { bottom } = useLayoutPadding();
+  const { primary = BRAND_GREEN } = useThemeData();
+  const { i18n } = useTranslation();
+
+  // Màu mặc định (xanh logo) dùng đúng palette của AT UI kit trong theme. Chỉ khi người dùng
+  // tự chọn màu khác ở Setting > Select color thì mới sinh palette từ màu đó.
+  const customPrimary = BRAND_COLORS.includes(primary.toUpperCase())
+    ? undefined
+    : createPaletteChannel(generateColorPalette(primary));
 
   return (
     <ThemeProvider
-      themeOverrides={{
-        colorSchemes: {
-          dark: {
-            palette: {
-              primary: createPaletteChannel(generateColorPalette(primary)),
-            },
-          },
-          light: {
-            palette: {
-              primary: createPaletteChannel(generateColorPalette(primary)),
-            },
-          },
-        },
-      }}
+      themeOverrides={
+        customPrimary
+          ? {
+              colorSchemes: {
+                dark: { palette: { primary: customPrimary } },
+                light: { palette: { primary: customPrimary } },
+              },
+            }
+          : {}
+      }
     >
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="vi">
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18n.language}>
         {children}
       </LocalizationProvider>
       <ConfigDialog />
+      {/* Toast ở trên cùng, ngay dưới thanh đầu trang: không che nút thêm mới (FAB) và thanh tab đáy */}
       <Toaster
-        position={Capacitor.isNativePlatform() ? 'bottom-right' : 'top-right'}
-        style={{
-          bottom: theme.spacing(bottom + 12),
-        }}
+        position="top-center"
+        offset={{ top: 'calc(env(safe-area-inset-top, 0px) + 64px)' }}
+        mobileOffset={{ top: 'calc(env(safe-area-inset-top, 0px) + 64px)' }}
       />
     </ThemeProvider>
   );

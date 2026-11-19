@@ -8,7 +8,6 @@ import { useThemeData } from 'src/hooks/use-theme-data';
 
 import { axios } from 'src/api/axios';
 import { useAuth } from 'src/store/auth';
-import { useLayoutPadding } from 'src/layouts/mobile-layout';
 
 import { useRouter } from '../hooks';
 
@@ -41,7 +40,6 @@ export function CheckAuth({
   const router = useRouter();
   const { setMode } = useColorScheme();
   const { setPrimary } = useThemeData();
-  const { set } = useLayoutPadding();
 
   useEffect(() => {
     axios
@@ -55,14 +53,10 @@ export function CheckAuth({
       .catch(() => setAuth(null))
       .finally(() => setAuthChecked(true));
 
-    const flatform = Capacitor.getPlatform();
-    if (flatform === 'android') {
-      set(5, 2);
-    }
-    if (flatform === 'ios') {
-      set(6, 3);
-    }
-  }, [router, set, setAuth, setAuthChecked, setMode, setPrimary]);
+    // Vùng an toàn (status bar, tai thỏ, thanh điều hướng) giờ lấy từ CSS env(safe-area-inset-*)
+    // trong layout, đo đúng theo từng máy. Trước đây gán cứng Android 40px/16px, iOS 48px/24px:
+    // cộng thêm env() thì bị đệm hai lần, và sai lệch với máy có inset khác.
+  }, [router, setAuth, setAuthChecked, setMode, setPrimary]);
 
   return children;
 }

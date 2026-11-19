@@ -184,7 +184,7 @@ export default function Setting() {
           <Button
             startIcon={<Iconify icon="solar:diskette-bold" />}
             size="large"
-            color="inherit"
+            color="secondary"
             variant="contained"
             onClick={form.handleSubmit(async (config) => {
               await axios

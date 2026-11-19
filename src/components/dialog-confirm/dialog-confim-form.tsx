@@ -2,6 +2,7 @@ import type { ButtonProps, DialogProps, SwitchProps, TextFieldProps } from '@mui
 import type { FieldValues, RegisterOptions, ControllerRenderProps } from 'react-hook-form';
 
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useForm, Controller } from 'react-hook-form';
 
 import {
@@ -157,6 +158,7 @@ export function DialogConfirmForm<T>({
   action: { onAction, ...actionProps },
   title,
 }: DialogConfirmFormProps<T>) {
+  const { t } = useTranslation();
   const { setOpen, open } = useDialog();
   const {
     control,
@@ -214,13 +216,13 @@ export function DialogConfirmForm<T>({
           color="inherit"
           onClick={() => setOpen(false)}
         >
-          Cancel
+          {t('common.cancel')}
         </Button>
         <Button
           variant="contained"
           disabled={!isDirty}
           id="dialog-form-action"
-          color="inherit"
+          color="secondary"
           children={actionProps.label}
           {...actionProps}
           loading={isLoading}

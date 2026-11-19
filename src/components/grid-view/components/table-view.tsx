@@ -5,6 +5,7 @@ import {
   MenuList,
   TableBody,
   TableCell,
+  useMediaQuery,
   TableContainer,
   menuItemClasses,
 } from '@mui/material';
@@ -12,6 +13,7 @@ import {
 import { Scrollbar } from 'src/components/scrollbar';
 
 import TableRowView from './table-row-view';
+import { TableCardList } from './table-card-list';
 import { TableHeaderView } from './table-header-view';
 import { usePopupAction } from '../store/use-popover';
 import { TableRowNoTableView } from './table-row-no-data-view';
@@ -58,9 +60,22 @@ export function TableView<T>({
   filter = [],
 }: GridViewTableProps<T>) {
   const { anchorEl, open, setOpen, row: dataRow } = usePopupAction();
+  // Điện thoại (< 600dp): dạng thẻ thay cho bảng cuộn ngang (at-table--stack của AT UI kit)
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
   return (
     <>
+      {isMobile ? (
+        <TableCardList
+          columns={columns}
+          config={config}
+          data={data}
+          keyName={keyName}
+          renderAction={renderAction}
+          onClickRow={onClickRow}
+          select={select}
+        />
+      ) : (
       <Scrollbar>
         <TableContainer sx={{ overflow: 'unset', ...sx }}>
           <Table stickyHeader={sticky?.isStickyHeader} sx={{ minWidth }} size={size}>
@@ -114,6 +129,7 @@ export function TableView<T>({
           </Table>
         </TableContainer>
       </Scrollbar>
+      )}
       {renderAction && (
         <Popover
           open={open}

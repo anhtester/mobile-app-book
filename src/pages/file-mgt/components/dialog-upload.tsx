@@ -136,7 +136,7 @@ export function DialogUpload({ reload }: { reload: () => void }) {
           Cancel
         </Button>
         <Button
-          color="inherit"
+          color="secondary"
           variant="contained"
           startIcon={<Iconify icon="solar:cloud-upload-bold" />}
           loading={isSubmitting}

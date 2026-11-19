@@ -1,6 +1,7 @@
 import type { IconButtonProps } from '@mui/material/IconButton';
 
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -24,6 +25,8 @@ import { hanldeLogout } from 'src/api/logout';
 export type AccountPopoverProps = IconButtonProps & {
   data?: {
     label: string;
+    /** Khoá dịch (rule 9); có thì hiện bản dịch thay cho label */
+    tKey?: string;
     href: string;
     icon?: React.ReactNode;
     info?: React.ReactNode;
@@ -33,6 +36,7 @@ export type AccountPopoverProps = IconButtonProps & {
 
 export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps) {
   const router = useRouter();
+  const { t } = useTranslation();
   const { auth, setAuth } = useAuth();
   const [isLogout, setIsLogout] = useState(false);
 
@@ -66,6 +70,8 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
   return (
     <>
       <IconButton
+        id="account-menu-button"
+        aria-label={t('account.menu')}
         onClick={handleOpenPopover}
         sx={{
           p: '2px',
@@ -143,7 +149,7 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
               }}
             >
               {option.icon}
-              {option.label}
+              {option.tKey ? t(option.tKey) : option.label}
             </MenuItem>
           ))}
         </MenuList>
@@ -152,6 +158,7 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
 
         <Box sx={{ p: 1 }}>
           <Button
+            id="account-logout"
             fullWidth
             color="error"
             size="medium"
@@ -168,7 +175,7 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
                 .finally(() => setIsLogout(false));
             }}
           >
-            Logout
+            {t('account.logout')}
           </Button>
         </Box>
       </Popover>

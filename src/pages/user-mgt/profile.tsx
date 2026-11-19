@@ -85,7 +85,7 @@ export default function Profile() {
           </Button>
           <Button
             size="large"
-            color="inherit"
+            color="secondary"
             variant="contained"
             loading={isSubmitting}
             startIcon={<Iconify icon="solar:diskette-bold" />}

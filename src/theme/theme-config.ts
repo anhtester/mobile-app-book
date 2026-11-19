@@ -30,72 +30,81 @@ export const themeConfig: ThemeConfig = {
    * Typography
    *************************************** */
   fontFamily: {
-    primary: 'DM Sans Variable',
-    secondary: 'Barlow',
+    primary: 'Inter Variable',
+    secondary: 'Inter Variable',
   },
   /** **************************************
    * Palette
    *************************************** */
+  // Bảng màu theo AT UI kit (anhtester_lms: public/build/css/at-ui.css, biến --at-*).
+  // main = stop tối của gradient (đủ tương phản chữ trắng), light = stop sáng, lighter = nền nhạt (pill/soft).
   palette: {
+    // Xanh lá logo: hành động phụ, lọc, đang chọn (--at-green-1/-2, --at-brand-soft)
     primary: {
-      lighter: '#B9F0A1', // sáng hơn main, tone xanh lá nhạt
-      light: '#78D56B', // sáng vừa, dễ phối
-      main: '#42BC40', // giữ nguyên
-      dark: '#2E8B2E', // tối hơn main, cùng tông xanh lá
-      darker: '#1F5C1F', // tối nhất, để tạo đối lập
-      contrastText: '#FFFFFF', // chữ trắng nổi bật
+      lighter: '#EBF7EA',
+      light: '#42BC40',
+      main: '#268A24',
+      dark: '#1F6E1D',
+      darker: '#14501A',
+      contrastText: '#FFFFFF',
     },
+    // Cam logo: hành động chính, 1 nút/màn (--at-orange-1/-2, --at-orange-bg/-ink)
     secondary: {
-      lighter: '#FFD4A6', // sáng hơn main, tone cam nhạt
-      light: '#FF9C4D', // sáng vừa
-      main: '#E06004', // giữ nguyên
-      dark: '#A33E03', // tối hơn main, cùng tông cam nâu
-      darker: '#5C2101', // tối nhất
-      contrastText: '#FFFFFF', // chữ trắng nổi bật
+      lighter: '#FFEDD5',
+      light: '#FB8A2E',
+      main: '#E06004',
+      dark: '#C2410C',
+      darker: '#7C2D12',
+      contrastText: '#FFFFFF',
     },
+    // Xanh dương: thông tin, xem trước (--at-blue-*)
     info: {
-      lighter: '#CAFDF5',
-      light: '#61F3F3',
-      main: '#00B8D9',
-      dark: '#006C9C',
-      darker: '#003768',
+      lighter: '#DBEAFE',
+      light: '#3B8FE8',
+      main: '#1570CD',
+      dark: '#1D4ED8',
+      darker: '#1E3A8A',
       contrastText: '#FFFFFF',
     },
+    // Xanh lá trạng thái (--at-green-bg/-ink)
     success: {
-      lighter: '#D3FCD2',
-      light: '#77ED8B',
-      main: '#22C55E',
-      dark: '#118D57',
-      darker: '#065E49',
-      contrastText: '#ffffff',
-    },
-    warning: {
-      lighter: '#FFF5CC',
-      light: '#FFD666',
-      main: '#FFAB00',
-      dark: '#B76E00',
-      darker: '#7A4100',
-      contrastText: '#1C252E',
-    },
-    error: {
-      lighter: '#FFE9D5',
-      light: '#FFAC82',
-      main: '#FF5630',
-      dark: '#B71D18',
-      darker: '#7A0916',
+      lighter: '#DCFCE7',
+      light: '#4ADE80',
+      main: '#16A34A',
+      dark: '#15803D',
+      darker: '#14532D',
       contrastText: '#FFFFFF',
     },
+    // Hổ phách (--at-amber-*, nút at-btn--amber #FBBF24 → #D97706)
+    warning: {
+      lighter: '#FEF3C7',
+      light: '#FBBF24',
+      main: '#D97706',
+      dark: '#B45309',
+      darker: '#78350F',
+      contrastText: '#FFFFFF',
+    },
+    // Đỏ: xoá, huỷ (--at-red-*)
+    error: {
+      lighter: '#FEE2E2',
+      light: '#F0605D',
+      main: '#C9302C',
+      dark: '#B91C1C',
+      darker: '#7F1D1D',
+      contrastText: '#FFFFFF',
+    },
+    // Thang xám slate: 900 = --at-ink, 500 = --at-muted, 100 = --at-gray-bg
     grey: {
-      '50': '#FCFDFD',
-      '100': '#F9FAFB',
-      '200': '#F4F6F8',
-      '300': '#DFE3E8',
-      '400': '#C4CDD5',
-      '500': '#919EAB',
-      '600': '#637381',
-      '700': '#454F5B',
-      '800': '#1C252E',
-      '900': '#141A21',
+      '50': '#F8FAFC',
+      '100': '#F1F5F9',
+      '200': '#E5E9F0',
+      '300': '#CBD5E1',
+      '400': '#94A3B8',
+      '500': '#64748B',
+      '600': '#475569',
+      '700': '#334155',
+      '800': '#1E293B',
+      '900': '#0F172A',
     },
     common: { black: '#000000', white: '#FFFFFF' },
   },

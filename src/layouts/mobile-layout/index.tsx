@@ -8,6 +8,7 @@ import { Logo } from 'src/components/logo';
 
 import { Footer } from './footer';
 import { _account } from '../nav-config-account';
+import { LanguageSwitch } from '../components/language-switch';
 import { AccountPopover } from '../components/account-popover';
 import { MainSection, LayoutSection, HeaderSection } from '../core';
 
@@ -41,9 +42,11 @@ export function MobileLayout({
     };
 
     const headerSlots: HeaderSectionProps['slots'] = {
-      leftArea: <Logo />,
+      // Logo gọn (32px) để thanh đầu trang chỉ cao 56dp
+      leftArea: <Logo height={32} />,
       rightArea: (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0, sm: 0.75 } }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <LanguageSwitch />
           {/** @slot Account drawer */}
           <AccountPopover data={_account} />
         </Box>
@@ -60,6 +63,9 @@ export function MobileLayout({
         sx={{
           ...slotProps?.header?.sx,
           top: theme.spacing(top),
+          // Vùng an toàn: status bar / tai thỏ (cần viewport-fit=cover trong index.html)
+          paddingTop: 'env(safe-area-inset-top, 0px)',
+          bgcolor: theme.vars.palette.background.default,
           '&::after': {
             content: '""',
             position: 'absolute',
@@ -78,7 +84,12 @@ export function MobileLayout({
     <LayoutSection
       footerSection={<Footer />}
       headerSection={renderHeader()}
-      sx={{ ...sx, pt: theme.spacing(top), pb: theme.spacing(bottom + 12) }}
+      sx={{
+        ...sx,
+        pt: theme.spacing(top),
+        // Chừa chỗ cho thanh tab đáy (64dp) + vùng an toàn đáy + nút thêm mới (FAB)
+        pb: `calc(${theme.spacing(bottom + 18)} + env(safe-area-inset-bottom, 0px))`,
+      }}
     >
       <MainSection {...slotProps?.main}>{children}</MainSection>
     </LayoutSection>

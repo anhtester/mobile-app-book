@@ -70,10 +70,10 @@ export function AuthLayout({
         slots={{ ...headerSlots, ...slotProps?.header?.slots }}
         slotProps={merge(headerSlotProps, slotProps?.header?.slotProps ?? {})}
         sx={[
-          {
+          (theme) => ({
             position: { [layoutQuery]: 'fixed' },
-            pt: top,
-          },
+            pt: `calc(${theme.spacing(top)} + env(safe-area-inset-top, 0px))`,
+          }),
           ...(Array.isArray(slotProps?.header?.sx)
             ? (slotProps?.header?.sx ?? [])
             : [slotProps?.header?.sx]),

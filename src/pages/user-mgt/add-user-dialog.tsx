@@ -43,7 +43,7 @@ export function AddUserDialog({ callback }: AddUserDialogProps) {
             id ? handleUpdateUser(id, d) : handleCreateUser(d)
           )}
           variant="contained"
-          color="inherit"
+          color="secondary"
           startIcon={<Iconify icon="solar:diskette-bold" />}
         >
           {id ? 'Update' : 'Save'}

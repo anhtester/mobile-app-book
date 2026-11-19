@@ -88,31 +88,38 @@ export const common = createPaletteChannel(themeConfig.palette.common);
 export const grey = createPaletteChannel(themeConfig.palette.grey);
 
 // Text color
+// Theo AT UI kit: --at-ink / --at-muted (sáng) và bản html.dark-mode (tối)
 export const text = {
   light: createPaletteChannel({
-    primary: grey[800],
-    secondary: grey[600],
-    disabled: grey[500],
+    primary: '#0F172A',
+    secondary: '#64748B',
+    disabled: '#94A3B8',
   }),
   dark: createPaletteChannel({
-    primary: grey[100],
-    secondary: grey[400],
-    disabled: grey[300],
+    primary: '#E6EAF2',
+    secondary: '#94A3B8',
+    disabled: '#64748B',
   }),
 };
 
-// Background color
+// Theo AT UI kit: paper = --at-surface, default = --at-sunken, neutral = --at-gray-bg
 export const background = {
   light: createPaletteChannel({
     paper: '#FFFFFF',
-    default: grey[100],
-    neutral: grey[200],
+    default: '#F3F5F8',
+    neutral: '#F1F5F9',
   }),
   dark: createPaletteChannel({
-    paper: grey[800],
-    default: grey[900],
-    neutral: '#28323D',
+    paper: '#161B26',
+    default: '#0F131B',
+    neutral: '#1E2533',
   }),
+};
+
+// Đường kẻ: --at-line
+export const divider = {
+  light: '#E5E9F0',
+  dark: '#273042',
 };
 
 // Base action color
@@ -144,20 +151,23 @@ export const basePalette = {
   error,
   common,
   grey,
-  divider: varAlpha(grey['500Channel'], 0.2),
 };
 
 export const palette: Partial<Record<ThemeColorScheme, ColorSystemOptions['palette']>> = {
   light: {
     ...basePalette,
+    divider: divider.light,
     text: text.light,
     background: background.light,
     action: action.light,
   },
   dark: {
     ...basePalette,
+    // Dark mode của kit: brand sáng hơn (#62D160) để nổi trên nền tối
+    primary: createPaletteChannel({ ...themeConfig.palette.primary, light: '#62D160' }),
+    divider: divider.dark,
     text: text.dark,
     background: background.dark,
     action: action.dark,
-  }
+  },
 };

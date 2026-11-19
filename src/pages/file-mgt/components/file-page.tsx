@@ -1,15 +1,19 @@
-import { Box, Card, Button, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+
+import { Box, Card, Typography } from '@mui/material';
 
 import { useAuth } from 'src/store/auth';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
+import { PageAction } from 'src/components/page-action';
 
 import FileContentView from './file-content-view';
 import { useDialogUpload } from '../store/use-dialog-upload';
 
 export function FilePageView() {
   const { auth } = useAuth();
+  const { t } = useTranslation();
   const { setOpen } = useDialogUpload();
 
   return (
@@ -25,14 +29,13 @@ export function FilePageView() {
           File management
         </Typography>
         {auth && (
-          <Button
-            variant="contained"
-            color="inherit"
+          <PageAction
+            id="page-action-upload-file"
             startIcon={<Iconify icon="solar:cloud-upload-bold" />}
             onClick={() => setOpen(true)}
           >
-            Upload file
-          </Button>
+            {t('fab.uploadFile')}
+          </PageAction>
         )}
       </Box>
       <Card>

@@ -1,6 +1,7 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useCallback } from 'react';
 
-import { Box, Card, Stack, Button, MenuItem, Typography } from '@mui/material';
+import { Box, Card, Stack, MenuItem, Typography } from '@mui/material';
 
 import { useDebounce } from 'src/hooks/use-debound';
 
@@ -9,6 +10,7 @@ import { useAuth } from 'src/store/auth';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
+import { PageAction } from 'src/components/page-action';
 import { dialog } from 'src/components/dialog-confirm/confirm';
 import { useTable } from 'src/components/grid-view/hook/use-table';
 import { TableView } from 'src/components/grid-view/components/table-view';
@@ -30,6 +32,7 @@ export function ViewUser() {
   const [users, setUsers] = useState<User[]>([]);
   const [total, setTotal] = useState(0);
   const { auth } = useAuth();
+  const { t } = useTranslation();
   const { orderBy, order, page, rowsPerPage, filter, setPage } = config;
 
   const search = useDebounce(filter, 650);
@@ -75,9 +78,8 @@ export function ViewUser() {
           User Management
         </Typography>
         {auth && (
-          <Button
-            variant="contained"
-            color="inherit"
+          <PageAction
+            id="page-action-new-user"
             startIcon={<Iconify icon="solar:user-plus-bold" />}
             onClick={() => {
               formControl.reset({
@@ -86,8 +88,8 @@ export function ViewUser() {
               dialog.custom(() => <AddUserDialog callback={loadUsers} />, { maxWidth: 'md' });
             }}
           >
-            New user
-          </Button>
+            {t('fab.newUser')}
+          </PageAction>
         )}
       </Box>
       <Card>

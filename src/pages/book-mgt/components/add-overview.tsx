@@ -147,7 +147,7 @@ export function AddOverview() {
               loading={isLoading}
               disabled={!isDirty}
               variant="contained"
-              color="inherit"
+              color="secondary"
               onClick={handleSubmit(async (data) =>
                 id ? await handleUpdateBook(id, data) : await handleCreateBook(data)
               )}

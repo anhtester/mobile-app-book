@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   Button,
@@ -16,6 +17,7 @@ type DialogConfirm = {
 };
 
 export function DialogConfirm({ onConfirm, message }: DialogConfirm) {
+  const { t } = useTranslation();
   const [isConfirm, setIsConfirm] = useState(false);
   const { setOpen } = useDialog();
   const handleConfirm = async () => {
@@ -30,7 +32,7 @@ export function DialogConfirm({ onConfirm, message }: DialogConfirm) {
   };
   return (
     <>
-      <DialogTitle>Confirm</DialogTitle>
+      <DialogTitle>{t('dialog.confirmTitle')}</DialogTitle>
       <DialogContent>
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
@@ -41,7 +43,7 @@ export function DialogConfirm({ onConfirm, message }: DialogConfirm) {
           color="inherit"
           onClick={() => setOpen(false)}
         >
-          Cancel
+          {t('common.cancel')}
         </Button>
         <Button
           id="dialog-confirm-action"
@@ -49,7 +51,7 @@ export function DialogConfirm({ onConfirm, message }: DialogConfirm) {
           variant="contained"
           onClick={handleConfirm}
         >
-          Confirm
+          {t('common.confirm')}
         </Button>
       </DialogActions>
     </>

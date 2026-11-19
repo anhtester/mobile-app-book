@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { Box, Card, Button, Typography } from '@mui/material';
-
-import { RouterLink } from 'src/routes/components';
+import { Box, Card, Typography } from '@mui/material';
 
 import { useRequest } from 'src/hooks/use-request';
 import { useDebounce } from 'src/hooks/use-debound';
@@ -13,6 +12,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 import Title from 'src/components/title';
 import { Iconify } from 'src/components/iconify';
+import { PageAction } from 'src/components/page-action';
 import { useTable } from 'src/components/grid-view/hook/use-table';
 import { TableView } from 'src/components/grid-view/components/table-view';
 import { TableFilterView } from 'src/components/grid-view/components/table-filter-view';
@@ -24,6 +24,7 @@ import { fields, columns } from './hooks/columns-main';
 
 export default function Page() {
   const { auth } = useAuth();
+  const { t } = useTranslation();
 
   const config = useTable<PromotionType>({
     order: 'createdAt',
@@ -67,15 +68,13 @@ export default function Page() {
           Promotion Management
         </Typography>
         {auth && (
-          <Button
-            variant="contained"
-            color="inherit"
+          <PageAction
+            id="page-action-new-promotion"
             startIcon={<Iconify icon="mingcute:add-line" />}
-            LinkComponent={RouterLink}
             href="/promotion-book-management/handle?name=create-new-promotion"
           >
-            New Promotion
-          </Button>
+            {t('fab.newPromotion')}
+          </PageAction>
         )}
       </Box>
       <Card>
