@@ -152,6 +152,15 @@ const MuiOutlinedInput: Components<Theme>['MuiOutlinedInput'] = {
         borderWidth: 1.5,
         borderColor: theme.vars.palette.primary.main,
       },
+      // Disabled theo kit (`.at-form .form-control:disabled`): nền --at-sunken, chữ --at-muted,
+      // viền giữ --at-line. Mặc định MUI tô viền `action.disabled` nên ô khoá trông đậm hơn ô thường.
+      '&.Mui-disabled': {
+        backgroundColor: theme.vars.palette.background.default,
+        color: theme.vars.palette.text.secondary,
+      },
+      '&.Mui-disabled .MuiOutlinedInput-notchedOutline': {
+        borderColor: theme.vars.palette.divider,
+      },
     }),
     notchedOutline: ({ theme }) => ({
       borderWidth: 1.5,

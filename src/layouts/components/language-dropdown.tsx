@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Popover, MenuItem, MenuList } from '@mui/material';
+import { Box, Button, Popover, MenuItem, MenuList } from '@mui/material';
 
 import { LANGUAGES, setLanguage, useLanguage } from 'src/locales';
 
@@ -66,7 +66,10 @@ export function LanguageDropdown() {
               }}
               sx={{ gap: 1.5, minHeight: 44, borderRadius: 0.75 }}
             >
-              <b>{option.toUpperCase()}</b>
+              {/* Bề rộng cố định để tên ngôn ngữ thẳng cột (EN và VI rộng khác nhau) */}
+              <Box component="b" sx={{ width: 24, flexShrink: 0 }}>
+                {option.toUpperCase()}
+              </Box>
               {t(`language.${option}`)}
             </MenuItem>
           ))}
