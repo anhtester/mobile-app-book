@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 
+import i18n from 'src/locales';
 import { axios } from 'src/api/axios';
 
 import { toast } from 'src/components/toast';
@@ -10,7 +11,7 @@ import type { UserForm } from '../store/form';
 
 export const handleRegisterUser = async (user: UserForm) => {
   try {
-    toast.custom("Upload user...", "loading", { id: "upload-user", duration: Infinity });
+    toast.custom(i18n.t('user.toast.uploadUser'), "loading", { id: "upload-user", duration: Infinity });
     await axios
       .post('/register', {
         name: user.name,
@@ -29,7 +30,7 @@ export const handleRegisterUser = async (user: UserForm) => {
       await axios.delete('/file', { params: { path: user.avatarUrl } })
     }
     if (err instanceof AxiosError) {
-      toast.error(err.response?.data?.msg ?? 'Network error', { id: "upload-user" });
+      toast.error(err.response?.data?.msg ?? i18n.t('user.toast.networkError'), { id: "upload-user" });
       const fields = err.response?.data?.fields;
       if (fields) {
         for (const [key, value] of Object.entries(fields)) {

@@ -1,4 +1,5 @@
 import { Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState, useCallback } from 'react';
 
 import {
@@ -24,6 +25,7 @@ import { Category } from '../api/categorys';
 import { control } from '../stores/form-add';
 
 export function CardProperty() {
+  const { t } = useTranslation();
   const [expen, setExpen] = useState(true);
   const { data = [] } = useRequest(useCallback(() => Category.get(), []));
   const mapCategory = data.reduce(
@@ -42,8 +44,8 @@ export function CardProperty() {
   return (
     <Card>
       <CardHeader
-        title="Property"
-        subheader="Category, price"
+        title={t('book.property.title')}
+        subheader={t('book.property.subheader')}
         action={
           <IconButton onClick={() => setExpen(!expen)}>
             <Iconify
@@ -62,19 +64,19 @@ export function CardProperty() {
             control={control}
             name="price"
             rules={{
-              required: 'Price is required.',
-              min: { value: 1000, message: 'Price must be greater than 1000 VNĐ.' },
-              max: { value: 2_147_483_647, message: 'Price must be at most 2,147,483,647 VNĐ.' },
+              required: t('book.validation.priceRequired'),
+              min: { value: 1000, message: t('book.validation.priceMin') },
+              max: { value: 2_147_483_647, message: t('book.validation.priceMaxInt') },
               pattern: {
                 value: /^\d*\.?\d*$/,
-                message: 'Price must be a number.',
+                message: t('book.validation.priceNumber'),
               },
             }}
             defaultValue=""
             render={({ field, fieldState: { invalid, error } }) => (
               <TextField
                 fullWidth
-                label="Regular price"
+                label={t('book.property.price')}
                 {...field}
                 type="number"
                 error={invalid}
@@ -100,10 +102,10 @@ export function CardProperty() {
             name="categories"
             rules={{
               validate: {
-                minLength: (val) => (val?.length > 0 || 'Please select at least one category'),
+                minLength: (val) => val?.length > 0 || t('book.validation.categoryRequired'),
                 itemMaxLength: (val) =>
                   val?.every((c) => (typeof c === 'string' ? c.length : mapCategory[c]?.name.length) < 25) ||
-                  'Each category name must be less than 25 characters',
+                  t('book.validation.categoryMaxLength'),
               },
             }}
             defaultValue={[]}
@@ -123,7 +125,7 @@ export function CardProperty() {
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label="Categories"
+                    label={t('book.property.categories')}
                     error={invalid}
                     helperText={error?.message}
                     required
@@ -151,9 +153,9 @@ export function CardProperty() {
                   );
                 }}
                 renderTags={(tags, get) =>
-                  tags.map((t, index) => {
+                  tags.map((tagName, index) => {
                     const props = get({ index });
-                    const tag = mapCategory[t];
+                    const tag = mapCategory[tagName];
 
                     return (
                       <Chip
@@ -172,7 +174,7 @@ export function CardProperty() {
                             >
                               {tag ? tag.bookCount : <Iconify width={16} icon="solar:star-bold" />}
                             </Label>
-                            {t}
+                            {tagName}
                           </Stack>
                         }
                       />

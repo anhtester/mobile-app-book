@@ -1,3 +1,4 @@
+import i18n from 'src/locales';
 import { axios } from 'src/api/axios';
 
 import { toast } from 'src/components/toast';
@@ -35,11 +36,11 @@ export const savePromotion = async (promotion: PromotionForm, id?: string | null
     const res = id
       ? await axios.patch(`/promotion-book/${id}`, body)
       : await axios.post('/promotion-book', body);
-    toast.success(res.data?.msg ?? 'Saved');
+    toast.success(res.data?.msg ?? i18n.t('promotion.toast.saved'));
     return res;
   } catch (err: any) {
     const data = err?.response?.data;
-    toast.error(data?.msg ?? 'Network error');
+    toast.error(data?.msg ?? i18n.t('promotion.toast.networkError'));
     if (data?.fields && typeof data.fields === 'object') {
       for (const [key, value] of Object.entries(data.fields)) {
         const name = key.split('/')[0] as keyof PromotionForm;

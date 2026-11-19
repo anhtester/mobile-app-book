@@ -2,6 +2,7 @@
 
 import { AxiosError } from "axios";
 
+import i18n from "src/locales";
 import { axios } from "src/api/axios";
 
 import { toast } from "src/components/toast";
@@ -41,18 +42,18 @@ export const handleUpdateBook = async (idBook: string, book: BookForm) => {
     }
 
     const id = "update-book"
-    toast.custom("Delete old image...", "loading", { hiddenCloseButton: true, id, duration: Infinity });
+    toast.custom(i18n.t("book.toast.deleteOldImage"), "loading", { hiddenCloseButton: true, id, duration: Infinity });
 
     let paths: string[] = []
     try {
         // upload new image
         const files = book.picture.filter(f => (f instanceof File))
         if (files.length > 0) {
-            toast.custom("Update new image...", "loading", { hiddenCloseButton: true, id, duration: Infinity });
+            toast.custom(i18n.t("book.toast.updateNewImage"), "loading", { hiddenCloseButton: true, id, duration: Infinity });
             paths = await UpdateNewImage(files);
         }
         // update book
-        toast.custom("Update book...", "loading", { hiddenCloseButton: true, id, duration: Infinity });
+        toast.custom(i18n.t("book.toast.updateBook"), "loading", { hiddenCloseButton: true, id, duration: Infinity });
         let count = 0;
         const pathImgs = book.picture.map(x => x instanceof File ? paths[count++] : x.path);
         const res = await UpdateBook(pathImgs);
@@ -60,7 +61,7 @@ export const handleUpdateBook = async (idBook: string, book: BookForm) => {
         // delete old image
         const pictureDel = book.pictureDel?.map(x => x.path).filter(x => x)
         if (pictureDel && pictureDel.length > 0) {
-            toast.custom("Delete old image...", "loading", { hiddenCloseButton: true, id, duration: Infinity });
+            toast.custom(i18n.t("book.toast.deleteOldImage"), "loading", { hiddenCloseButton: true, id, duration: Infinity });
             await deleteFiles(pictureDel);
             toast.success(res.data.msg ?? "", { id, duration: 3000 })
         }
@@ -68,9 +69,9 @@ export const handleUpdateBook = async (idBook: string, book: BookForm) => {
     } catch (err) {
         if (err instanceof AxiosError) {
             if (err.response?.status === 422) setFieldErrors(err.response.data?.fields);
-            toast.error(err.response?.data?.msg || "Error in update book", { id, duration: 3000 });
+            toast.error(err.response?.data?.msg || i18n.t("book.toast.updateError"), { id, duration: 3000 });
         } else {
-            toast.error("Error in update book", { id, duration: 3000 });
+            toast.error(i18n.t("book.toast.updateError"), { id, duration: 3000 });
         }
         // delete if error
         if (paths.length > 0) {

@@ -4,6 +4,8 @@ import { useRouteError, isRouteErrorResponse } from 'react-router';
 
 import GlobalStyles from '@mui/material/GlobalStyles';
 
+import i18n from 'src/locales';
+
 // ----------------------------------------------------------------------
 
 export function ErrorBoundary() {
@@ -51,7 +53,7 @@ function renderErrorMessage(error: any) {
 
     return (
       <>
-        <h1 className={errorBoundaryClasses.title}>Unexpected Application Error!</h1>
+        <h1 className={errorBoundaryClasses.title}>{i18n.t('common.errorBoundary.unexpected')}</h1>
         <p className={errorBoundaryClasses.message}>
           {error.name}: {error.message}
         </p>
@@ -65,7 +67,7 @@ function renderErrorMessage(error: any) {
     );
   }
 
-  return <h1 className={errorBoundaryClasses.title}>Unknown Error</h1>;
+  return <h1 className={errorBoundaryClasses.title}>{i18n.t('common.errorBoundary.unknown')}</h1>;
 }
 
 // ----------------------------------------------------------------------

@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { useWatch, Controller, useFormState } from 'react-hook-form';
 
@@ -21,6 +22,7 @@ import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 import { useAuthCheck } from 'src/routes/hooks/use-auth-check';
 
+import i18n from 'src/locales';
 import { CONFIG } from 'src/config-global';
 import { DashboardContent } from 'src/layouts/dashboard';
 
@@ -50,6 +52,7 @@ export default function Handle() {
   const [s] = useSearchParams();
   const id = s.get('id');
   const router = useRouter();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(!!id);
   const [initial, setInitial] = useState<PromotionForm>(emptyPromotion);
   const [endDate] = useWatch({ control, name: ['endDate'] });
@@ -75,7 +78,7 @@ export default function Handle() {
       })
       .catch((err) => {
         if (!alive) return;
-        toast.error(err?.response?.data?.msg ?? 'Promotion not found');
+        toast.error(err?.response?.data?.msg ?? i18n.t('promotion.handle.notFound'));
         router.replace(LIST_URL);
       })
       .finally(() => alive && setLoading(false));
@@ -106,7 +109,7 @@ export default function Handle() {
     }
   });
 
-  const title = id ? 'Modify promotion' : 'Create a new promotion';
+  const title = id ? t('promotion.handle.modifyTitle') : t('promotion.handle.createTitle');
 
   return (
     <DashboardContent>
@@ -117,7 +120,7 @@ export default function Handle() {
         </Typography>
         <Breadcrumbs sx={{ mb: 3 }}>
           <Link component={RouterLink} href={LIST_URL} color="textPrimary" variant="body2">
-            Promotion management
+            {t('promotion.handle.breadcrumb')}
           </Link>
           <Typography variant="body2">{title}</Typography>
         </Breadcrumbs>
@@ -140,7 +143,7 @@ export default function Handle() {
                       checked={!!field.value}
                       onChange={(_, c) => field.onChange(c)}
                       control={<Switch />}
-                      label={field.value ? 'Active' : 'Inactive'}
+                      label={field.value ? t('promotion.handle.active') : t('promotion.handle.inactive')}
                       sx={{ ml: 2 }}
                     />
                   )}
@@ -154,7 +157,7 @@ export default function Handle() {
                 disabled={isSubmitting}
                 onClick={() => reset(initial)}
               >
-                Reset
+                {t('promotion.handle.reset')}
               </Button>
               <Button
                 size="large"
@@ -163,15 +166,14 @@ export default function Handle() {
                 color="secondary"
                 type="submit"
               >
-                {id ? 'Save changes' : 'Create promotion'}
+                {id ? t('promotion.handle.saveChanges') : t('promotion.handle.create')}
               </Button>
             </Box>
             {id && (
               <Stack>
                 <Divider sx={{ borderStyle: 'dashed', mb: 2 }} />
                 <Typography variant="body2" color="textSecondary" mb={2}>
-                  Deleting this promotion removes it from every book it applies to and recalculates
-                  their prices.
+                  {t('promotion.handle.deleteNote')}
                 </Typography>
                 <Button
                   variant="outlined"
@@ -181,8 +183,9 @@ export default function Handle() {
                   onClick={() =>
                     dialog.delete(
                       <>
-                        Do you want delete promotion <b>{initial.name}</b>, after delete you
-                        can&apos;t undo
+                        {t('promotion.handle.deleteConfirmBefore')}
+                        <b>{initial.name}</b>
+                        {t('promotion.handle.deleteConfirmAfter')}
                       </>,
                       async () => {
                         if (await deletePromotion(id)) {
@@ -193,7 +196,7 @@ export default function Handle() {
                     )
                   }
                 >
-                  Delete
+                  {t('common.actions.delete')}
                 </Button>
               </Stack>
             )}

@@ -1,4 +1,5 @@
 import { useWatch } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState, useCallback } from 'react';
 
 import {
@@ -58,6 +59,7 @@ function handlePrice(price: number, promotions: PromotionType[]) {
 }
 
 export function CardPromotion() {
+  const { t } = useTranslation();
   const [expen, setExpen] = useState(false);
   const [selected = [], _price = 0] = useWatch({ control, name: ['promotions', 'price'] });
   const price = Number(_price || 0);
@@ -67,6 +69,9 @@ export function CardPromotion() {
     setValue('promotions', row, {
       shouldDirty: true,
     });
+
+  // Nhãn cột/bộ lọc dịch theo ngôn ngữ hiện tại, tính lại mỗi lần render
+  const filterFields = fields(t);
 
   const config = useTable<PromotionType>({
     order: 'createdAt',
@@ -106,8 +111,8 @@ export function CardPromotion() {
   return (
     <Card>
       <CardHeader
-        title="Promotion"
-        subheader="Select promotion"
+        title={t('book.promotion.title')}
+        subheader={t('book.promotion.subheader')}
         action={
           <IconButton onClick={() => setExpen(!expen)}>
             <Iconify
@@ -122,16 +127,16 @@ export function CardPromotion() {
       <Collapse in={expen}>
         <Divider />
         <Stack>
-          <TableFilterView config={config} filter={fields} />
+          <TableFilterView config={config} filter={filterFields} />
           <TableView
             select={{
               selected,
               setSelected,
             }}
             config={config}
-            columns={columns()}
+            columns={columns(t)}
             data={list}
-            filter={fields}
+            filter={filterFields}
             keyName="id"
           />
           <TablePaginationView
@@ -158,7 +163,7 @@ export function CardPromotion() {
                     key={item.id}
                     label={
                       <>
-                        <b>[item.code]</b> {item.name}
+                        <b>[{item.code}]</b> {item.name}
                       </>
                     }
                     onDelete={() => setSelected(selected.filter((i) => i.id !== item.id))}
@@ -168,7 +173,7 @@ export function CardPromotion() {
                   <Chip
                     onClick={() => setSelected([])}
                     variant="outlined"
-                    label={`Remove ${selected.length} promotions`}
+                    label={t('book.promotion.removeAll', { count: selected.length })}
                     sx={{ fontWeight: 'bold' }}
                   />
                 )}
@@ -192,7 +197,7 @@ export function CardPromotion() {
                   alignItems="center"
                 >
                   <Iconify
-                    sx={{ color: (t) => t.palette.success.main, mr: 0.5 }}
+                    sx={{ color: (theme) => theme.palette.success.main, mr: 0.5 }}
                     icon="eva:arrow-ios-downward-fill"
                     width={12}
                   />

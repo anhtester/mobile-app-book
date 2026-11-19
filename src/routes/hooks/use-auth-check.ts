@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import i18n from 'src/locales';
 import { useAuth } from 'src/store/auth';
 
 import { toast } from 'src/components/toast';
@@ -14,7 +15,7 @@ export const useAuthCheck = () => {
 
   useEffect(() => {
     if (authChecked && !auth) {
-      toast.error('Please login first');
+      toast.error(i18n.t('user.toast.loginFirst'));
       router.replace(`/sign-in?redirect=${pathname}`);
     }
   }, [auth, authChecked, pathname, router]);

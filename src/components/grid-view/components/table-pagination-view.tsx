@@ -11,6 +11,14 @@ import {
 
 import type { UseTableReturn } from '../hook/use-table';
 
+// Nhãn aria của nút chuyển trang (MUI mặc định: 'Go to <type> page')
+const ARIA_KEYS: Record<string, string> = {
+  first: 'components.table.goToFirst',
+  last: 'components.table.goToLast',
+  next: 'components.table.goToNext',
+  previous: 'components.table.goToPrevious',
+};
+
 export function TablePaginationView<T>({
   config,
   total,
@@ -26,6 +34,7 @@ export function TablePaginationView<T>({
 }) {
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
   const { t } = useTranslation();
+  const ariaLabel = (item: string) => (ARIA_KEYS[item] ? t(ARIA_KEYS[item]) : `Go to ${item} page`);
 
   if (type === 'table') {
     return (
@@ -42,6 +51,7 @@ export function TablePaginationView<T>({
         labelDisplayedRows={({ from, to, count }) =>
           t('common.displayedRows', { from, to, count: count === -1 ? to : count })
         }
+        getItemAriaLabel={ariaLabel}
         rowsPerPageOptions={rowsPerPageList}
       />
     );
@@ -76,6 +86,12 @@ export function TablePaginationView<T>({
         page={config.page}
         count={Math.ceil(total / config.rowsPerPage)}
         onChange={(_, page) => config.setPage(page)}
+        getItemAriaLabel={(item, page, selected) => {
+          if (item !== 'page') return ariaLabel(item);
+          return selected
+            ? t('components.table.page', { page: page ?? '' })
+            : t('components.table.goToPage', { page: page ?? '' });
+        }}
         sx={{ '& ul': { flexWrap: 'nowrap' } }}
       />
     </Box>

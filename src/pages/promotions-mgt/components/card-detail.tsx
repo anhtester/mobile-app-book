@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useWatch, Controller } from 'react-hook-form';
 
 import {
@@ -19,6 +20,9 @@ import { control, TypePromotion } from '../hooks/form-control';
 /** `originalCode`: mã hiện có khi sửa. Dữ liệu cũ có mã khác 6 ký tự, giữ nguyên thì không bắt lại. */
 export function CardDetail({ originalCode }: { originalCode?: string }) {
   const [expen, setExpen] = useState(true);
+  const { t, i18n } = useTranslation();
+  // Chữ thường + CSS viết hoa từng từ chỉ hợp với tiếng Anh; tiếng Việt đã viết sẵn đúng hoa thường
+  const typeTextTransform = i18n.language === 'en' ? 'capitalize' : 'none';
   const [type] = useWatch({
     control,
     name: ['type'],
@@ -27,8 +31,8 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
   return (
     <Card>
       <CardHeader
-        title="Detail"
-        subheader="Title, description, picture"
+        title={t('promotion.detail.title')}
+        subheader={t('promotion.detail.subheader')}
         action={
           <IconButton onClick={() => setExpen(!expen)}>
             <Iconify
@@ -48,16 +52,16 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
             name="name"
             defaultValue=""
             rules={{
-              required: 'Name is required.',
+              required: t('promotion.detail.nameRequired'),
               maxLength: {
                 value: 100,
-                message: 'Name must be less than 100 characters.',
+                message: t('promotion.detail.nameMax'),
               },
             }}
             render={({ field, fieldState: { invalid, error } }) => (
               <TextField
                 fullWidth
-                label="Promotion name"
+                label={t('promotion.detail.name')}
                 {...field}
                 error={invalid}
                 helperText={error?.message}
@@ -70,16 +74,16 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
             control={control}
             defaultValue=""
             rules={{
-              required: 'Code is required.',
+              required: t('promotion.detail.codeRequired'),
               validate: (value) =>
                 (!!originalCode && value === originalCode) ||
                 value.trim().length === 6 ||
-                'Code must be 6 characters.',
+                t('promotion.detail.codeLength'),
             }}
             render={({ field, fieldState: { invalid, error } }) => (
               <TextField
                 sx={{ flex: 1 }}
-                label="Promotion code"
+                label={t('promotion.detail.code')}
                 error={invalid}
                 helperText={error?.message}
                 required
@@ -97,7 +101,7 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
             rules={{
               maxLength: {
                 value: 500,
-                message: 'Description must be less than 500 characters.',
+                message: t('promotion.detail.descriptionMax'),
               },
             }}
             render={({ field, fieldState: { invalid, error } }) => (
@@ -105,7 +109,7 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
                 multiline
                 minRows={5}
                 fullWidth
-                label="Description"
+                label={t('promotion.detail.description')}
                 {...field}
                 error={invalid}
                 helperText={error?.message}
@@ -121,17 +125,17 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
               render={({ field, fieldState: { invalid, error } }) => (
                 <TextField
                   fullWidth
-                  sx={{ textTransform: 'capitalize' }}
+                  sx={{ textTransform: typeTextTransform }}
                   select
-                  label="Type"
+                  label={t('promotion.detail.type')}
                   required
                   {...field}
                   error={invalid}
                   helperText={error?.message}
                 >
-                  {TypePromotion.map((t) => (
-                    <MenuItem key={t} value={t} sx={{ textTransform: 'capitalize' }}>
-                      {t.toLocaleLowerCase().replace('_', ' ')}
+                  {TypePromotion.map((option) => (
+                    <MenuItem key={option} value={option} sx={{ textTransform: typeTextTransform }}>
+                      {t(`promotion.detail.typeOption.${option}`)}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -143,10 +147,10 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
               rules={{
                 validate: (v, values) => {
                   if (values.type === 'FREE_SHIPPING') return true;
-                  if (v === undefined || v === null || String(v) === '') return 'Value is required.';
+                  if (v === undefined || v === null || String(v) === '') return t('promotion.detail.valueRequired');
                   const n = Number(v);
-                  if (!Number.isFinite(n) || n <= 0) return 'Value must be greater than 0.';
-                  if (values.type === 'PERCENTAGE' && n > 100) return 'Percentage must be at most 100.';
+                  if (!Number.isFinite(n) || n <= 0) return t('promotion.detail.valuePositive');
+                  if (values.type === 'PERCENTAGE' && n > 100) return t('promotion.detail.valuePercent');
                   return true;
                 },
               }}
@@ -154,16 +158,16 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
                 <TextField
                   disabled={type === 'FREE_SHIPPING'}
                   type="number"
-                  label="Value"
+                  label={t('promotion.detail.value')}
                   required={type !== 'FREE_SHIPPING'}
                   {...field}
                   error={invalid}
                   helperText={
                     error?.message ??
                     (type === 'PERCENTAGE'
-                      ? 'Percent (1 - 100)'
+                      ? t('promotion.detail.valuePercentHint')
                       : type === 'FIXED_AMOUNT'
-                        ? 'Amount in VND'
+                        ? t('promotion.detail.valueAmountHint')
                         : undefined)
                   }
                   slotProps={{ htmlInput: { min: 0, inputMode: 'decimal' } }}

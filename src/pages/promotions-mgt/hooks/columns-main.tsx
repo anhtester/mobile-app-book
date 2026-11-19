@@ -1,3 +1,5 @@
+import type { TFunction } from 'i18next';
+
 import dayjs from 'dayjs';
 
 import { Stack, Typography } from '@mui/material';
@@ -7,9 +9,13 @@ import { MappingType } from 'src/pages/promotions-mgt/const-type';
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 
-export const columns: () => Columns<PromotionType>[] = () => [
+import { getPromotionStatus, formatPromotionValue, PROMOTION_STATUS_COLOR } from '../utils';
+
+// Nhận `t` của useTranslation(): đổi ngôn ngữ thì `t` đổi, React Compiler mới tính lại nhãn.
+// (Gọi i18n.t trong hàm không tham số thì compiler nhớ kết quả lần đầu, nhãn kẹt ngôn ngữ cũ.)
+export const columns = (t: TFunction): Columns<PromotionType>[] => [
   {
-    label: 'CODE',
+    label: t('promotion.columns.code'),
     sort: 'code',
     render: (row) => (
       <Typography variant="body2" textTransform="uppercase" fontWeight="bold">
@@ -18,7 +24,7 @@ export const columns: () => Columns<PromotionType>[] = () => [
     ),
   },
   {
-    label: 'Name',
+    label: t('promotion.columns.name'),
     sort: 'name',
     render: ({ name, description }) => (
       <Stack overflow="hidden">
@@ -32,7 +38,7 @@ export const columns: () => Columns<PromotionType>[] = () => [
     ),
   },
   {
-    label: 'Type',
+    label: t('promotion.columns.type'),
     sort: 'type',
     render: (row) => (
       <Label
@@ -40,36 +46,34 @@ export const columns: () => Columns<PromotionType>[] = () => [
         startIcon={<Iconify icon={MappingType[row?.type]?.icon} />}
         sx={{ mr: 1 }}
       >
-        {row?.type}
+        {t(`promotion.type.${row?.type}`)}
       </Label>
     ),
   },
   {
-    label: 'Active',
+    // 4 trạng thái như bản web: Đã tắt / Sắp chạy / Đang chạy / Hết hạn (xem ../utils.ts)
+    label: t('promotion.status.label'),
     sort: 'isActive',
-    render: (row) => (
-      <Label color={row?.isActive ? 'success' : 'error'}>
-        {row?.isActive ? 'Active' : 'Inactive'}
-      </Label>
-    ),
-  },
-  {
-    label: 'Value',
-    sort: 'value',
     render: (row) => {
-      if (row?.type === 'FREE_SHIPPING') return <Label>-</Label>;
-      if (row?.type === 'PERCENTAGE') return <Label>{row.value}%</Label>;
+      const status = getPromotionStatus(row);
       return (
-        <Label>
-          {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
-            row?.value ?? 0
-          )}
+        <Label color={PROMOTION_STATUS_COLOR[status]} data-status={status}>
+          {t(`promotion.status.${status}`)}
         </Label>
       );
     },
   },
   {
-    label: 'Start',
+    label: t('promotion.columns.value'),
+    sort: 'value',
+    render: (row) => (
+      <Label data-promotion-value={row?.value} sx={{ textTransform: 'none' }}>
+        {formatPromotionValue(t, row)}
+      </Label>
+    ),
+  },
+  {
+    label: t('promotion.columns.start'),
     sort: 'startDate',
     render: (row) => {
       const day = dayjs(row?.startDate);
@@ -92,7 +96,7 @@ export const columns: () => Columns<PromotionType>[] = () => [
     },
   },
   {
-    label: 'End',
+    label: t('promotion.columns.end'),
     sort: 'endDate',
     render: (row) => {
       const day = dayjs(row?.endDate);
@@ -115,7 +119,7 @@ export const columns: () => Columns<PromotionType>[] = () => [
     },
   },
   {
-    label: 'Created',
+    label: t('promotion.columns.created'),
     sort: 'createdAt',
     render: (row) => {
       const day = dayjs(row?.createdAt);
@@ -133,36 +137,37 @@ export const columns: () => Columns<PromotionType>[] = () => [
   },
 ];
 
-export const fields: FieldType<PromotionType>[] = [
+/** Gọi lúc render (không để hằng số cấp module) để nhãn theo ngôn ngữ hiện tại */
+export const getFields = (t: TFunction): FieldType<PromotionType>[] => [
   {
     name: 'name',
-    label: 'Name',
+    label: t('promotion.fields.name'),
     type: 'string',
   },
   {
     name: 'code',
-    label: 'Code',
+    label: t('promotion.fields.code'),
     type: 'string',
   },
   {
     name: 'type',
-    label: 'Type',
+    label: t('promotion.fields.type'),
     type: 'enums',
     options: ['PERCENTAGE', 'FIXED_AMOUNT', 'FREE_SHIPPING'],
   },
   {
     name: 'value',
-    label: 'Value',
+    label: t('promotion.fields.value'),
     type: 'number',
   },
   {
     name: 'startDate',
-    label: 'Start Date',
+    label: t('promotion.fields.startDate'),
     type: 'date',
   },
   {
     name: 'endDate',
-    label: 'End Date',
+    label: t('promotion.fields.endDate'),
     type: 'date',
   },
 ];

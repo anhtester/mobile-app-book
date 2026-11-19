@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 
+import i18n from 'src/locales';
 import { axios } from 'src/api/axios';
 
 import { toast } from 'src/components/toast';
@@ -14,7 +15,7 @@ export const handleUpdateUser = async (id: string, user: UserForm) => {
   try {
     // upload Avatar
     if (user.avatar && user.avatar instanceof File) {
-      toast.custom('Upload avatar...', 'loading', { id: 'upload-user', duration: Infinity });
+      toast.custom(i18n.t('user.toast.uploadAvatar'), 'loading', { id: 'upload-user', duration: Infinity });
       const form = new FormData();
       const f = user.avatar;
       const randomId = Math.random().toString(36).substring(2, 6);
@@ -28,7 +29,7 @@ export const handleUpdateUser = async (id: string, user: UserForm) => {
         user.avatarUrl = res.data.paths[0];
       });
     }
-    toast.custom('Upload user...', 'loading', { id: 'upload-user', duration: Infinity });
+    toast.custom(i18n.t('user.toast.uploadUser'), 'loading', { id: 'upload-user', duration: Infinity });
     await axios
       .patch(`/user/${id}`, {
         name: user.name,
@@ -52,7 +53,7 @@ export const handleUpdateUser = async (id: string, user: UserForm) => {
       }
     }
     const msg = err instanceof AxiosError ? err.response?.data?.msg : undefined;
-    toast.error(msg || 'Update user failed.', { id: 'upload-user' });
+    toast.error(msg || i18n.t('user.toast.updateFailed'), { id: 'upload-user' });
     if (err instanceof AxiosError && err.response?.status === 422) {
       setFieldErrors(err.response.data?.fields);
     }

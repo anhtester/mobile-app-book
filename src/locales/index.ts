@@ -3,6 +3,7 @@ import 'dayjs/locale/en';
 
 import dayjs from 'dayjs';
 import i18n from 'i18next';
+import { useSyncExternalStore } from 'react';
 import { initReactI18next } from 'react-i18next';
 
 import { en } from './en';
@@ -61,6 +62,21 @@ export function setLanguage(lng: Language) {
 
 export function currentLanguage(): Language {
   return (LANGUAGES.includes(i18n.language as Language) ? i18n.language : DEFAULT_LANGUAGE) as Language;
+}
+
+/** Lắng nghe đổi ngôn ngữ (dùng cho useSyncExternalStore) */
+function subscribeLanguage(onChange: () => void) {
+  i18n.on('languageChanged', onChange);
+  return () => i18n.off('languageChanged', onChange);
+}
+
+/**
+ * Ngôn ngữ đang dùng, tự render lại khi đổi. Trong component phải dùng hook này thay cho
+ * `currentLanguage()`: project bật React Compiler, lời gọi hàm thường không có tham số reactive
+ * bị nhớ kết quả lần đầu, nên nút đổi ngôn ngữ từng kẹt (bấm lần hai không chuyển lại).
+ */
+export function useLanguage(): Language {
+  return useSyncExternalStore(subscribeLanguage, currentLanguage);
 }
 
 export default i18n;

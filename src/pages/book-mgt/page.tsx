@@ -109,7 +109,7 @@ export function BookView() {
         }}
       >
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          Book Management
+          {t('book.title')}
         </Typography>
         {auth && (
           <PageAction
@@ -151,7 +151,7 @@ export function BookView() {
               sx={{ animation: 'spin 1s linear infinite', mr: 1 }}
               icon="mingcute:loading-fill"
             />
-            Loading more book...
+            {t('book.loadingMore')}
           </Typography>
         ) : (
           list.length > 300 && (
@@ -166,7 +166,7 @@ export function BookView() {
                 })
               }
             >
-              No more than {list.length} items displayed. Please try searching instead.
+              {t('book.limitReached', { count: list.length })}
             </Button>
           )
         )}

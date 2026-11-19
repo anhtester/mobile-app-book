@@ -1,15 +1,20 @@
+import type { TFunction } from 'i18next';
+
 import dayjs from 'dayjs';
 
 import { Stack, Typography } from '@mui/material';
 
 import { MappingType } from 'src/pages/promotions-mgt/const-type';
+import { formatPromotionValue } from 'src/pages/promotions-mgt/utils';
 
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 
-export const columns: () => Columns<PromotionType>[] = () => [
+// Nhận `t` của useTranslation(): đổi ngôn ngữ thì `t` đổi, React Compiler mới tính lại nhãn.
+// (Gọi i18n.t trong hàm không tham số thì compiler nhớ kết quả lần đầu, nhãn kẹt ngôn ngữ cũ.)
+export const columns = (t: TFunction): Columns<PromotionType>[] => [
   {
-    label: 'CODE',
+    label: t('book.promotion.columns.code'),
     sort: 'code',
     render: (row) => (
       <Typography variant="body2" textTransform="uppercase">
@@ -18,7 +23,7 @@ export const columns: () => Columns<PromotionType>[] = () => [
     ),
   },
   {
-    label: 'Name',
+    label: t('book.promotion.columns.name'),
     sort: 'name',
     render: ({ name, description }) => (
       <Stack overflow="hidden">
@@ -32,7 +37,7 @@ export const columns: () => Columns<PromotionType>[] = () => [
     ),
   },
   {
-    label: 'Type',
+    label: t('book.promotion.columns.type'),
     sort: 'type',
     render: (row) => (
       <Label
@@ -40,17 +45,21 @@ export const columns: () => Columns<PromotionType>[] = () => [
         startIcon={<Iconify icon={MappingType[row?.type]?.icon} />}
         sx={{ mr: 1 }}
       >
-        {row?.type}
+        {t(`promotion.type.${row?.type}`, { defaultValue: row?.type })}
       </Label>
     ),
   },
   {
-    label: 'Value',
+    label: t('book.promotion.columns.value'),
     sort: 'value',
-    render: (row) => <Label>{row?.value}</Label>,
+    render: (row) => (
+      <Label data-promotion-value={row?.value} sx={{ textTransform: 'none' }}>
+        {formatPromotionValue(t, row)}
+      </Label>
+    ),
   },
   {
-    label: 'Start',
+    label: t('book.promotion.columns.start'),
     sort: 'startDate',
     render: (row) => {
       const day = dayjs(row?.startDate);
@@ -67,7 +76,7 @@ export const columns: () => Columns<PromotionType>[] = () => [
     },
   },
   {
-    label: 'End',
+    label: t('book.promotion.columns.end'),
     sort: 'endDate',
     render: (row) => {
       const day = dayjs(row?.endDate);
@@ -85,36 +94,37 @@ export const columns: () => Columns<PromotionType>[] = () => [
   },
 ];
 
-export const fields: FieldType<PromotionType>[] = [
+// Hàm (không phải hằng) để nhãn dịch theo ngôn ngữ hiện tại mỗi lần render
+export const fields = (t: TFunction): FieldType<PromotionType>[] => [
   {
     name: 'name',
-    label: 'Name',
+    label: t('book.promotion.fields.name'),
     type: 'string',
   },
   {
     name: 'code',
-    label: 'Code',
+    label: t('book.promotion.fields.code'),
     type: 'string',
   },
   {
     name: 'type',
-    label: 'Type',
+    label: t('book.promotion.fields.type'),
     type: 'enums',
     options: ['PERCENTAGE', 'FIXED_AMOUNT', 'FREE_SHIPPING'],
   },
   {
     name: 'value',
-    label: 'Value',
+    label: t('book.promotion.fields.value'),
     type: 'number',
   },
   {
     name: 'startDate',
-    label: 'Start Date',
+    label: t('book.promotion.fields.startDate'),
     type: 'date',
   },
   {
     name: 'endDate',
-    label: 'End Date',
+    label: t('book.promotion.fields.endDate'),
     type: 'date',
   },
 ];

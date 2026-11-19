@@ -1,3 +1,4 @@
+import i18n from 'src/locales';
 import { axios } from 'src/api/axios';
 
 import { toast } from 'src/components/toast';
@@ -19,7 +20,7 @@ export const getBook = (id: string) =>
         }) as BookForm
     )
     .catch((err) => {
-      toast.error(err?.response?.data?.msg || 'Error in get book');
+      toast.error(err?.response?.data?.msg || i18n.t('book.toast.getError'));
 
       return {} as BookForm;
     });

@@ -1,4 +1,5 @@
 import { useWatch } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useRef, useState, useCallback } from 'react';
 
 import {
@@ -26,11 +27,13 @@ import { TableView } from 'src/components/grid-view/components/table-view';
 import { TableFilterView } from 'src/components/grid-view/components/table-filter-view';
 import { TablePaginationView } from 'src/components/grid-view/components/table-pagination-view';
 
-import { filter, columns } from '../hooks/columns';
+import { columns, getFilter } from '../hooks/columns';
 import { control, setValue, getValues } from '../hooks/form-control';
 
 export function CardBook() {
   const [expen, setExpen] = useState(true);
+  const { t } = useTranslation();
+  const filter = getFilter(t);
 
   const config = useTable<BookView>({
     order: 'createdAt',
@@ -68,8 +71,8 @@ export function CardBook() {
   return (
     <Card>
       <CardHeader
-        title="Select book"
-        subheader="Select book apply promotion"
+        title={t('promotion.books.title')}
+        subheader={t('promotion.books.subheader')}
         action={
           <IconButton onClick={() => setExpen(!expen)}>
             <Iconify
@@ -88,7 +91,7 @@ export function CardBook() {
           <TableView
             filter={filter}
             config={config}
-            columns={columns()}
+            columns={columns(t)}
             data={list}
             select={{
               selected,
@@ -120,7 +123,7 @@ export function CardBook() {
                 <Chip
                   onClick={() => setSelected([])}
                   variant="outlined"
-                  label={`Remove ${selected.length} book`}
+                  label={t('promotion.books.removeAll', { count: selected.length })}
                   sx={{ fontWeight: 'bold' }}
                 />
               )}

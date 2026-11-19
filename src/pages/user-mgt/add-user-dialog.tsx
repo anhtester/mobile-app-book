@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useWatch, useFormState } from 'react-hook-form';
 
 import { Button, DialogTitle, DialogActions, DialogContent } from '@mui/material';
@@ -17,6 +18,7 @@ type AddUserDialogProps = {
 export function AddUserDialog({ callback }: AddUserDialogProps) {
   const { isSubmitting, isSubmitSuccessful } = useFormState({ control: formControl.control });
   const { setOpen } = useDialog();
+  const { t } = useTranslation();
   const [id] = useWatch({ control: formControl.control, name: ['id'] });
 
   useEffect(() => {
@@ -29,13 +31,13 @@ export function AddUserDialog({ callback }: AddUserDialogProps) {
 
   return (
     <>
-      <DialogTitle>{id ? 'Update user' : 'Add user'}</DialogTitle>
+      <DialogTitle>{id ? t('user.dialog.updateTitle') : t('user.dialog.addTitle')}</DialogTitle>
       <DialogContent dividers>
         <ContentUser />
       </DialogContent>
       <DialogActions>
         <Button color="inherit" onClick={() => setOpen(false)}>
-          Cancel
+          {t('common.actions.cancel')}
         </Button>
         <Button
           loading={isSubmitting}
@@ -46,7 +48,7 @@ export function AddUserDialog({ callback }: AddUserDialogProps) {
           color="secondary"
           startIcon={<Iconify icon="solar:diskette-bold" />}
         >
-          {id ? 'Update' : 'Save'}
+          {id ? t('common.actions.update') : t('common.actions.save')}
         </Button>
       </DialogActions>
     </>

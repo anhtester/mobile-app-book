@@ -1,3 +1,5 @@
+import type { TFunction } from 'i18next';
+
 import dayjs from 'dayjs';
 
 import { Stack, Badge, Avatar, Typography } from '@mui/material';
@@ -7,12 +9,19 @@ import { formatFilePath } from 'src/utils/format-filepath';
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 
-export const columns: (user: User | null, reload: () => void) => Columns<User>[] = (
+// Nhận `t` của useTranslation(): đổi ngôn ngữ thì `t` đổi, React Compiler mới tính lại nhãn.
+// (Gọi i18n.t trong hàm không tham số thì compiler nhớ kết quả lần đầu, nhãn kẹt ngôn ngữ cũ.)
+export const columns: (
+  t: TFunction,
+  user: User | null,
+  reload: () => void
+) => Columns<User>[] = (
+  t,
   user,
   reload
 ) => [
   {
-    label: 'Name',
+    label: t('common.fields.name'),
     sort: 'name',
     render: ({ avatarUrl, name, email, isActive, id }) => (
       <Stack direction="row" spacing={1}>
@@ -25,7 +34,7 @@ export const columns: (user: User | null, reload: () => void) => Columns<User>[]
                 width: 18,
                 height: 18,
                 bgcolor: isActive ? 'success.main' : 'error.main',
-                boxShadow: t=>t.customShadows.z8,
+                boxShadow: (theme) => theme.customShadows.z8,
               }}
             >
               <Iconify
@@ -39,7 +48,7 @@ export const columns: (user: User | null, reload: () => void) => Columns<User>[]
         </Badge>
         <Stack flex={1} overflow="hidden">
           <Typography variant="subtitle2" noWrap>
-            {name} {id === user?.id && <Label>You</Label>}
+            {name} {id === user?.id && <Label>{t('user.you')}</Label>}
           </Typography>
           <Typography noWrap color="textSecondary" variant="caption">
             {email}
@@ -49,23 +58,27 @@ export const columns: (user: User | null, reload: () => void) => Columns<User>[]
     ),
   },
   {
-    label: 'Phone',
+    label: t('common.fields.phone'),
     sort: 'phone',
     render: (row) => <Typography variant="body2">{row.phone}</Typography>,
   },
   {
-    label: 'Address',
+    label: t('common.fields.address'),
     sort: 'address',
     render: (row) => <Typography variant="body2">{row.address}</Typography>,
   },
   {
-    label: 'Active',
+    label: t('user.columns.active'),
     sort: 'isActive',
     render: (row) =>
-      row.isActive ? <Label color="success">Active</Label> : <Label color="error">Inactive</Label>,
+      row.isActive ? (
+        <Label color="success">{t('user.status.active')}</Label>
+      ) : (
+        <Label color="error">{t('user.status.inactive')}</Label>
+      ),
   },
   {
-    label: 'Created',
+    label: t('common.fields.createdAt'),
     sort: 'createdAt',
     render: (row) => (
       <Stack>
@@ -77,7 +90,7 @@ export const columns: (user: User | null, reload: () => void) => Columns<User>[]
     ),
   },
   {
-    label: 'Updated',
+    label: t('common.fields.updatedAt'),
     sort: 'updatedAt',
     render: (row) => (
       <Stack>
@@ -89,40 +102,41 @@ export const columns: (user: User | null, reload: () => void) => Columns<User>[]
     ),
   },
 ];
-export const fieldOptions: FieldType<User>[] = [
+/** Hàm, không phải hằng số: gọi lúc render để nhãn theo ngôn ngữ hiện tại. */
+export const fieldOptions = (t: TFunction): FieldType<User>[] => [
   {
     name: 'name',
-    label: 'Name',
+    label: t('common.fields.name'),
     type: 'string',
   },
   {
     name: 'email',
-    label: 'Email',
+    label: t('common.fields.email'),
     type: 'string',
   },
   {
     name: 'phone',
-    label: 'Phone',
+    label: t('common.fields.phone'),
     type: 'string',
   },
   {
     name: 'address',
-    label: 'Address',
+    label: t('common.fields.address'),
     type: 'string',
   },
   {
     name: 'isActive',
-    label: 'Is Active',
+    label: t('user.filter.isActive'),
     type: 'boolean',
   },
   {
     name: 'createdAt',
-    label: 'Created At',
+    label: t('user.filter.createdAt'),
     type: 'date',
   },
   {
     name: 'updatedAt',
-    label: 'Updated At',
+    label: t('user.filter.updatedAt'),
     type: 'date',
   },
 ];

@@ -20,11 +20,12 @@ import { TablePaginationView } from 'src/components/grid-view/components/table-p
 
 import { getPromotion } from './api/get-promotion';
 import { ActionList } from './components/action-list';
-import { fields, columns } from './hooks/columns-main';
+import { columns, getFields } from './hooks/columns-main';
 
 export default function Page() {
   const { auth } = useAuth();
   const { t } = useTranslation();
+  const fields = getFields(t);
 
   const config = useTable<PromotionType>({
     order: 'createdAt',
@@ -56,7 +57,7 @@ export default function Page() {
 
   return (
     <DashboardContent>
-      <Title>Promotion Management - {CONFIG.appName}</Title>
+      <Title>{`${t('promotion.title')} - ${CONFIG.appName}`}</Title>
       <Box
         sx={{
           mb: 5,
@@ -65,7 +66,7 @@ export default function Page() {
         }}
       >
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          Promotion Management
+          {t('promotion.title')}
         </Typography>
         {auth && (
           <PageAction
@@ -81,7 +82,7 @@ export default function Page() {
         <TableFilterView config={config} filter={fields} />
         <TableView
           config={config}
-          columns={columns()}
+          columns={columns(t)}
           data={list}
           filter={fields}
           keyName="id"

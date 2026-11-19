@@ -1,3 +1,5 @@
+import { isHiddenPath } from 'src/config-global';
+
 import { SvgColor } from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
@@ -13,7 +15,7 @@ export type NavItem = {
   info?: React.ReactNode;
 };
 
-export const navData = [
+const allNavData = [
   {
     title: 'Dashboard',
     tKey: 'nav.dashboard',
@@ -44,4 +46,13 @@ export const navData = [
     path: '/file-management',
     icon: icon('ic-dir'),
   },
+  {
+    title: 'Contact',
+    tKey: 'nav.contact',
+    path: '/contact',
+    icon: icon('ic-contact'),
+  },
 ];
+
+// Màn trong CONFIG.hiddenPaths (hiện là File) không hiện trên thanh tab đáy
+export const navData = allNavData.filter((item) => !isHiddenPath(item.path));

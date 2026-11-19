@@ -1,3 +1,4 @@
+import i18n from 'src/locales';
 import { axios } from 'src/api/axios';
 
 import { toast } from 'src/components/toast';
@@ -6,10 +7,10 @@ export const deletePromotion = (id: string) =>
   axios
     .delete(`/promotion-book/${id}`)
     .then((res) => {
-      toast.success(res.data?.msg ?? 'Deleted');
+      toast.success(res.data?.msg ?? i18n.t('promotion.toast.deleted'));
       return true;
     })
     .catch((err) => {
-      toast.error(err?.response?.data?.msg ?? 'Network error');
+      toast.error(err?.response?.data?.msg ?? i18n.t('promotion.toast.networkError'));
       return false;
     });

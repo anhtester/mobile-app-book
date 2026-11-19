@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useFormState } from 'react-hook-form';
 
 import { Box, Card, Link, Stack, Button, Typography, Breadcrumbs } from '@mui/material';
@@ -23,6 +24,7 @@ import { handleUpdateProfileUser } from './api/profile';
 export default function Profile() {
   const { auth, setAuth } = useAuth();
   const router = useRouter();
+  const { t } = useTranslation();
   const { isDirty, isSubmitSuccessful, isSubmitting } = useFormState({
     control: formControl.control,
   });
@@ -35,10 +37,10 @@ export default function Profile() {
         } as FileItem,
       });
     } else {
-      toast.error('Please login first', { id: 'msg' });
+      toast.error(t('user.toast.loginFirst'), { id: 'msg' });
       router.push('/sign-in');
     }
-  }, [auth, router]);
+  }, [auth, router, t]);
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -60,16 +62,16 @@ export default function Profile() {
 
   return (
     <DashboardContent>
-      <Title>{`My profile - ${CONFIG.appName}`}</Title>
+      <Title>{`${t('user.profile.pageTitle')} - ${CONFIG.appName}`}</Title>
       <Stack spacing={2} mb={5}>
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          My Profile
+          {t('user.profile.title')}
         </Typography>
         <Breadcrumbs sx={{ mb: 3 }}>
           <Link component={RouterLink} href="/user-management" color="textPrimary" variant="body2">
-            User management
+            {t('user.breadcrumb.userManagement')}
           </Link>
-          <Typography variant="body2">Change my profile</Typography>
+          <Typography variant="body2">{t('user.profile.breadcrumb')}</Typography>
         </Breadcrumbs>
       </Stack>
       <Card sx={{ p: 3, pt: 4, display: 'flex', flexDirection: 'column' }}>
@@ -81,7 +83,7 @@ export default function Profile() {
             disabled={!isDirty}
             onClick={() => formControl.reset()}
           >
-            Reset
+            {t('user.profile.reset')}
           </Button>
           <Button
             size="large"
@@ -92,7 +94,7 @@ export default function Profile() {
             onClick={formControl.handleSubmit(handleUpdateProfileUser)}
             disabled={!isDirty}
           >
-            Save Profile
+            {t('user.profile.save')}
           </Button>
         </Box>
       </Card>

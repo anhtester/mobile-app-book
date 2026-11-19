@@ -6,14 +6,15 @@ export const TypeField: Record<string, string[]> = {
   enums: ['equals', 'not'],
 };
 
+/** Khoá dịch của nhãn toán tử lọc, dịch lúc render bằng `t()` */
 export const TypeFieldLabel = {
-  equals: 'Equals (=)',
-  not: 'Not equal to (!=)',
-  lt: 'Less than (<)',
-  lte: 'Less than or equal to (<=)',
-  gt: 'Greater than (>)',
-  gte: 'Greater than or equal to (>=)',
-  contains: 'Contains (∈)',
-  startsWith: 'Starts with (→)',
-  endsWith: 'Ends with (←)',
-};
+  equals: 'components.filter.operators.equals',
+  not: 'components.filter.operators.not',
+  lt: 'components.filter.operators.lt',
+  lte: 'components.filter.operators.lte',
+  gt: 'components.filter.operators.gt',
+  gte: 'components.filter.operators.gte',
+  contains: 'components.filter.operators.contains',
+  startsWith: 'components.filter.operators.startsWith',
+  endsWith: 'components.filter.operators.endsWith',
+} as const;

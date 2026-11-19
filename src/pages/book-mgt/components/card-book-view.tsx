@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { Box, Card, Link, Stack, Avatar, CardMedia, Typography, IconButton } from '@mui/material';
@@ -15,6 +16,7 @@ import { Iconify } from 'src/components/iconify';
 import { SvgColor } from 'src/components/svg-color';
 
 export function CardBookView({ book, isEdit }: CardBookViewProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   return (
     <Card>
@@ -58,18 +60,23 @@ export function CardBookView({ book, isEdit }: CardBookViewProps) {
           ))}
           {book.createdAt && dayjs(book.createdAt) > dayjs().add(-7, 'day') && (
             <Label variant="filled" color="info" sx={{}}>
-              New
+              {t('book.newLabel')}
             </Label>
           )}
         </Box>
       </Box>
       <Box
-        sx={{ position: 'relative', p: 2, pt: 3, bgcolor: (t) => t.vars.palette.background.paper }}
+        sx={{
+          position: 'relative',
+          p: 2,
+          pt: 3,
+          bgcolor: (theme) => theme.vars.palette.background.paper,
+        }}
       >
         <SvgColor
           src="/assets/icons/shape-avatar.svg"
           sx={{
-            color: (t) => t.vars.palette.background.paper,
+            color: (theme) => theme.vars.palette.background.paper,
             width: 88,
             height: 36,
             position: 'absolute',
@@ -100,8 +107,8 @@ export function CardBookView({ book, isEdit }: CardBookViewProps) {
             }}
             sx={{
               position: 'absolute',
-              right: (t) => t.spacing(1),
-              top: (t) => t.spacing(1),
+              right: (theme) => theme.spacing(1),
+              top: (theme) => theme.spacing(1),
             }}
           >
             <Iconify icon="solar:pen-bold" />
@@ -147,7 +154,7 @@ export function CardBookView({ book, isEdit }: CardBookViewProps) {
                 alignItems="center"
               >
                 <Iconify
-                  sx={{ color: (t) => t.palette.success.main, mr: 0.5 }}
+                  sx={{ color: (theme) => theme.palette.success.main, mr: 0.5 }}
                   icon="eva:arrow-ios-downward-fill"
                   width={12}
                 />

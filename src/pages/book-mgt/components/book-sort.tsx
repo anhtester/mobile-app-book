@@ -1,6 +1,7 @@
 import type { ButtonProps } from '@mui/material/Button';
 
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Button from '@mui/material/Button';
 import Popover from '@mui/material/Popover';
@@ -19,6 +20,7 @@ type ProductSortProps = ButtonProps & {
 };
 
 export function BookSort({ options, sortBy, onSort, sx, ...other }: ProductSortProps) {
+  const { t } = useTranslation();
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
 
   const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
@@ -43,7 +45,7 @@ export function BookSort({ options, sortBy, onSort, sx, ...other }: ProductSortP
         sx={sx}
         {...other}
       >
-        Sort By:&nbsp;
+        {t('book.sort.label')}&nbsp;
         <Typography component="span" variant="subtitle2" sx={{ color: 'text.secondary' }}>
           {options.find((option) => option.value === sortBy)?.label}
         </Typography>

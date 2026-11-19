@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button } from '@mui/material';
 
-import { setLanguage, currentLanguage } from 'src/locales';
+import { setLanguage, useLanguage } from 'src/locales';
 
 // ----------------------------------------------------------------------
 
@@ -13,7 +13,7 @@ import { setLanguage, currentLanguage } from 'src/locales';
  */
 export function LanguageSwitch() {
   const { t } = useTranslation();
-  const lang = currentLanguage();
+  const lang = useLanguage();
   const next = lang === 'vi' ? 'en' : 'vi';
 
   return (

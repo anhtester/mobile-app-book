@@ -3,6 +3,7 @@ import type { RouteObject } from 'react-router';
 import { lazy, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 
+import { isHiddenPath } from 'src/config-global';
 import { MobileLayout } from 'src/layouts/mobile-layout';
 
 import { CheckAuth } from './components/check-auth';
@@ -61,7 +62,11 @@ const routesSection: RouteObject[] = [
         path: 'user-management/setting-account',
         Component: lazy(() => import('src/pages/user-mgt/setting')),
       },
-    ],
+      {
+        path: 'contact',
+        Component: lazy(() => import('src/pages/contact/page')),
+      },
+    ].filter((route) => !isHiddenPath(route.path)), // màn đang ẩn (CONFIG.hiddenPaths) → mở URL ra 404
   },
   {
     path: 'sign-up',

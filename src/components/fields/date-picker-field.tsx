@@ -2,16 +2,28 @@ import type dayjs from 'dayjs';
 import type { DatePickerProps } from '@mui/x-date-pickers/DatePicker';
 
 import { forwardRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
+import i18n from 'src/locales';
+
 import { Iconify } from '../iconify';
 
-export const formatter = (date: dayjs.Dayjs): string => {
-  const days: string[] = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
-  const dayIndex: number = date.day() === 0 ? 6 : date.day() - 1;
-  return days[dayIndex];
-};
+// Thứ tự T2 → CN; dayjs: day() = 0 là Chủ nhật
+const WEEKDAY_KEYS = [
+  'components.datePicker.weekdays.mon',
+  'components.datePicker.weekdays.tue',
+  'components.datePicker.weekdays.wed',
+  'components.datePicker.weekdays.thu',
+  'components.datePicker.weekdays.fri',
+  'components.datePicker.weekdays.sat',
+  'components.datePicker.weekdays.sun',
+] as const;
+
+const weekdayKey = (date: dayjs.Dayjs) => WEEKDAY_KEYS[date.day() === 0 ? 6 : date.day() - 1];
+
+export const formatter = (date: dayjs.Dayjs): string => i18n.t(weekdayKey(date));
 
 type DatePickerFieldProps = {
   error?: boolean;
@@ -21,23 +33,26 @@ type DatePickerFieldProps = {
 } & DatePickerProps;
 
 export const DatePickerField = forwardRef<HTMLInputElement, DatePickerFieldProps>(
-  ({ error, helperText, size, fullWidth, ...props }, ref) => (
-    <DatePicker
-      ref={ref}
-      label="End date"
-      dayOfWeekFormatter={formatter}
-      {...props}
-      slots={{
-        openPickerIcon: () => <Iconify icon="solar:calendar-minimalistic-bold" />,
-      }}
-      slotProps={{
-        textField: {
-          error,
-          size,
-          fullWidth,
-          helperText,
-        },
-      }}
-    />
-  )
+  ({ error, helperText, size, fullWidth, ...props }, ref) => {
+    const { t } = useTranslation();
+    return (
+      <DatePicker
+        ref={ref}
+        label={t('components.datePicker.endDate')}
+        dayOfWeekFormatter={(date) => t(weekdayKey(date))}
+        {...props}
+        slots={{
+          openPickerIcon: () => <Iconify icon="solar:calendar-minimalistic-bold" />,
+        }}
+        slotProps={{
+          textField: {
+            error,
+            size,
+            fullWidth,
+            helperText,
+          },
+        }}
+      />
+    );
+  }
 );

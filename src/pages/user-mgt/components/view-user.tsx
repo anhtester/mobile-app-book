@@ -75,7 +75,7 @@ export function ViewUser() {
         }}
       >
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          User Management
+          {t('user.title')}
         </Typography>
         {auth && (
           <PageAction
@@ -94,16 +94,16 @@ export function ViewUser() {
       </Box>
       <Card>
         <TableFilterView
-          placeholder="Search user (name, email, phone or address)"
-          filter={fieldOptions}
+          placeholder={t('user.searchPlaceholder')}
+          filter={fieldOptions(t)}
           config={config}
         />
         <TableView
-          filter={fieldOptions}
+          filter={fieldOptions(t)}
           sticky={{
             isStickyAction: true,
           }}
-          columns={columns(auth, loadUsers)}
+          columns={columns(t, auth, loadUsers)}
           data={users}
           config={config}
           sx={{
@@ -133,24 +133,21 @@ export function ViewUser() {
                         }}
                       >
                         <Iconify icon="solar:pen-bold" />
-                        Edit
+                        {t('common.actions.edit')}
                       </MenuItem>
 
                       <MenuItem
                         sx={{ color: 'error.main' }}
                         disabled={row?.id === auth?.id}
                         onClick={() =>
-                          dialog.delete(
-                            `Confirm you want to delete user "${row.name}".`,
-                            async () => {
-                              await handleDelete(row.id);
-                              loadUsers();
-                            }
-                          )
+                          dialog.delete(t('user.deleteConfirm', { name: row.name }), async () => {
+                            await handleDelete(row.id);
+                            loadUsers();
+                          })
                         }
                       >
                         <Iconify icon="solar:trash-bin-trash-bold" />
-                        Delete
+                        {t('common.actions.delete')}
                       </MenuItem>
                     </Stack>
                   )

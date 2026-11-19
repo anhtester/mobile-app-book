@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useRef, useState, useEffect, forwardRef, useCallback } from 'react';
 
 import { Stack, TextField, Autocomplete, FormHelperText, type TextFieldProps } from '@mui/material';
@@ -45,6 +46,7 @@ export const AddressField = forwardRef<HTMLDivElement, AddressFieldProps>(
     const [ward, setWard] = useState<string>('');
     const [address, setAddress] = useState<string>('');
     const flagUserHandle = useRef<boolean>(false);
+    const { t } = useTranslation();
 
     const { data: listDiv = [], loading: isLoadingDiv } = useRequest(() =>
       axios.get('/address').then((res) => res.data as string[])
@@ -96,7 +98,7 @@ export const AddressField = forwardRef<HTMLDivElement, AddressFieldProps>(
             }),
           }}
         >
-          <LabelBorder error={error}>Address</LabelBorder>
+          <LabelBorder error={error}>{t('common.fields.address')}</LabelBorder>
           <Autocomplete
             id="address-division"
             value={div}
@@ -109,7 +111,7 @@ export const AddressField = forwardRef<HTMLDivElement, AddressFieldProps>(
             options={listDiv}
             loading={isLoadingDiv}
             renderInput={(params) => (
-              <TextField error={error} {...params} fullWidth label="Division" />
+              <TextField error={error} {...params} fullWidth label={t('user.address.division')} />
             )}
           />
 
@@ -124,7 +126,7 @@ export const AddressField = forwardRef<HTMLDivElement, AddressFieldProps>(
             options={listWard}
             loading={isLoadingWard}
             disabled={!div}
-            renderInput={(params) => <TextField error={error} {...params} fullWidth label="Ward" />}
+            renderInput={(params) => <TextField error={error} {...params} fullWidth label={t('user.address.ward')} />}
           />
 
           <TextField
@@ -139,7 +141,7 @@ export const AddressField = forwardRef<HTMLDivElement, AddressFieldProps>(
             multiline
             minRows={2}
             fullWidth
-            label="Address"
+            label={t('user.address.detail')}
           />
         </Stack>
         {helperText && (

@@ -174,7 +174,7 @@ export function TableFilterView<T>({
                   })
                 }
               >
-                Add filter
+                {t('components.filter.addFilter')}
               </Button>
               <Button
                 id="clear-filter"
@@ -189,7 +189,7 @@ export function TableFilterView<T>({
                 variant="outlined"
                 startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
               >
-                Clear filter
+                {t('components.filter.clearFilter')}
               </Button>
             </Box>
           </Stack>

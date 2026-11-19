@@ -1,3 +1,4 @@
+import i18n from 'src/locales';
 import { axios } from 'src/api/axios';
 
 import { toast } from 'src/components/toast';
@@ -52,7 +53,7 @@ export const handleCreateBook = async (book: BookForm) => {
   const id = 'create-book';
   let paths: string[] = [];
   try {
-    toast.custom('Uploading image...', 'loading', { hiddenCloseButton: true, id });
+    toast.custom(i18n.t('book.toast.uploadingImage'), 'loading', { hiddenCloseButton: true, id });
     const form = new FormData();
     book.picture?.forEach((f) => {
       if (f instanceof File) {
@@ -67,7 +68,7 @@ export const handleCreateBook = async (book: BookForm) => {
       .post('/file', form, { timeout: UPLOAD_TIMEOUT })
       .then((res) => res.data.paths ?? []);
     // upload book
-    toast.custom('Uploading book...', 'loading', { hiddenCloseButton: true, id });
+    toast.custom(i18n.t('book.toast.uploadingBook'), 'loading', { hiddenCloseButton: true, id });
     const res = await axios.post('/book', {
       name: book.name,
       description: book.description,
@@ -86,7 +87,7 @@ export const handleCreateBook = async (book: BookForm) => {
     if (err?.response?.status === 422) {
       setFieldErrors(err.response.data?.fields);
     }
-    toast.error(err?.response?.data?.msg || 'Error in create book', { id, duration: 3000 });
+    toast.error(err?.response?.data?.msg || i18n.t('book.toast.createError'), { id, duration: 3000 });
     throw err;
   }
 };

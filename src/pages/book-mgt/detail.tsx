@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import {
   Box,
@@ -33,12 +34,12 @@ import { getDetailBook } from './api/detail-book';
 import { MappingType } from '../promotions-mgt/const-type';
 
 export default function BookDetail() {
+  const { t } = useTranslation();
   const { slug } = useParams();
   const { data = {} as Partial<BookForm> } = useRequest(
     useCallback(() => getDetailBook(slug!), [slug])
   );
   const router = useRouter();
-  console.log(data.picture);
 
   return (
     <DashboardContent>
@@ -48,7 +49,7 @@ export default function BookDetail() {
           onClick={() => router.back('/book-management')}
           startIcon={<Iconify icon="eva:arrow-ios-forward-fill" sx={{ scale: -1 }} />}
         >
-          Back
+          {t('common.actions.back')}
         </Button>
       </Box>
       <Grid container spacing={8}>
@@ -77,7 +78,7 @@ export default function BookDetail() {
                     }}
                     color="info"
                   >
-                    New
+                    {t('book.newLabel')}
                   </Label>
                 </RouterLink>
               )}
@@ -124,7 +125,7 @@ export default function BookDetail() {
                   left={0}
                 >
                   <Iconify
-                    sx={{ color: (t) => t.palette.success.main, mr: 0.5 }}
+                    sx={{ color: (theme) => theme.palette.success.main, mr: 0.5 }}
                     icon="eva:arrow-ios-downward-fill"
                     width={12}
                   />
@@ -141,7 +142,7 @@ export default function BookDetail() {
                 subheader={data.auth?.email}
                 avatar={<Avatar src={formatFilePath(data.auth?.avatarUrl)} />}
               />
-              <LabelBorder>Author by </LabelBorder>
+              <LabelBorder>{t('book.authorBy')}</LabelBorder>
             </Card>
           </Stack>
         </Grid>

@@ -1,6 +1,7 @@
 import type { BoxProps } from '@mui/material/Box';
 
 import { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { varAlpha } from 'minimal-shared/utils';
 
 import Box from '@mui/material/Box';
@@ -18,6 +19,7 @@ import { Iconify } from 'src/components/iconify';
 
 export function Searchbar({ sx, ...other }: BoxProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const [open, setOpen] = useState(false);
 
@@ -65,7 +67,7 @@ export function Searchbar({ sx, ...other }: BoxProps) {
               autoFocus
               fullWidth
               disableUnderline
-              placeholder="Search…"
+              placeholder={t('components.filter.searchPlaceholder')}
               startAdornment={
                 <InputAdornment position="start">
                   <Iconify width={20} icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
@@ -74,7 +76,7 @@ export function Searchbar({ sx, ...other }: BoxProps) {
               sx={{ fontWeight: 'fontWeightBold' }}
             />
             <Button variant="contained" onClick={handleClose}>
-              Search
+              {t('common.actions.search')}
             </Button>
           </Box>
         </Slide>

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 
 import * as colors from '@mui/material/colors';
@@ -34,17 +35,17 @@ import { Iconify, type IconifyName } from 'src/components/iconify';
 const tabsTheme: { key: string; label: string; icon: IconifyName }[] = [
   {
     key: 'light',
-    label: 'Light',
+    label: 'user.setting.themeLight',
     icon: 'solar:sun-bold',
   },
   {
     key: 'dark',
-    label: 'Dark',
+    label: 'user.setting.themeDark',
     icon: 'solar:moon-bold',
   },
   {
     key: 'system',
-    label: 'System',
+    label: 'user.setting.themeSystem',
     icon: 'solar:laptop-outline',
   },
 ];
@@ -52,6 +53,7 @@ const tabsTheme: { key: string; label: string; icon: IconifyName }[] = [
 export default function Setting() {
   const { setMode, mode } = useColorScheme();
   const { setPrimary, primary } = useThemeData();
+  const { t } = useTranslation();
   const form = useForm<{ theme: 'light' | 'dark' | 'system'; mainColor: string }>({
     defaultValues: {
       theme: mode,
@@ -74,23 +76,23 @@ export default function Setting() {
   const colorData = Object.entries(colors).filter((x) => x[0] !== 'common');
   return (
     <DashboardContent>
-      <Title>Setting account - {CONFIG.appName}</Title>
+      <Title>{`${t('user.setting.title')} - ${CONFIG.appName}`}</Title>
       <Stack spacing={2} mb={5}>
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          Setting account
+          {t('user.setting.title')}
         </Typography>
         <Breadcrumbs sx={{ mb: 3 }}>
           <Link component={RouterLink} href="/user-management" color="textPrimary" variant="body2">
-            User management
+            {t('user.breadcrumb.userManagement')}
           </Link>
-          <Typography variant="body2">Setting account</Typography>
+          <Typography variant="body2">{t('user.setting.title')}</Typography>
         </Breadcrumbs>
       </Stack>
       <Stack spacing={3}>
         <Card>
           <CardHeader
-            title="Theme"
-            subheader="Switch between Light, Dark, or System themes for a personalized and comfortable experience."
+            title={t('user.setting.themeTitle')}
+            subheader={t('user.setting.themeSubheader')}
           />
           <CardContent>
             <Controller
@@ -107,7 +109,7 @@ export default function Setting() {
                   {tabsTheme.map((tab) => (
                     <Tab
                       key={tab.key}
-                      label={tab.label}
+                      label={t(tab.label)}
                       value={tab.key}
                       iconPosition="start"
                       icon={<Iconify icon={tab.icon} />}
@@ -119,7 +121,10 @@ export default function Setting() {
           </CardContent>
         </Card>
         <Card>
-          <CardHeader title="Select color" subheader="Select color for your account." />
+          <CardHeader
+            title={t('user.setting.colorTitle')}
+            subheader={t('user.setting.colorSubheader')}
+          />
           <CardContent>
             <Controller
               control={form.control}
@@ -150,7 +155,7 @@ export default function Setting() {
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              color: (t) => t.palette.getContrastText(color),
+                              color: (th) => th.palette.getContrastText(color),
                               borderRadius: 3,
                               scale: 0.6,
                               transition: 'all 0.1s',
@@ -179,7 +184,7 @@ export default function Setting() {
               form.reset();
             }}
           >
-            Reset
+            {t('user.setting.reset')}
           </Button>
           <Button
             startIcon={<Iconify icon="solar:diskette-bold" />}
@@ -190,10 +195,10 @@ export default function Setting() {
               await axios
                 .patch(`/profile`, { config })
                 .then((res) => toast.success(res.data.msg))
-                .catch((err) => toast.error(err?.response?.data?.msg ?? 'Network error'));
+                .catch((err) => toast.error(err?.response?.data?.msg ?? t('user.toast.networkError')));
             })}
           >
-            Save
+            {t('common.actions.save')}
           </Button>
         </Box>
       </Stack>

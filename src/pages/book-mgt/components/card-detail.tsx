@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useWatch, Controller } from 'react-hook-form';
 
 import {
@@ -23,6 +24,7 @@ import { slugify } from '../api/create-book';
 import { control, setValue } from '../stores/form-add';
 
 export function CardDetail() {
+  const { t } = useTranslation();
   const [expen, setExpen] = useState(true);
   const [isChangeSlug, setIsChangeSlug] = useState(false);
   const [bookId] = useWatch({ control, name: ['id'] });
@@ -32,8 +34,8 @@ export function CardDetail() {
   return (
     <Card>
       <CardHeader
-        title="Detail"
-        subheader="Title, description, picture"
+        title={t('book.detail.title')}
+        subheader={t('book.detail.subheader')}
         action={
           <IconButton onClick={() => setExpen(!expen)}>
             <Iconify
@@ -53,17 +55,17 @@ export function CardDetail() {
             name="name"
             defaultValue=""
             rules={{
-              required: 'Name is required.',
+              required: t('book.validation.nameRequired'),
               maxLength: {
                 value: 100,
-                message: 'Name must be less than 100 characters.',
+                message: t('book.validation.nameMaxLength'),
               },
               deps: ['slug'],
             }}
             render={({ field, fieldState: { invalid, error } }) => (
               <TextField
                 fullWidth
-                label="Book name"
+                label={t('book.detail.name')}
                 {...field}
                 onChange={(e) => {
                   field.onChange(e);
@@ -82,17 +84,17 @@ export function CardDetail() {
             defaultValue=""
             rules={{
               // edit mode: empty slug is not sent, backend keeps the current one
-              required: bookId ? false : 'Slug is required.',
+              required: bookId ? false : t('book.validation.slugRequired'),
               maxLength: {
                 value: 100,
-                message: 'Slug must be less than 100 characters.',
+                message: t('book.validation.slugMaxLength'),
               },
             }}
             render={({ field, fieldState: { invalid, error } }) => (
               <TextField
                 disabled={!isChangeSlug}
                 sx={{ flex: 1 }}
-                label="Slug name book"
+                label={t('book.detail.slug')}
                 error={invalid}
                 helperText={error?.message}
                 {...field}
@@ -110,7 +112,7 @@ export function CardDetail() {
                             <Checkbox checked={isChangeSlug} color="inherit" sx={{ p: 0 }} />
                           }
                         >
-                          Change
+                          {t('book.detail.changeSlug')}
                         </Button>
                       </InputAdornment>
                     ),
@@ -126,7 +128,7 @@ export function CardDetail() {
             rules={{
               maxLength: {
                 value: 500,
-                message: 'Description must be less than 500 characters.',
+                message: t('book.validation.descriptionMaxLength'),
               },
             }}
             render={({ field, fieldState: { invalid, error } }) => (
@@ -134,7 +136,7 @@ export function CardDetail() {
                 multiline
                 minRows={5}
                 fullWidth
-                label="Description"
+                label={t('common.fields.description')}
                 {...field}
                 error={invalid}
                 helperText={error?.message}
@@ -143,7 +145,7 @@ export function CardDetail() {
           />
           <Stack spacing={1.5}>
             <Typography variant="subtitle2">
-              Picture{' '}
+              {t('book.detail.picture')}{' '}
               <Box component="span" sx={{ color: 'primary.main' }}>
                 *
               </Box>
@@ -156,9 +158,9 @@ export function CardDetail() {
                 validate: {
                   maxFileSize: (files) =>
                     files.every((file) => file.size < 1024 * 1024 * 5) ||
-                    'File size must be less than 5MB',
-                  maxLength: (files) => files.length <= 30 || 'You can upload up to 30 files',
-                  minLength: (files) => files.length >= 1 || 'You must upload at least 1 file',
+                    t('book.validation.fileSize'),
+                  maxLength: (files) => files.length <= 30 || t('book.validation.maxFiles'),
+                  minLength: (files) => files.length >= 1 || t('book.validation.minFiles'),
                 },
               }}
               render={({ field, fieldState: { invalid, error } }) => (
@@ -191,7 +193,7 @@ export function CardDetail() {
                         field.onChange([]);
                       }}
                     >
-                      Remove all
+                      {t('book.detail.removeAll')}
                     </Button>
                   )}
                 </>

@@ -1,6 +1,8 @@
+import type { TFunction } from 'i18next';
 import type { RowComponentProps } from 'react-window';
 
 import { create } from 'zustand';
+import { useTranslation } from 'react-i18next';
 import { List as VirtualList } from 'react-window';
 import React, { useState, useCallback, useDeferredValue } from 'react';
 
@@ -25,6 +27,7 @@ import {
 
 import { useRequest } from 'src/hooks/use-request';
 
+import i18n from 'src/locales';
 import { useAuth } from 'src/store/auth';
 
 import { Label } from 'src/components/label';
@@ -38,26 +41,39 @@ import { BookSort } from './book-sort';
 import { Category } from '../api/categorys';
 import { mappingSort, type ReturnUseFileterBook } from '../stores/filter';
 
-function formatNumber(from: number | null) {
-  if (!from) return 'unset';
+// Giá trị sort (key của mappingSort) đi lên URL nên giữ nguyên, chỉ dịch nhãn hiển thị
+const SORT_LABEL: Record<keyof typeof mappingSort, string> = {
+  Feature: 'book.sort.feature',
+  Newest: 'book.sort.newest',
+  'Price: Low to High': 'book.sort.priceLowToHigh',
+  'Price: High to Low': 'book.sort.priceHighToLow',
+};
+
+function formatNumber(t: TFunction, from: number | null) {
+  if (!from) return t('book.filter.unset');
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(from);
 }
 
 const priceOptions = [10_000, 100_000, 1_000_000, 10_000_000];
-function getPriceLabel(price: { from?: number | null; to?: number | null }): string {
+// Nhận `t` để React Compiler tính lại khi đổi ngôn ngữ (xem columns-promotion.tsx)
+function getPriceLabel(t: TFunction, price: { from?: number | null; to?: number | null }): string {
   const { from, to } = price;
 
   if (from != null && to != null)
-    return `Price between ${formatNumber(from)} and ${formatNumber(to)}`;
+    return t('book.filter.priceBetween', {
+      from: formatNumber(t, from),
+      to: formatNumber(t, to),
+    });
 
-  if (from != null) return `Price greater than or equal to ${formatNumber(from)}`;
+  if (from != null) return t('book.filter.priceFrom', { from: formatNumber(t, from) });
 
-  if (to != null) return `Price less than or equal to ${formatNumber(to)}`;
+  if (to != null) return t('book.filter.priceTo', { to: formatNumber(t, to) });
 
-  return 'Price not specified';
+  return t('book.filter.priceNotSpecified');
 }
 
 export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
+  const { t } = useTranslation();
   const {
     isFilter,
     setIsFilter,
@@ -99,10 +115,13 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
           }
           onClick={() => setIsFilter(!isFilter)}
         >
-          Filter
+          {t('book.filter.button')}
         </Button>
         <BookSort
-          options={Object.keys(mappingSort).map((item) => ({ value: item, label: item }))}
+          options={(Object.keys(mappingSort) as (keyof typeof mappingSort)[]).map((item) => ({
+            value: item,
+            label: t(SORT_LABEL[item]),
+          }))}
           sortBy={sort}
           onSort={(s) => setSort(s as any)}
         />
@@ -127,13 +146,13 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
               color="inherit"
               value={searchName}
               onChange={setSearchName}
-              placeholder="Search book..."
+              placeholder={t('book.filter.searchPlaceholder')}
               sx={{ maxWidth: 'unset' }}
             />
           </Stack>
           <Stack flex={1}>
             <FromToField value={price} onChange={setPrice} options={priceOptions} />
-            <FormHelperText sx={{ textAlign: 'right' }}>{getPriceLabel(price)}</FormHelperText>
+            <FormHelperText sx={{ textAlign: 'right' }}>{getPriceLabel(t, price)}</FormHelperText>
           </Stack>
         </Box>
       </Collapse>
@@ -146,7 +165,7 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
           value={category}
           onChange={(_, value) => setCategory(value)}
         >
-          <Tab value="" label="All" />
+          <Tab value="" label={t('book.filter.all')} />
           {data
             .filter((c) => c.bookCount > 0)
             .map((item) => (
@@ -172,7 +191,7 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
 
       <Dialog open={open} fullWidth maxWidth="xs">
         <DialogTitle>
-          Category management <Label>{data.length}</Label>
+          {t('book.category.title')} <Label>{data.length}</Label>
         </DialogTitle>
         <DialogContent dividers sx={{ borderStyle: 'dashed none' }}>
           <OutlinedInput
@@ -182,7 +201,7 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
               if (id) setId('');
             }}
             fullWidth
-            placeholder="Add new category"
+            placeholder={t('book.category.addPlaceholder')}
           />
           <Stack sx={{ height: 52 * 6, mt: 1 }}>
             {search && (
@@ -190,18 +209,18 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
                 <Button
                   onClick={() => {
                     toast.loading(() => Category.create(search), {
-                      loading: 'Saving new category...',
+                      loading: t('book.category.saving'),
                       success: async (res) => {
                         await request();
                         setSearch('');
                         return res.data.msg;
                       },
-                      error: (err) => err?.response?.data?.msg ?? 'Network error',
+                      error: (err) => err?.response?.data?.msg ?? t('book.toast.networkError'),
                     });
                   }}
                   color="inherit"
                 >
-                  Add &quot;{search}&quot; to list
+                  {t('book.category.addToList', { name: search })}
                 </Button>
               </Box>
             )}
@@ -217,7 +236,7 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
         </DialogContent>
         <DialogActions>
           <Button color="inherit" onClick={() => setOpen(false)}>
-            Close
+            {t('common.actions.close')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -239,14 +258,14 @@ const useEdit = create<{
 
 const saveChange = (name: string, newName: string, success: () => void, error: () => void) =>
   toast.loading(() => Category.update(name, newName), {
-    loading: 'Saving changes...',
+    loading: i18n.t('book.category.savingChanges'),
     success: async (res) => {
       success();
       return res.data.msg;
     },
     error: (err) => {
       error();
-      return err?.response?.data?.msg ?? 'Network error';
+      return err?.response?.data?.msg ?? i18n.t('book.toast.networkError');
     },
   });
 
@@ -326,12 +345,12 @@ const Row = ({
         id={`del-${item.name}`}
         onDelete={() =>
           toast.loading(() => Category.delete(item.name), {
-            loading: 'Deleting category...',
+            loading: i18n.t('book.category.deleting'),
             success: async (res) => {
               await request();
               return res.data.msg;
             },
-            error: (err) => err?.response?.data?.msg ?? 'Network error',
+            error: (err) => err?.response?.data?.msg ?? i18n.t('book.toast.networkError'),
           })
         }
       />
