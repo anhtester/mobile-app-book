@@ -1,4 +1,5 @@
 // Chép từ ../book.anhtester.com/frontend/src/locales/vi/promotion.ts (bản web), đổi {x} thành {{x}} cho i18next.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 import type { Translation } from '../../types';
 import type { promotion as en } from '../en/promotion';
 
@@ -19,6 +20,7 @@ export const promotion: Translation<typeof en> = {
     freeShipping: 'Miễn phí ship',
   },
   title: 'Quản lý khuyến mãi',
+  subtitle: 'Mã giảm giá gắn với sách và thời gian áp dụng.',
   newPromotion: 'Thêm khuyến mãi',
   columns: {
     code: 'MÃ',
@@ -47,16 +49,10 @@ export const promotion: Translation<typeof en> = {
     reset: 'Đặt lại',
     saveChanges: 'Lưu thay đổi',
     create: 'Tạo khuyến mãi',
-    deleteNote:
-      'Xoá khuyến mãi này sẽ gỡ nó khỏi mọi sách đang áp dụng và tính lại giá bán của các sách đó.',
+    deleteNote: 'Xoá khuyến mãi này sẽ gỡ nó khỏi mọi sách đang áp dụng và tính lại giá bán của các sách đó.',
     deleteConfirmBefore: 'Bạn có muốn xoá ',
     deleteConfirmAfter: '? Sau khi xoá sẽ không thể hoàn tác',
     notFound: 'Không tìm thấy khuyến mãi',
-  },
-  toast: {
-    saved: 'Đã lưu',
-    deleted: 'Đã xoá',
-    networkError: 'Không kết nối được máy chủ. Vui lòng thử lại.',
   },
   detail: {
     title: 'Chi tiết',
@@ -74,13 +70,13 @@ export const promotion: Translation<typeof en> = {
     valueRequired: 'Giá trị là bắt buộc.',
     valuePercent: 'Phần trăm phải lớn hơn 0 và không quá 100.',
     valuePositive: 'Giá trị phải lớn hơn 0.',
-    valuePercentHint: 'Phần trăm (1 - 100)',
-    valueAmountHint: 'Số tiền (VND)',
     typeOption: {
       PERCENTAGE: 'Phần trăm',
       FIXED_AMOUNT: 'Số tiền cố định',
       FREE_SHIPPING: 'Miễn phí vận chuyển',
     },
+    valuePercentHint: 'Phần trăm (1 - 100)',
+    valueAmountHint: 'Số tiền (VND)',
   },
   statusCard: {
     subheader: 'Ngày bắt đầu, ngày kết thúc, hoạt động',
@@ -105,5 +101,10 @@ export const promotion: Translation<typeof en> = {
       price: 'Giá',
       created: 'Ngày tạo',
     },
+  },
+  toast: {
+    saved: 'Đã lưu',
+    deleted: 'Đã xoá',
+    networkError: 'Không kết nối được máy chủ. Vui lòng thử lại.',
   },
 };

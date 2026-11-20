@@ -11,6 +11,7 @@ import {
   Link,
   Grid,
   Stack,
+  Badge,
   Slider,
   Avatar,
   Button,
@@ -28,6 +29,7 @@ import { formatFilePath } from 'src/utils/format-filepath';
 
 import { useAuth } from 'src/store/auth';
 import { CONFIG } from 'src/config-global';
+import { useCartCount } from 'src/store/cart';
 import { axios, URLBASE } from 'src/api/axios';
 import { DashboardContent } from 'src/layouts/dashboard';
 
@@ -35,7 +37,6 @@ import Title from 'src/components/title';
 import { toast } from 'src/components/toast';
 import { Iconify } from 'src/components/iconify';
 import { SvgColor } from 'src/components/svg-color';
-import { LabelBorder } from 'src/components/label/label-border';
 
 const status = [
   { code: 200, msg: 'OK', color: '#4CAF50' }, // Xanh lá (Thành công)
@@ -110,51 +111,163 @@ const Icon: Record<number, IconifyName> = {
   6: 'solar:clock-circle-outline',
 };
 
+type Tone = 'success' | 'warning' | 'error' | 'info' | 'primary' | 'secondary';
+
+/**
+ * Thẻ số liệu (2 cột trên điện thoại). Theo bản web 2026-11-20-15: icon nằm trong ô vuông phía trên
+ * tên (không còn icon to `position: absolute` bị cắt mép phải), tên + icon là link sang màn tương ứng
+ * (`data-action="open-page"`). `href` bỏ trống thì thẻ không gắn link.
+ * Locator: `data-testid="home-stat-<key>"`, số `data-testid="home-stat-<key>-total"`.
+ */
 const ViewCard = ({
+  statKey,
   title,
-  total: totalBook,
+  total,
   unit,
   icon,
   color,
+  href,
 }: {
+  statKey: string;
   title: string;
   total: number;
   unit: string;
   icon: string;
-  color: 'success' | 'warning' | 'error' | 'info' | 'primary' | 'secondary';
+  color: Tone;
+  href?: string;
 }) => {
   const { t } = useTranslation();
+  const linkProps = href
+    ? { component: RouterLink, href, 'data-action': 'open-page' }
+    : { component: 'span' as const };
   return (
-    <Card>
-      <CardHeader
-        title={title}
-        subheader={t('home.stats.total', { count: totalBook, unit })}
-        sx={{
-          pb: 3,
-          color: `${color}.main`,
-          background: (theme) =>
-            `linear-gradient(30deg, ${varAlpha(theme.vars.palette[color].mainChannel, 0.3)} 0%, rgba(0, 0, 0, 0) 60%)`,
-        }}
-      />
-      <SvgColor
-        src={`/assets/icons/navbar/${icon}.svg`}
-        sx={{
-          position: 'absolute',
-          top: (theme) => theme.spacing(1),
-          right: 0,
-          transform: 'translateX(20%)',
-          height: 80,
-          width: 80,
-          color: `${color}.main`,
-        }}
-      />
+    <Card
+      data-testid={`home-stat-${statKey}`}
+      sx={{
+        p: 2,
+        gap: 1.5,
+        height: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        background: (theme) =>
+          `linear-gradient(30deg, ${varAlpha(theme.vars.palette[color].mainChannel, 0.16)} 0%, rgba(0, 0, 0, 0) 65%)`,
+      }}
+    >
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Link
+          {...linkProps}
+          aria-label={title}
+          sx={{
+            width: 44,
+            height: 44,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: 1.5,
+            bgcolor: (theme) => varAlpha(theme.vars.palette[color].mainChannel, 0.16),
+          }}
+        >
+          <SvgColor
+            src={`/assets/icons/navbar/${icon}.svg`}
+            sx={{ width: 24, height: 24, color: `${color}.main` }}
+          />
+        </Link>
+        <Typography
+          data-testid={`home-stat-${statKey}-total`}
+          sx={{ fontSize: 26, fontWeight: 800, lineHeight: 1, color: `${color}.dark` }}
+        >
+          {total}
+        </Typography>
+      </Stack>
+      <Box sx={{ minWidth: 0 }}>
+        <Link
+          {...linkProps}
+          color={color}
+          underline={href ? 'hover' : 'none'}
+          sx={{ display: 'inline-block' }}
+        >
+          <Typography variant="subtitle1" component="h6" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
+            {title}
+          </Typography>
+        </Link>
+        <Typography variant="caption" component="p" sx={{ mt: 0.25, color: 'text.secondary' }}>
+          {t('home.stats.total', { count: total, unit })}
+        </Typography>
+      </Box>
     </Card>
   );
 };
 
+/** Lối tắt một dòng (Giỏ hàng, Đơn hàng): ô icon + tên + mô tả + mũi tên. */
+const Shortcut = ({
+  id,
+  href,
+  icon,
+  tone,
+  title,
+  hint,
+  badge,
+}: {
+  id: string;
+  href: string;
+  icon: IconifyName;
+  tone: 'orange' | 'teal';
+  title: string;
+  hint: string;
+  badge?: number;
+}) => (
+  <Box
+    id={id}
+    component={RouterLink}
+    href={href}
+    sx={{
+      p: 2,
+      gap: 1.5,
+      display: 'flex',
+      alignItems: 'center',
+      color: 'text.primary',
+      textDecoration: 'none',
+    }}
+  >
+    <Badge
+      badgeContent={badge}
+      max={99}
+      sx={{
+        '& .MuiBadge-badge': {
+          color: '#fff',
+          fontWeight: 700,
+          backgroundImage: 'var(--at-grad-orange)',
+        },
+      }}
+    >
+      <Box
+        sx={{
+          width: 44,
+          height: 44,
+          display: 'grid',
+          placeItems: 'center',
+          borderRadius: 1.5,
+          bgcolor: `var(--at-${tone}-bg)`,
+          color: `var(--at-${tone}-ink)`,
+        }}
+      >
+        <Iconify icon={icon} width={26} />
+      </Box>
+    </Badge>
+    <Box sx={{ flex: 1, minWidth: 0 }}>
+      <Typography sx={{ fontWeight: 700 }}>{title}</Typography>
+      <Typography variant="body2" color="text.secondary" noWrap>
+        {hint}
+      </Typography>
+    </Box>
+    <Iconify icon="eva:arrow-ios-forward-fill" sx={{ color: 'text.disabled' }} />
+  </Box>
+);
+
 export default function Page() {
   const { t } = useTranslation();
   const { auth } = useAuth();
+  const cartCount = useCartCount();
   const form = useForm<{ time: number; code: number }>();
 
   const { data: totalUser = 0 } = useRequest(
@@ -217,93 +330,132 @@ export default function Page() {
             }}
           />
         </Card>
+        {/* Chào: một hàng gọn (avatar / icon + tên + mô tả) */}
         <Card
-          component={Stack}
-          p={3}
-          gap={2}
+          data-testid="home-welcome"
           sx={{
+            p: 2,
+            gap: 2,
+            display: 'flex',
+            alignItems: 'center',
             background: (theme) =>
               `linear-gradient(30deg, ${varAlpha(theme.vars.palette.info.mainChannel, 0.1)} 0%, rgba(0, 0, 0, 0) 60%, ${varAlpha(theme.vars.palette.secondary.mainChannel, 0.1)} 100%)`,
           }}
         >
           {auth ? (
             <Avatar
-              sx={{ width: 52, height: 52, borderRadius: 1.75 }}
+              sx={{ width: 52, height: 52, borderRadius: 1.75, flexShrink: 0 }}
               src={formatFilePath(auth?.avatarUrl)}
             />
           ) : (
             <Box
               sx={{
-                bgcolor: (theme) => varAlpha(theme.vars.palette.info.mainChannel, 0.2),
-                alignSelf: 'start',
-                p: 2,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
+                width: 52,
+                height: 52,
+                flexShrink: 0,
+                display: 'grid',
+                placeItems: 'center',
                 borderRadius: 1.75,
                 color: 'info.main',
+                bgcolor: (theme) => varAlpha(theme.vars.palette.info.mainChannel, 0.16),
               }}
             >
-              <Iconify icon="solar:user-plus-bold" />
+              <Iconify icon="solar:user-plus-bold" width={26} />
             </Box>
           )}
-          <Link
-            color="info"
-            underline={!auth ? 'hover' : 'none'}
-            {...(!auth && {
-              component: RouterLink,
-              href: '/sign-in',
-            })}
-          >
-            <Typography variant="h6">
-              {auth ? t('home.welcome.title', { name: auth.name }) : t('home.welcome.signIn')}
+          <Box sx={{ minWidth: 0 }}>
+            <Link
+              color="info"
+              underline={!auth ? 'hover' : 'none'}
+              {...(!auth && {
+                id: 'home-sign-in',
+                component: RouterLink,
+                href: '/sign-in',
+              })}
+            >
+              <Typography variant="h6" sx={{ lineHeight: 1.35 }}>
+                {auth ? t('home.welcome.title', { name: auth.name }) : t('home.welcome.signIn')}
+              </Typography>
+            </Link>
+            <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
+              {auth ? t('home.welcome.descriptionAuth') : t('home.welcome.descriptionGuest')}
             </Typography>
-          </Link>
-          <Typography variant="body2" color="textSecondary">
-            {auth ? t('home.welcome.descriptionAuth') : t('home.welcome.descriptionGuest')}
-          </Typography>
+          </Box>
         </Card>
 
-        <Grid container spacing={3} columns={{ xs: 1, sm: 2, md: 4 }}>
+        <Grid container spacing={2} columns={{ xs: 2, md: 4 }}>
           <Grid size={1}>
             <ViewCard
+              statKey="user"
               total={totalUser}
               title={t('home.stats.user')}
               unit={t('home.stats.users')}
               icon="ic-user"
+              href="/user-management"
               color="info"
             />
           </Grid>
-
           <Grid size={1}>
             <ViewCard
+              statKey="book"
               total={totalBook}
               title={t('home.stats.book')}
               unit={t('home.stats.books')}
               icon="ic-book"
+              href="/book-management"
               color="success"
             />
           </Grid>
-
           <Grid size={1}>
             <ViewCard
+              statKey="category"
               total={totalCategory}
               title={t('home.stats.category')}
               unit={t('home.stats.categories')}
-              icon="ic-blog"
+              icon="ic-category"
+              href="/category-management"
               color="error"
             />
           </Grid>
           <Grid size={1}>
             <ViewCard
+              statKey="promotion"
               total={totalPromotion}
               title={t('home.stats.promotion')}
               unit={t('home.stats.promotions')}
               icon="ic-sale"
+              href="/promotion-book-management"
               color="warning"
             />
           </Grid>
         </Grid>
+
+        {/* Lối tắt mua sắm (giỏ hàng lưu ở máy, đơn hàng cần đăng nhập) */}
+        <Card data-testid="home-shortcuts">
+          <Stack divider={<Box sx={{ borderTop: '1px solid var(--at-line)' }} />}>
+            <Shortcut
+              id="home-shortcut-cart"
+              href="/cart"
+              icon="solar:cart-large-minimalistic-bold-duotone"
+              tone="orange"
+              title={t('shop.cart.title')}
+              hint={
+                cartCount > 0
+                  ? t('shop.shortcut.cartHint', { count: cartCount })
+                  : t('shop.cart.empty')
+              }
+              badge={cartCount}
+            />
+            <Shortcut
+              id="home-shortcut-orders"
+              href="/orders"
+              icon="solar:bill-list-bold-duotone"
+              tone="teal"
+              title={t('shop.orders.title')}
+              hint={t('shop.shortcut.ordersHint')}
+            />
+          </Stack>
+        </Card>
 
         <Card
           component="form"
@@ -317,10 +469,12 @@ export default function Page() {
             })()
           )}
         >
-          <LabelBorder>{t('home.testMessage.title')}</LabelBorder>
+          <CardHeader title={t('home.testMessage.title')} />
           <Stack p={3} spacing={3}>
             <Stack direction="row" alignItems="center" gap={2}>
-              <Typography>{t('home.testMessage.timeout')}</Typography>
+              <Typography sx={{ flexShrink: 0, whiteSpace: 'nowrap' }}>
+                {t('home.testMessage.timeout')}
+              </Typography>
               <Controller
                 control={form.control}
                 name="time"
@@ -344,7 +498,7 @@ export default function Page() {
               // Xoá trống ô thì code thành 0, server trả 500 RangeError. Chặn ngay ở form.
               rules={{ required: t('home.testMessage.statusCodeRequired') }}
               render={({ field, fieldState: { error } }) => (
-                <Autocomplete
+                <Autocomplete id="home-status-code"
                   options={status}
                   getOptionLabel={(option) => `${option.code} - ${option.msg}`}
                   value={status.find((s) => s.code === field.value) || null}
@@ -371,7 +525,7 @@ export default function Page() {
                 />
               )}
             />
-            <Button type="submit" size="large" variant="contained" color="secondary" sx={{ alignSelf: 'flex-end' }}>
+            <Button id="home-test-message-submit" type="submit" size="large" variant="contained" color="secondary" sx={{ alignSelf: 'flex-end' }}>
               {t('common.actions.submit')}
             </Button>
           </Stack>

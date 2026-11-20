@@ -1,13 +1,14 @@
 import type { DropzoneOptions } from 'react-dropzone';
 
 import { useDropzone } from 'react-dropzone';
-import { useTranslation } from 'react-i18next';
 import { varAlpha } from 'minimal-shared/utils';
 import { useRef, useState, useEffect, forwardRef, useCallback } from 'react';
 
 import { Box, Stack, Typography } from '@mui/material';
 
 import { formatFilePath } from 'src/utils/format-filepath';
+
+import { useTranslate } from 'src/locales';
 
 import { Iconify } from '../iconify';
 import { accepImg, formatSize } from './upload-field';
@@ -23,10 +24,14 @@ type AvatarFieldProps = {
   name?: string;
 };
 export const AvatarField = forwardRef<HTMLInputElement, AvatarFieldProps>((props, ref) => {
+  const { t } = useTranslate();
   const { opt, onChange, name, onBlur, onFocus, value, error } = props;
   const flagUserHandle = useRef<boolean>(false);
   const [preview, setPreview] = useState('');
-  const { t } = useTranslation();
+  // Ảnh không tải được (file đã bị xoá, VD sau khi seed lại) → coi như chưa có ảnh, hiện lại ô chọn ảnh
+  const [broken, setBroken] = useState(false);
+  useEffect(() => setBroken(false), [preview]);
+  const hasPreview = !!preview && !broken;
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -78,7 +83,7 @@ export const AvatarField = forwardRef<HTMLInputElement, AvatarFieldProps>((props
           p: 1,
         }}
       >
-        {preview && (
+        {hasPreview && (
           <Box p={1} position="absolute" width={1} height={1}>
             <Box
               component="img"
@@ -90,9 +95,9 @@ export const AvatarField = forwardRef<HTMLInputElement, AvatarFieldProps>((props
                 borderRadius: '50%',
                 bgcolor: error ? 'error.lighter' : 'divider',
               }}
-              onError={(e) => {
-                e.currentTarget.setAttribute('src', formatFilePath('/$image-404.svg'));
-              }}
+              // Ảnh lỗi thì ẩn đi, lộ ô chọn ảnh bên dưới. Không dùng /$image-404.svg vì file đó
+              // chỉ có trong backend/upload (gitignore), máy mới clone không có.
+              onError={() => setBroken(true)}
             />
           </Box>
         )}
@@ -109,8 +114,10 @@ export const AvatarField = forwardRef<HTMLInputElement, AvatarFieldProps>((props
             transition: 'opacity 200ms cubic-bezier(0.4, 0, 0.2, 1)',
             '&:hover': { opacity: 0.8 },
             bgcolor: (theme) =>
-              error ? theme.palette.error.light : varAlpha(theme.vars.palette.grey['500Channel'], 0.08),
-            ...(preview && {
+              error
+                ? theme.palette.error.light
+                : varAlpha(theme.vars.palette.grey['500Channel'], 0.08),
+            ...(hasPreview && {
               opacity: 0,
               '&:hover': {
                 opacity: 1,
@@ -131,8 +138,8 @@ export const AvatarField = forwardRef<HTMLInputElement, AvatarFieldProps>((props
         mt={2}
       >
         {t('components.upload.allowed', {
-          // Mỗi MIME có một mảng đuôi file: trải phẳng rồi mới thêm `*` (trước đây ra `*.jpeg,.jpg*.png…`)
           types: Object.values(opt?.accept || accepImg)
+            // Mỗi MIME có một mảng đuôi file: trải phẳng rồi mới thêm `*` (bản web ra `*.jpeg,.jpg*.png…`)
             .flat()
             .map((ext) => `*${ext}`)
             .join(', '),

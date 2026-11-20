@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { Controller, useFormState } from 'react-hook-form';
 
@@ -21,29 +20,32 @@ import { RouterLink } from 'src/routes/components';
 import { renderFallback } from 'src/routes/components/fallback';
 
 import { CONFIG } from 'src/config-global';
+import { useTranslate } from 'src/locales';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import Title from 'src/components/title';
 import { Iconify } from 'src/components/iconify';
 import { dialog } from 'src/components/dialog-confirm/confirm';
+import { PageHeader } from 'src/components/page-header/page-header';
 
 import { getBook } from '../api/get-book';
 import { CardDetail } from './card-detail';
+import { CardPreview } from './card-preview';
 import { CardProperty } from './card-property';
+import { CardMoreInfo } from './card-more-info';
 import { deleteBook } from '../api/delete-book';
 import { CardPromotion } from './card-promotion';
 import { handleCreateBook } from '../api/create-book';
 import { handleUpdateBook } from '../api/modify-book';
-import { reset, control, setFocus, handleSubmit } from '../stores/form-add';
+import { reset, control, setFocus, getValues, handleSubmit } from '../stores/form-add';
 
 export function AddOverview() {
-  const { t } = useTranslation();
+  const { t } = useTranslate();
   const [search] = useSearchParams();
   const { isLoading, isSubmitSuccessful, isDirty, isSubmitted, errors } = useFormState({ control });
   const [loadingPage, setLoadingPage] = useState(true);
   const router = useRouter();
   const id = search.get('id');
-  const [rootName, setRootName] = useState('');
 
   useEffect(() => {
     if (isSubmitted) {
@@ -73,13 +75,19 @@ export function AddOverview() {
         slug: '',
         price: '',
         picture: [],
-        promotions: [],
+        author: '',
+        publisher: '',
+        publishYear: '',
+        pageCount: '',
+        isbn: '',
+        language: '',
+        previewTitle: '',
+        previewContent: '',
       });
     } else {
       getBook(id)
         .then((res) => {
           reset(res);
-          setRootName(res.name ?? '');
         })
         .finally(() => setLoadingPage(false));
     }
@@ -102,11 +110,12 @@ export function AddOverview() {
       <Title>
         {`${id ? t('book.form.modifyTitle') : t('book.form.createTitle')} - ${CONFIG.appName}`}
       </Title>
-      <Stack spacing={2} mb={5}>
-        <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          {id ? t('book.form.modifyTitle') : t('book.form.createTitle')}
-        </Typography>
-        <Breadcrumbs sx={{ mb: 3 }}>
+      <PageHeader
+        icon="solar:book-2-bold-duotone"
+        tone="green"
+        title={id ? t('book.form.modifyTitle') : t('book.form.createTitle')}
+      >
+        <Breadcrumbs sx={{ mt: 0.5 }}>
           <Link component={RouterLink} href="/book-management" color="textPrimary" variant="body2">
             {t('book.form.breadcrumb')}
           </Link>
@@ -114,12 +123,14 @@ export function AddOverview() {
             {id ? t('book.form.modifyTitle') : t('book.form.createTitle')}
           </Typography>
         </Breadcrumbs>
-      </Stack>
+      </PageHeader>
 
       <Container maxWidth="md">
         <Stack spacing={4} component="form" noValidate>
           <CardDetail />
           <CardProperty />
+          <CardMoreInfo />
+          <CardPreview />
           <CardPromotion />
           <Box display="flex" flexWrap="wrap" gap={2}>
             <Controller
@@ -130,7 +141,7 @@ export function AddOverview() {
                 <FormControlLabel
                   checked={field.value === 'AVAILABLE'}
                   onChange={(_, c) => field.onChange(c ? 'AVAILABLE' : 'UNAVAILABLE')}
-                  control={<Switch />}
+                  control={<Switch id="book-form-available" />}
                   label={
                     field.value === 'AVAILABLE'
                       ? t('book.form.available')
@@ -141,7 +152,7 @@ export function AddOverview() {
               )}
             />
 
-            <Button
+            <Button id="book-form-reset"
               disabled={!isDirty || isLoading}
               sx={{ ml: 'auto' }}
               size="large"
@@ -150,7 +161,7 @@ export function AddOverview() {
             >
               {t('book.form.reset')}
             </Button>
-            <Button
+            <Button id="book-form-submit"
               size="large"
               loading={isLoading}
               disabled={!isDirty}
@@ -169,7 +180,7 @@ export function AddOverview() {
               <Typography variant="body2" color="textSecondary">
                 {t('book.form.deleteNote')}
               </Typography>
-              <Button
+              <Button id="book-form-delete"
                 variant="outlined"
                 sx={{ alignSelf: 'end' }}
                 startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
@@ -177,12 +188,12 @@ export function AddOverview() {
                 onClick={() =>
                   dialog.delete(
                     <>
-                      {t('book.form.deleteConfirmBefore')} <b>{rootName}</b>
+                      {t('book.form.deleteConfirmBefore')} <b>{getValues('name')}</b>
                       {t('book.form.deleteConfirmAfter')}
                     </>,
                     () =>
-                      deleteBook(id).then(() => {
-                        router.back('/book-management');
+                      deleteBook(id).then((ok) => {
+                        if (ok) router.back('/book-management');
                       })
                   )
                 }

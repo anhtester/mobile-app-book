@@ -88,7 +88,7 @@ export function ContentUser({
             },
           }}
           render={({ field, fieldState: { invalid, error } }) => (
-            <TextField
+            <TextField id="user-name"
               label={t('user.form.name')}
               error={invalid}
               helperText={error?.message}
@@ -108,7 +108,7 @@ export function ContentUser({
             },
           }}
           render={({ field, fieldState: { invalid, error } }) => (
-            <TextField label={t('user.form.phone')} error={invalid} helperText={error?.message} {...field} />
+            <TextField id="user-phone" label={t('user.form.phone')} error={invalid} helperText={error?.message} {...field} />
           )}
         />
         <Controller
@@ -155,7 +155,7 @@ export function ContentUser({
             },
           }}
           render={({ field, fieldState: { invalid, error } }) => (
-            <TextField
+            <TextField id="user-email"
               label={t('user.form.email')}
               error={invalid}
               helperText={error?.message}
@@ -178,7 +178,7 @@ export function ContentUser({
               deps: ['password'],
             }}
             render={({ field, fieldState: { invalid, error } }) => (
-              <PasswordField
+              <PasswordField id="user-old-password"
                 label={t('user.form.oldPassword')}
                 error={invalid}
                 helperText={error?.message}
@@ -201,7 +201,7 @@ export function ContentUser({
             deps: ['password_confirmation'],
           }}
           render={({ field, fieldState: { invalid, error } }) => (
-            <PasswordField
+            <PasswordField id="user-password"
               label={t('user.form.password')}
               error={invalid}
               helperText={error?.message}
@@ -224,7 +224,7 @@ export function ContentUser({
               value === password || t('user.validation.passwordConfirmationMismatch'),
           }}
           render={({ field, fieldState: { invalid, error } }) => (
-            <PasswordField
+            <PasswordField id="user-password-confirmation"
               label={t('user.form.passwordConfirmation')}
               error={invalid}
               helperText={error?.message}
@@ -242,7 +242,7 @@ export function ContentUser({
               <FormControlLabel
                 {...field}
                 checked={field.value}
-                control={<Switch />}
+                control={<Switch id="user-is-active" />}
                 label={field.value ? t('user.form.activeForLogin') : t('user.form.inactiveForLogin')}
               />
             )}

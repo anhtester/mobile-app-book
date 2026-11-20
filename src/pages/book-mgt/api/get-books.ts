@@ -1,8 +1,9 @@
-import i18n from 'src/locales';
 import { axios } from 'src/api/axios';
+import { translate } from 'src/locales';
 
 import { toast } from 'src/components/toast';
 
+// Mất mạng thì không có err.response: đọc an toàn kẻo crash (bản web vẫn đọc thẳng)
 export const getBooks = (params: {
   sortBy: string;
   sort: string;
@@ -25,6 +26,6 @@ export const getBooks = (params: {
         }
     )
     .catch((err) => {
-      toast.error(err?.response?.data?.msg ?? i18n.t('book.toast.networkError'));
+      toast.error(err?.response?.data?.msg ?? translate('book.toast.networkError'));
       throw err;
     });

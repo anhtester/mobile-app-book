@@ -56,7 +56,7 @@ export function LanguageDropdown() {
       >
         <MenuList id="language-menu" aria-label={t('language.label')} sx={{ p: 0.5, minWidth: 168 }}>
           {LANGUAGES.map((option) => (
-            <MenuItem
+            <MenuItem id={`language-option-${option}`}
               key={option}
               data-testid={`language-option-${option}`}
               selected={option === lang}

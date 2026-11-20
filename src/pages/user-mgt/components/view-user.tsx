@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useCallback } from 'react';
 
-import { Box, Card, Stack, MenuItem, Typography } from '@mui/material';
+import { Card, Stack, MenuItem } from '@mui/material';
 
 import { useDebounce } from 'src/hooks/use-debound';
 
@@ -13,6 +13,7 @@ import { Iconify } from 'src/components/iconify';
 import { PageAction } from 'src/components/page-action';
 import { dialog } from 'src/components/dialog-confirm/confirm';
 import { useTable } from 'src/components/grid-view/hook/use-table';
+import { PageHeader } from 'src/components/page-header/page-header';
 import { TableView } from 'src/components/grid-view/components/table-view';
 import { TableFilterView } from 'src/components/grid-view/components/table-filter-view';
 import { TablePaginationView } from 'src/components/grid-view/components/table-pagination-view';
@@ -67,17 +68,13 @@ export function ViewUser() {
 
   return (
     <DashboardContent>
-      <Box
-        sx={{
-          mb: 5,
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          {t('user.title')}
-        </Typography>
-        {auth && (
+      <PageHeader
+        icon="solar:users-group-rounded-bold"
+        tone="blue"
+        title={t('user.title')}
+        subtitle={t('user.subtitle')}
+        action={
+          auth && (
           <PageAction
             id="page-action-new-user"
             startIcon={<Iconify icon="solar:user-plus-bold" />}
@@ -90,8 +87,9 @@ export function ViewUser() {
           >
             {t('fab.newUser')}
           </PageAction>
-        )}
-      </Box>
+        )
+        }
+      />
       <Card>
         <TableFilterView
           placeholder={t('user.searchPlaceholder')}
@@ -118,7 +116,7 @@ export function ViewUser() {
               ? (row) =>
                   row && (
                     <Stack>
-                      <MenuItem
+                      <MenuItem id="user-action-edit"
                         disabled={row?.id === auth?.id}
                         onClick={() => {
                           formControl.reset({
@@ -136,7 +134,7 @@ export function ViewUser() {
                         {t('common.actions.edit')}
                       </MenuItem>
 
-                      <MenuItem
+                      <MenuItem id="user-action-delete"
                         sx={{ color: 'error.main' }}
                         disabled={row?.id === auth?.id}
                         onClick={() =>

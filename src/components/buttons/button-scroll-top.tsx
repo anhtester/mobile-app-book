@@ -8,7 +8,7 @@ export function ButtonScrollTop({ in: show }: { in: boolean }) {
   const { t } = useTranslation();
   return (
     <Zoom in={show}>
-      <Fab
+      <Fab id="button-scroll-top"
         size="medium"
         onClick={() =>
           window.scrollTo({

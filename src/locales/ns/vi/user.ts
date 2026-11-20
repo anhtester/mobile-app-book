@@ -1,9 +1,11 @@
 import type { user as en } from '../en/user';
 // Chép từ ../book.anhtester.com/frontend/src/locales/vi/user.ts (bản web), đổi {x} thành {{x}} cho i18next.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 import type { Translation } from '../../types';
 
 export const user: Translation<typeof en> = {
   title: 'Quản lý người dùng',
+  subtitle: 'Tài khoản đăng nhập, thông tin liên hệ và trạng thái.',
   newUser: 'Thêm người dùng',
   searchPlaceholder: 'Tìm người dùng (tên, email, số điện thoại hoặc địa chỉ)',
   deleteConfirm: 'Xác nhận bạn muốn xoá người dùng "{{name}}".',
@@ -66,11 +68,6 @@ export const user: Translation<typeof en> = {
     updateFailed: 'Cập nhật người dùng thất bại.',
     updateProfileFailed: 'Cập nhật hồ sơ thất bại.',
   },
-  address: {
-    division: 'Tỉnh/Thành phố',
-    ward: 'Phường/Xã',
-    detail: 'Địa chỉ chi tiết',
-  },
   breadcrumb: {
     userManagement: 'Quản lý người dùng',
   },
@@ -84,13 +81,17 @@ export const user: Translation<typeof en> = {
   setting: {
     title: 'Cài đặt tài khoản',
     themeTitle: 'Giao diện',
-    themeSubheader:
-      'Chuyển giữa giao diện Sáng, Tối hoặc theo Hệ thống để có trải nghiệm phù hợp và dễ chịu.',
+    themeSubheader: 'Chuyển giữa giao diện Sáng, Tối hoặc theo Hệ thống để có trải nghiệm phù hợp và dễ chịu.',
     themeLight: 'Sáng',
     themeDark: 'Tối',
     themeSystem: 'Hệ thống',
     colorTitle: 'Chọn màu',
     colorSubheader: 'Chọn màu cho tài khoản của bạn.',
     reset: 'Đặt lại',
+  },
+  address: {
+    division: 'Tỉnh/Thành phố',
+    ward: 'Phường/Xã',
+    detail: 'Địa chỉ chi tiết',
   },
 };

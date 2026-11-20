@@ -1,4 +1,5 @@
 // Chép từ ../book.anhtester.com/frontend/src/locales/vi/components.ts (bản web), đổi {x} thành {{x}} cho i18next.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 import type { Translation } from '../../types';
 import type { components as en } from '../en/components';
 
@@ -75,5 +76,30 @@ export const components: Translation<typeof en> = {
     loading: 'Đang tải...',
     success: 'Thành công',
     error: 'Lỗi',
+  },
+  address: {
+    title: 'Địa chỉ',
+    division: 'Tỉnh / Thành phố',
+    ward: 'Phường / Xã',
+    detail: 'Số nhà, tên đường',
+  },
+  autocomplete: {
+    noOptions: 'Không có lựa chọn',
+    loading: 'Đang tải…',
+    open: 'Mở',
+    close: 'Đóng',
+    clear: 'Xoá',
+  },
+  lightbox: {
+    zoomIn: 'Phóng to (+)',
+    zoomOut: 'Thu nhỏ (-)',
+    rotate: 'Xoay 90°',
+    reset: 'Về mặc định (0)',
+    openOriginal: 'Mở ảnh gốc',
+    close: 'Đóng (Esc)',
+    prev: 'Ảnh trước (←)',
+    next: 'Ảnh sau (→)',
+    image: 'Ảnh',
+    hint: 'Lăn chuột hoặc nhấp đúp để phóng to · kéo để di chuyển · ← → để chuyển ảnh · Esc để đóng',
   },
 };

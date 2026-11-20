@@ -1,6 +1,5 @@
 // Chép từ ../book.anhtester.com/frontend/src/locales/en/auth.ts (bản web), đổi {x} thành {{x}} cho i18next.
-// Namespace 'auth'. Khoá tiếng Anh là nguồn: thêm khoá ở đây trước, rồi thêm bản dịch ở vi/auth.ts.
-// Màn sign-in, sign-up. Form thông tin user trong sign-up dùng namespace 'user'.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 export const auth = {
   signIn: {
     title: 'Sign in',
@@ -26,7 +25,6 @@ export const auth = {
   toast: {
     networkError: 'Cannot connect to the server. Please try again.',
   },
-  // Riêng mobile: aria-label nút hiện/ẩn mật khẩu (PasswordField, dùng ở sign-in, sign-up, profile, form user)
   password: {
     show: 'Show password',
     hide: 'Hide password',

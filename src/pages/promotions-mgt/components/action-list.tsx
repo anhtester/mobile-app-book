@@ -15,12 +15,12 @@ export function ActionList({ row, request }: { row: PromotionType; request: () =
 
   return (
     <Stack>
-      <MenuItem onClick={() => router.push(`/promotion-book-management/handle?id=${row.id}`)}>
+      <MenuItem id="promotion-action-edit" onClick={() => router.push(`/promotion-book-management/handle?id=${row.id}`)}>
         <Iconify icon="solar:pen-bold" />
         {t('common.actions.edit')}
       </MenuItem>
 
-      <MenuItem
+      <MenuItem id="promotion-action-delete"
         sx={{ color: 'error.main' }}
         onClick={() =>
           dialog.delete(t('promotion.confirmDelete', { name: row.name }), async () => {

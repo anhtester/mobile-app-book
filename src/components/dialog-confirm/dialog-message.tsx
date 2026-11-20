@@ -20,7 +20,7 @@ export function DialogMessage({ message }: { message: string }) {
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button color="inherit" onClick={() => setOpen(false)}>
+        <Button id="dialog-message-close" color="inherit" onClick={() => setOpen(false)}>
           {t('common.close')}
         </Button>
       </DialogActions>

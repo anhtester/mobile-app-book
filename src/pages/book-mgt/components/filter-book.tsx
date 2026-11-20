@@ -1,10 +1,9 @@
-import type { TFunction } from 'i18next';
+import type { TFn, TKey } from 'src/locales';
 import type { RowComponentProps } from 'react-window';
 
 import { create } from 'zustand';
-import { useTranslation } from 'react-i18next';
 import { List as VirtualList } from 'react-window';
-import React, { useState, useCallback, useDeferredValue } from 'react';
+import React, { useRef, useState, useEffect, useDeferredValue } from 'react';
 
 import {
   Box,
@@ -27,8 +26,8 @@ import {
 
 import { useRequest } from 'src/hooks/use-request';
 
-import i18n from 'src/locales';
 import { useAuth } from 'src/store/auth';
+import { translate, useTranslate } from 'src/locales';
 
 import { Label } from 'src/components/label';
 import { toast } from 'src/components/toast';
@@ -39,24 +38,25 @@ import { ButtonDelete } from 'src/components/buttons/button-delete';
 
 import { BookSort } from './book-sort';
 import { Category } from '../api/categorys';
+import { slugify } from '../api/create-book';
 import { mappingSort, type ReturnUseFileterBook } from '../stores/filter';
 
 // Giá trị sort (key của mappingSort) đi lên URL nên giữ nguyên, chỉ dịch nhãn hiển thị
-const SORT_LABEL: Record<keyof typeof mappingSort, string> = {
+const SORT_LABEL: Record<keyof typeof mappingSort, TKey> = {
   Feature: 'book.sort.feature',
   Newest: 'book.sort.newest',
   'Price: Low to High': 'book.sort.priceLowToHigh',
   'Price: High to Low': 'book.sort.priceHighToLow',
 };
 
-function formatNumber(t: TFunction, from: number | null) {
+function formatNumber(t: TFn, from: number | null) {
   if (!from) return t('book.filter.unset');
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(from);
 }
 
 const priceOptions = [10_000, 100_000, 1_000_000, 10_000_000];
-// Nhận `t` để React Compiler tính lại khi đổi ngôn ngữ (xem columns-promotion.tsx)
-function getPriceLabel(t: TFunction, price: { from?: number | null; to?: number | null }): string {
+// Nhận `t` để nhãn đổi theo ngôn ngữ (bẫy React Compiler, xem memory/notes/i18n.md)
+function getPriceLabel(t: TFn, price: { from?: number | null; to?: number | null }): string {
   const { from, to } = price;
 
   if (from != null && to != null)
@@ -73,7 +73,6 @@ function getPriceLabel(t: TFunction, price: { from?: number | null; to?: number 
 }
 
 export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
-  const { t } = useTranslation();
   const {
     isFilter,
     setIsFilter,
@@ -87,13 +86,26 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
     category,
   } = config;
 
+  const { t } = useTranslate();
   const { auth } = useAuth();
   const { setId, id } = useEdit();
-  const { data = [], request, setData } = useRequest(useCallback(() => Category.get(), []));
+  const { data = [], request, setData } = useRequest(() => Category.get());
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
 
   const categories = useDeferredValue(data.filter((c) => c.name.includes(search)));
+  const selectedTabRef = useRef<HTMLDivElement>(null);
+
+  // Tab category tải sau khi trang mở (vd đi từ link số sách ở trang Category sang),
+  // nên tự cuộn tab đang chọn vào tầm nhìn khi danh sách hoặc category đổi
+  // (chờ một nhịp: MUI hiện nút cuộn của Tabs sau lần đo đầu nên tự cuộn thiếu)
+  useEffect(() => {
+    const timer = setTimeout(
+      () => selectedTabRef.current?.scrollIntoView({ block: 'nearest', inline: 'nearest' }),
+      300
+    );
+    return () => clearTimeout(timer);
+  }, [data, category]);
 
   return (
     <>
@@ -105,7 +117,7 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
         gap={2}
         flexWrap="wrap-reverse"
       >
-        <Button
+        <Button id="book-filter-toggle"
           color="inherit"
           startIcon={<Iconify icon="ic:round-filter-list" />}
           endIcon={
@@ -161,17 +173,54 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
         <Tabs
           textColor="inherit"
           variant="scrollable"
+          scrollButtons="auto"
           indicatorColor="primary"
-          value={category}
+          // Tab thể loại dạng pill theo AT UI kit: tab đang chọn tô gradient xanh lá
+          sx={{
+            flex: 1,
+            // Thiếu minWidth: 0 thì Tabs không co lại trong hàng flex, tab cuối chui dưới nút ⚙ (mobile 2026-11-21)
+            minWidth: 0,
+            minHeight: 44,
+            ml: -1.5,
+            '& .MuiTabs-indicator': { display: 'none' },
+            // Đệm cho quầng sáng của tab đang chọn, không bị khung cuộn ngang xén thành khối chữ nhật
+            '& .MuiTabs-list': { gap: 1, pt: 0.75, pb: 1.75, px: 1.5 },
+            '& .MuiTab-root': {
+              minHeight: 38,
+              px: 2,
+              mr: '0 !important',
+              borderRadius: 999,
+              fontWeight: 600,
+              color: 'text.secondary',
+              bgcolor: 'var(--at-sunken)',
+              boxShadow: 'inset 0 0 0 1px var(--at-line)',
+              transition: 'all .15s',
+              '&:hover': { color: 'text.primary' },
+              '& .MuiChip-root, & .label': { transition: 'none' },
+            },
+            '& .MuiTab-root.Mui-selected': {
+              color: '#fff',
+              backgroundImage: 'var(--at-grad-green)',
+              boxShadow: 'var(--at-glow-green)',
+              '& span[class*="label"], & .MuiBox-root > span:last-of-type': {
+                color: 'inherit',
+                bgcolor: 'rgba(255,255,255,.22)',
+              },
+            },
+          }}
+          // Chưa tải xong / category không tồn tại thì không chọn tab nào (tránh cảnh báo MUI)
+          value={!category || data.some((c) => c.name === category) ? category : false}
           onChange={(_, value) => setCategory(value)}
         >
-          <Tab value="" label={t('book.filter.all')} />
+          <Tab id="book-tab-all" value="" label={t('book.filter.all')} />
           {data
-            .filter((c) => c.bookCount > 0)
+            // Ẩn category đã tắt / chưa có sách, trừ category đang chọn (link từ trang Category)
+            .filter((c) => (c.bookCount > 0 && c.isActive) || c.name === category)
             .map((item) => (
-              <Tab
+              <Tab id={`book-tab-${slugify(item.name)}`}
                 key={item.name}
                 value={item.name}
+                ref={item.name === category ? selectedTabRef : undefined}
                 label={
                   <Box display="flex" gap={0.5} alignItems="center">
                     {item.name} <Label>{item.bookCount}</Label>
@@ -181,13 +230,18 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
             ))}
         </Tabs>
         {auth && (
-          <IconButton id="setting-category" onClick={() => setOpen(true)} sx={{ ml: 'auto' }}>
+          <IconButton
+            id="setting-category"
+            aria-label={t('book.category.title')}
+            onClick={() => setOpen(true)}
+            sx={{ ml: 0.5, flexShrink: 0 }}
+          >
             <Iconify icon="solar:settings-bold-duotone" />
           </IconButton>
         )}
       </Stack>
 
-      <Divider sx={{ mb: 2 }} />
+      <Divider sx={{ mt: 1, mb: 2, borderStyle: 'dashed' }} />
 
       <Dialog open={open} fullWidth maxWidth="xs">
         <DialogTitle>
@@ -206,7 +260,7 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
           <Stack sx={{ height: 52 * 6, mt: 1 }}>
             {search && (
               <Box textAlign="center" mt={1}>
-                <Button
+                <Button id="book-category-add"
                   onClick={() => {
                     toast.loading(() => Category.create(search), {
                       loading: t('book.category.saving'),
@@ -215,7 +269,7 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
                         setSearch('');
                         return res.data.msg;
                       },
-                      error: (err) => err?.response?.data?.msg ?? t('book.toast.networkError'),
+                      error: (err) => err?.response?.data?.msg ?? translate('common.somethingWrong'),
                     });
                   }}
                   color="inherit"
@@ -235,7 +289,7 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button color="inherit" onClick={() => setOpen(false)}>
+          <Button id="book-category-dialog-close" color="inherit" onClick={() => setOpen(false)}>
             {t('common.actions.close')}
           </Button>
         </DialogActions>
@@ -258,14 +312,14 @@ const useEdit = create<{
 
 const saveChange = (name: string, newName: string, success: () => void, error: () => void) =>
   toast.loading(() => Category.update(name, newName), {
-    loading: i18n.t('book.category.savingChanges'),
+    loading: translate('book.category.savingChanges'),
     success: async (res) => {
       success();
       return res.data.msg;
     },
     error: (err) => {
       error();
-      return err?.response?.data?.msg ?? i18n.t('book.toast.networkError');
+      return err?.response?.data?.msg ?? translate('common.somethingWrong');
     },
   });
 
@@ -282,6 +336,7 @@ const Row = ({
 }>) => {
   const { id, setId, newName, setNewName } = useEdit();
   const item = list[index];
+  if (!item) return <div />;
   return (
     <Box
       key={item.name}
@@ -345,12 +400,12 @@ const Row = ({
         id={`del-${item.name}`}
         onDelete={() =>
           toast.loading(() => Category.delete(item.name), {
-            loading: i18n.t('book.category.deleting'),
+            loading: translate('book.category.deleting'),
             success: async (res) => {
               await request();
               return res.data.msg;
             },
-            error: (err) => err?.response?.data?.msg ?? i18n.t('book.toast.networkError'),
+            error: (err) => err?.response?.data?.msg ?? translate('common.somethingWrong'),
           })
         }
       />

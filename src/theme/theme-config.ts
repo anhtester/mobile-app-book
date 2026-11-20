@@ -31,7 +31,8 @@ export const themeConfig: ThemeConfig = {
    *************************************** */
   fontFamily: {
     primary: 'Inter Variable',
-    secondary: 'Inter Variable',
+    // Font phụ như web (2026-11-21-02): tên sách, tiêu đề lớn, trình đọc thử
+    secondary: 'Merriweather Variable',
   },
   /** **************************************
    * Palette

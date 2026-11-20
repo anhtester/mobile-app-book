@@ -25,7 +25,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
             ...(slotProps?.input as object),
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton
+                <IconButton id={props.id ? `${props.id}-toggle-visibility` : undefined}
                   aria-label={showPassword ? t('auth.password.hide') : t('auth.password.show')}
                   onClick={() => setShowPassword((v) => !v)}
                   onMouseDown={(e) => e.preventDefault()}

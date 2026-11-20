@@ -30,6 +30,7 @@ import Title from 'src/components/title';
 import { toast } from 'src/components/toast';
 import { Iconify } from 'src/components/iconify';
 import { dialog } from 'src/components/dialog-confirm/confirm';
+import { PageHeader } from 'src/components/page-header/page-header';
 
 import { CardBook } from './components/card-book';
 import { CardDetail } from './components/card-detail';
@@ -114,17 +115,14 @@ export default function Handle() {
   return (
     <DashboardContent>
       <Title>{`${title} - ${CONFIG.appName}`}</Title>
-      <Stack spacing={2} mb={5}>
-        <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          {title}
-        </Typography>
-        <Breadcrumbs sx={{ mb: 3 }}>
+      <PageHeader icon="ph:seal-percent-fill" tone="orange" title={title}>
+        <Breadcrumbs sx={{ mt: 0.5 }}>
           <Link component={RouterLink} href={LIST_URL} color="textPrimary" variant="body2">
             {t('promotion.handle.breadcrumb')}
           </Link>
           <Typography variant="body2">{title}</Typography>
         </Breadcrumbs>
-      </Stack>
+      </PageHeader>
       {loading ? (
         <LinearProgress />
       ) : (
@@ -142,7 +140,7 @@ export default function Handle() {
                     <FormControlLabel
                       checked={!!field.value}
                       onChange={(_, c) => field.onChange(c)}
-                      control={<Switch />}
+                      control={<Switch id="promotion-form-active" />}
                       label={field.value ? t('promotion.handle.active') : t('promotion.handle.inactive')}
                       sx={{ ml: 2 }}
                     />
@@ -150,7 +148,7 @@ export default function Handle() {
                 />
               )}
 
-              <Button
+              <Button id="promotion-form-reset"
                 sx={{ ml: 'auto' }}
                 size="large"
                 color="inherit"
@@ -159,7 +157,7 @@ export default function Handle() {
               >
                 {t('promotion.handle.reset')}
               </Button>
-              <Button
+              <Button id="promotion-form-submit"
                 size="large"
                 loading={isSubmitting}
                 variant="contained"
@@ -175,7 +173,7 @@ export default function Handle() {
                 <Typography variant="body2" color="textSecondary" mb={2}>
                   {t('promotion.handle.deleteNote')}
                 </Typography>
-                <Button
+                <Button id="promotion-form-delete"
                   variant="outlined"
                   sx={{ alignSelf: 'end' }}
                   startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}

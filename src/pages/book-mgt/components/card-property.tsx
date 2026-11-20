@@ -1,6 +1,5 @@
+import { useMemo, useState } from 'react';
 import { Controller } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { useMemo, useState, useCallback } from 'react';
 
 import {
   Card,
@@ -18,6 +17,8 @@ import {
 
 import { useRequest } from 'src/hooks/use-request';
 
+import { useTranslate } from 'src/locales';
+
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 
@@ -25,9 +26,9 @@ import { Category } from '../api/categorys';
 import { control } from '../stores/form-add';
 
 export function CardProperty() {
-  const { t } = useTranslation();
+  const { t } = useTranslate();
   const [expen, setExpen] = useState(true);
-  const { data = [] } = useRequest(useCallback(() => Category.get(), []));
+  const { data = [] } = useRequest(() => Category.get());
   const mapCategory = data.reduce(
     (acc, cur) => {
       acc[cur.name] = cur;
@@ -37,7 +38,13 @@ export function CardProperty() {
   );
 
   const sortedCategoryNames = useMemo(
-    () => (data ? [...data].sort((a, b) => a.bookCount - b.bookCount).map((c) => c.name) : []),
+    () =>
+      data
+        ? data
+            .filter((c) => c.isActive)
+            .sort((a, b) => a.bookCount - b.bookCount)
+            .map((c) => c.name)
+        : [],
     [data]
   );
 
@@ -47,7 +54,7 @@ export function CardProperty() {
         title={t('book.property.title')}
         subheader={t('book.property.subheader')}
         action={
-          <IconButton onClick={() => setExpen(!expen)}>
+          <IconButton id="book-form-toggle-property" onClick={() => setExpen(!expen)}>
             <Iconify
               sx={{ transition: 'all .1s ease-in-out' }}
               style={{ rotate: !expen ? '0deg' : '90deg' }}
@@ -66,15 +73,20 @@ export function CardProperty() {
             rules={{
               required: t('book.validation.priceRequired'),
               min: { value: 1000, message: t('book.validation.priceMin') },
-              max: { value: 2_147_483_647, message: t('book.validation.priceMaxInt') },
+              // Khớp giới hạn API (MAX_BOOK_PRICE = 1 tỷ, cột Int trong DB)
+              max: { value: 1_000_000_000, message: t('book.validation.priceMax') },
               pattern: {
                 value: /^\d*\.?\d*$/,
                 message: t('book.validation.priceNumber'),
               },
+              validate: {
+                integer: (v) =>
+                  v === '' || Number.isInteger(Number(v)) || t('book.validation.priceInteger'),
+              },
             }}
             defaultValue=""
             render={({ field, fieldState: { invalid, error } }) => (
-              <TextField
+              <TextField id="book-form-price"
                 fullWidth
                 label={t('book.property.price')}
                 {...field}
@@ -104,13 +116,15 @@ export function CardProperty() {
               validate: {
                 minLength: (val) => val?.length > 0 || t('book.validation.categoryRequired'),
                 itemMaxLength: (val) =>
-                  val?.every((c) => (typeof c === 'string' ? c.length : mapCategory[c]?.name.length) < 25) ||
-                  t('book.validation.categoryMaxLength'),
+                  val?.every(
+                    (c) => (typeof c === 'string' ? c.length : mapCategory[c]?.name.length) < 25
+                  ) || t('book.validation.categoryMaxLength'),
               },
             }}
             defaultValue={[]}
             render={({ field, fieldState: { invalid, error } }) => (
               <Autocomplete
+                id="book-form-categories"
                 multiple
                 freeSolo
                 openOnFocus

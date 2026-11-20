@@ -1,4 +1,5 @@
 // Chép từ ../book.anhtester.com/frontend/src/locales/vi/common.ts (bản web), đổi {x} thành {{x}} cho i18next.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 import type { Translation } from '../../types';
 import type { common as en } from '../en/common';
 

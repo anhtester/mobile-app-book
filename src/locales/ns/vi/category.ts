@@ -1,16 +1,28 @@
 // Chép từ ../book.anhtester.com/frontend/src/locales/vi/category.ts (bản web), đổi {x} thành {{x}} cho i18next.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 import type { Translation } from '../../types';
 import type { category as en } from '../en/category';
 
 export const category: Translation<typeof en> = {
   title: 'Quản lý danh mục',
+  subtitle: 'Thể loại sách, hiện thành bộ lọc ở trang Sách.',
   newCategory: 'Thêm danh mục',
   searchPlaceholder: 'Tìm danh mục...',
   summary: '{{count}} danh mục · {{links}} lượt gắn sách',
+  summaryFiltered: '{{shown}} / {{count}} danh mục · {{links}} / {{totalLinks}} lượt gắn sách',
   columns: {
     name: 'Tên',
+    status: 'Trạng thái',
     books: 'Số sách',
   },
+  status: {
+    active: 'Bật',
+    inactive: 'Tắt',
+  },
+  viewBooks: 'Xem {{count}} sách thuộc "{{name}}"',
+  statusToggle: 'Bật/tắt trạng thái của "{{name}}"',
+  statusHint: 'Danh mục tắt sẽ ẩn khỏi tab lọc ở trang Sách và khỏi form sách.',
+  statusChanged: 'Danh mục "{{name}}" đã chuyển sang {{status}}.',
   form: {
     name: 'Tên danh mục',
     newName: 'Tên mới',

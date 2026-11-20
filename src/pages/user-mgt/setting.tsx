@@ -31,6 +31,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import Title from 'src/components/title';
 import { toast } from 'src/components/toast';
 import { Iconify, type IconifyName } from 'src/components/iconify';
+import { PageHeader } from 'src/components/page-header/page-header';
 
 const tabsTheme: { key: string; label: string; icon: IconifyName }[] = [
   {
@@ -77,17 +78,14 @@ export default function Setting() {
   return (
     <DashboardContent>
       <Title>{`${t('user.setting.title')} - ${CONFIG.appName}`}</Title>
-      <Stack spacing={2} mb={5}>
-        <Typography variant="h4" sx={{ flexGrow: 1 }}>
-          {t('user.setting.title')}
-        </Typography>
-        <Breadcrumbs sx={{ mb: 3 }}>
+      <PageHeader icon="solar:settings-bold-duotone" tone="slate" title={t('user.setting.title')}>
+        <Breadcrumbs sx={{ mt: 0.5 }}>
           <Link component={RouterLink} href="/user-management" color="textPrimary" variant="body2">
             {t('user.breadcrumb.userManagement')}
           </Link>
           <Typography variant="body2">{t('user.setting.title')}</Typography>
         </Breadcrumbs>
-      </Stack>
+      </PageHeader>
       <Stack spacing={3}>
         <Card>
           <CardHeader
@@ -107,7 +105,7 @@ export default function Setting() {
                   onChange={(_, v) => field.onChange(v)}
                 >
                   {tabsTheme.map((tab) => (
-                    <Tab
+                    <Tab id={`setting-tab-${tab.key}`}
                       key={tab.key}
                       label={t(tab.label)}
                       value={tab.key}
@@ -177,7 +175,7 @@ export default function Setting() {
           </CardContent>
         </Card>
         <Box display="flex" justifyContent="flex-end" gap={2}>
-          <Button
+          <Button id="setting-reset"
             size="large"
             color="inherit"
             onClick={() => {
@@ -186,7 +184,7 @@ export default function Setting() {
           >
             {t('user.setting.reset')}
           </Button>
-          <Button
+          <Button id="setting-save"
             startIcon={<Iconify icon="solar:diskette-bold" />}
             size="large"
             color="secondary"

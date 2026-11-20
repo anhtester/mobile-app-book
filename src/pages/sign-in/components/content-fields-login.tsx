@@ -88,7 +88,7 @@ export function ContentFieldsLogin() {
             },
           }}
           render={({ field, fieldState: { invalid, error } }) => (
-            <TextField
+            <TextField id="sign-in-email"
               {...field}
               required
               error={invalid}
@@ -111,7 +111,7 @@ export function ContentFieldsLogin() {
             },
           }}
           render={({ field, fieldState: { invalid, error } }) => (
-            <PasswordField
+            <PasswordField id="sign-in-password"
               {...field}
               required
               fullWidth
@@ -124,7 +124,7 @@ export function ContentFieldsLogin() {
           )}
         />
 
-        <Button
+        <Button id="sign-in-submit"
           loading={isSubmitting}
           fullWidth
           size="large"

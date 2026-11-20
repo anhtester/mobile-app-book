@@ -1,5 +1,5 @@
 // Chép từ ../book.anhtester.com/frontend/src/locales/en/common.ts (bản web), đổi {x} thành {{x}} cho i18next.
-// Chuỗi dùng chung nhiều màn. Chuỗi riêng của màn nào thì để ở namespace của màn đó.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 export const common = {
   appName: 'Book UI for api-book.anhtester.com',
   language: 'Language',
@@ -38,7 +38,6 @@ export const common = {
   },
   noData: 'No Data',
   somethingWrong: 'Something went wrong.',
-  // Riêng mobile: tiêu đề trang lỗi của router (routes/components/error-boundary.tsx)
   errorBoundary: {
     unexpected: 'Unexpected Application Error!',
     unknown: 'Unknown Error',

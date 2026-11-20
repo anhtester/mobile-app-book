@@ -9,6 +9,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 import Title from 'src/components/title';
 import { Iconify } from 'src/components/iconify';
+import { PageHeader } from 'src/components/page-header/page-header';
 
 // ----------------------------------------------------------------------
 // Tab "Liên hệ" (thay tab File). Nội dung giống trang /help của bản web
@@ -205,14 +206,12 @@ export default function ContactPage() {
     <DashboardContent>
       <Title>{`${t('contact.title')} - ${CONFIG.appName}`}</Title>
 
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" component="h1" sx={{ mb: 1 }}>
-          {t('contact.title')}
-        </Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {t('contact.description')}
-        </Typography>
-      </Box>
+      <PageHeader
+        icon="solar:chat-round-dots-bold"
+        tone="sky"
+        title={t('contact.title')}
+        subtitle={t('contact.description')}
+      />
 
       <Card sx={{ p: { xs: 2, sm: 3 } }}>
         <Box component="section" aria-label={t('contact.info.title')}>
@@ -276,7 +275,7 @@ export default function ContactPage() {
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
             {SOCIALS.map((item) => (
               <Tooltip key={item.id} title={item.name}>
-                <IconButton
+                <IconButton id={`contact-social-${item.id}`}
                   component="a"
                   href={item.href}
                   aria-label={item.name}

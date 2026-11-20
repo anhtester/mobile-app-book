@@ -20,12 +20,19 @@ export const _account: AccountPopoverProps['data'] = [
     icon: <Iconify width={22} icon="solar:shield-keyhole-bold-duotone" />,
   },
   {
+    label: 'My orders',
+    tKey: 'account.orders',
+    href: '/orders',
+    icon: <Iconify width={22} icon="solar:bill-list-bold-duotone" />,
+  },
+  {
     label: 'Settings',
     tKey: 'account.settings',
     href: '/user-management/setting-account',
     icon: <Iconify width={22} icon="solar:settings-bold-duotone" />,
   },
-  ...(Capacitor.isNativePlatform()
+  // Chỉ Android: Apple không cho app tự thoát (App.exitApp bị từ chối khi duyệt App Store)
+  ...(Capacitor.getPlatform() === 'android'
     ? [
         {
           label: 'Exit app',

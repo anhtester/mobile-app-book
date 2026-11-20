@@ -1,4 +1,4 @@
-import type { TFunction } from 'i18next';
+import type { TFn } from 'src/locales';
 
 import dayjs from 'dayjs';
 
@@ -10,9 +10,8 @@ import { formatPromotionValue } from 'src/pages/promotions-mgt/utils';
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 
-// Nhận `t` của useTranslation(): đổi ngôn ngữ thì `t` đổi, React Compiler mới tính lại nhãn.
-// (Gọi i18n.t trong hàm không tham số thì compiler nhớ kết quả lần đầu, nhãn kẹt ngôn ngữ cũ.)
-export const columns = (t: TFunction): Columns<PromotionType>[] => [
+// Nhận `t` (không gọi translate bên trong): React Compiler nhớ kết quả hàm không tham số → đổi ngôn ngữ không cập nhật
+export const columns = (t: TFn): Columns<PromotionType>[] => [
   {
     label: t('book.promotion.columns.code'),
     sort: 'code',
@@ -45,7 +44,7 @@ export const columns = (t: TFunction): Columns<PromotionType>[] => [
         startIcon={<Iconify icon={MappingType[row?.type]?.icon} />}
         sx={{ mr: 1 }}
       >
-        {t(`promotion.type.${row?.type}`, { defaultValue: row?.type })}
+        {t(`promotion.type.${row?.type}`)}
       </Label>
     ),
   },
@@ -95,7 +94,7 @@ export const columns = (t: TFunction): Columns<PromotionType>[] => [
 ];
 
 // Hàm (không phải hằng) để nhãn dịch theo ngôn ngữ hiện tại mỗi lần render
-export const fields = (t: TFunction): FieldType<PromotionType>[] => [
+export const fields = (t: TFn): FieldType<PromotionType>[] => [
   {
     name: 'name',
     label: t('book.promotion.fields.name'),

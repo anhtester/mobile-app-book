@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
 import { useWatch, Controller } from 'react-hook-form';
 
 import {
@@ -17,19 +16,26 @@ import {
   InputAdornment,
 } from '@mui/material';
 
+import { useTranslate } from 'src/locales';
+
 import { Iconify } from 'src/components/iconify';
 import { accepImg, UploadField } from 'src/components/fields/upload-field';
+import { MAX_UPLOAD_TOTAL, totalNewFileSize } from 'src/components/fields/upload-limits';
 
 import { slugify } from '../api/create-book';
 import { control, setValue } from '../stores/form-add';
 
 export function CardDetail() {
-  const { t } = useTranslation();
+  const { t } = useTranslate();
   const [expen, setExpen] = useState(true);
   const [isChangeSlug, setIsChangeSlug] = useState(false);
-  const [bookId] = useWatch({ control, name: ['id'] });
+  const [name] = useWatch({ control, name: ['name'] });
   const [pictureDel = []] = useWatch({ control, name: ['pictureDel', 'picture'] });
   const setPictureDel = (value: FileItem[]) => setValue('pictureDel', value);
+
+  useEffect(() => {
+    setValue('slug', slugify(name || ''));
+  }, [name]);
 
   return (
     <Card>
@@ -37,7 +43,7 @@ export function CardDetail() {
         title={t('book.detail.title')}
         subheader={t('book.detail.subheader')}
         action={
-          <IconButton onClick={() => setExpen(!expen)}>
+          <IconButton id="book-form-toggle-detail" onClick={() => setExpen(!expen)}>
             <Iconify
               sx={{ transition: 'all .1s ease-in-out' }}
               style={{ rotate: !expen ? '0deg' : '90deg' }}
@@ -63,15 +69,10 @@ export function CardDetail() {
               deps: ['slug'],
             }}
             render={({ field, fieldState: { invalid, error } }) => (
-              <TextField
+              <TextField id="book-form-name"
                 fullWidth
                 label={t('book.detail.name')}
                 {...field}
-                onChange={(e) => {
-                  field.onChange(e);
-                  // only regenerate slug when the user edits the name
-                  if (!isChangeSlug) setValue('slug', slugify(e.target.value || ''));
-                }}
                 error={invalid}
                 helperText={error?.message}
                 required
@@ -83,15 +84,14 @@ export function CardDetail() {
             control={control}
             defaultValue=""
             rules={{
-              // edit mode: empty slug is not sent, backend keeps the current one
-              required: bookId ? false : t('book.validation.slugRequired'),
+              required: t('book.validation.slugRequired'),
               maxLength: {
                 value: 100,
                 message: t('book.validation.slugMaxLength'),
               },
             }}
             render={({ field, fieldState: { invalid, error } }) => (
-              <TextField
+              <TextField id="book-form-slug"
                 disabled={!isChangeSlug}
                 sx={{ flex: 1 }}
                 label={t('book.detail.slug')}
@@ -103,7 +103,7 @@ export function CardDetail() {
                   input: {
                     endAdornment: (
                       <InputAdornment position="end">
-                        <Button
+                        <Button id="book-form-change-slug"
                           variant="outlined"
                           color="inherit"
                           size="small"
@@ -132,7 +132,7 @@ export function CardDetail() {
               },
             }}
             render={({ field, fieldState: { invalid, error } }) => (
-              <TextField
+              <TextField id="book-form-description"
                 multiline
                 minRows={5}
                 fullWidth
@@ -156,9 +156,9 @@ export function CardDetail() {
               defaultValue={[]}
               rules={{
                 validate: {
+                  // Ảnh mới được upload trong một lần lưu → tổng ≤ 4MB (khớp API)
                   maxFileSize: (files) =>
-                    files.every((file) => file.size < 1024 * 1024 * 5) ||
-                    t('book.validation.fileSize'),
+                    totalNewFileSize(files) <= MAX_UPLOAD_TOTAL || t('book.validation.fileSize'),
                   maxLength: (files) => files.length <= 30 || t('book.validation.maxFiles'),
                   minLength: (files) => files.length >= 1 || t('book.validation.minFiles'),
                 },
@@ -179,19 +179,12 @@ export function CardDetail() {
                     }}
                   />
                   {field.value.length > 0 && (
-                    <Button
+                    <Button id="book-form-remove-all-pictures"
                       size="small"
                       color="inherit"
                       variant="outlined"
                       sx={{ mt: 1, alignSelf: 'flex-end' }}
-                      onClick={() => {
-                        // keep old pictures so they are deleted on save
-                        const oldPictures = field.value.filter(
-                          (f): f is FileItem => !(f instanceof File)
-                        );
-                        if (oldPictures.length > 0) setPictureDel([...pictureDel, ...oldPictures]);
-                        field.onChange([]);
-                      }}
+                      onClick={() => field.onChange([])}
                     >
                       {t('book.detail.removeAll')}
                     </Button>

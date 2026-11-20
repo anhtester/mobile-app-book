@@ -8,6 +8,8 @@ import { Logo } from 'src/components/logo';
 
 import { Footer } from './footer';
 import { _account } from '../nav-config-account';
+import { NavDrawer } from '../components/nav-drawer';
+import { CartButton } from '../components/cart-button';
 import { LanguageSwitch } from '../components/language-switch';
 import { AccountPopover } from '../components/account-popover';
 import { MainSection, LayoutSection, HeaderSection } from '../core';
@@ -43,10 +45,17 @@ export function MobileLayout({
 
     const headerSlots: HeaderSectionProps['slots'] = {
       // Logo gọn (32px) để thanh đầu trang chỉ cao 56dp
-      leftArea: <Logo height={32} />,
+      leftArea: (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          {/* Menu đầy đủ (mọi màn, kể cả Category / Giỏ hàng / Đơn hàng) — thanh tab đáy chỉ đủ 5 mục */}
+          <NavDrawer />
+          <Logo height={32} />
+        </Box>
+      ),
       rightArea: (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
           <LanguageSwitch />
+          <CartButton />
           {/** @slot Account drawer */}
           <AccountPopover data={_account} />
         </Box>

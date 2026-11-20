@@ -6,6 +6,7 @@ import { useRef, useState, useEffect } from 'react';
 import { TextField, IconButton, InputAdornment } from '@mui/material';
 
 import { Iconify } from '../iconify';
+import { searchInputProps } from './search-input-props';
 
 type SearchFieldProps = Omit<TextFieldProps, 'onChange' | 'value'> & {
   value: string;
@@ -43,6 +44,8 @@ export function SearchField({ value, onChange, sx, ...props }: SearchFieldProps)
         setS(e.target.value);
       }}
       slotProps={{
+        // type=search + autocomplete=off: trình duyệt không tự điền email đã lưu vào ô tìm (web 2026-11-21-02)
+        htmlInput: { ...searchInputProps },
         input: {
           startAdornment: (
             <InputAdornment position="start">

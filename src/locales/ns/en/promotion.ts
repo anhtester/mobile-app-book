@@ -1,5 +1,5 @@
 // Chép từ ../book.anhtester.com/frontend/src/locales/en/promotion.ts (bản web), đổi {x} thành {{x}} cho i18next.
-// Namespace 'promotion'. Khoá tiếng Anh là nguồn: thêm khoá ở đây trước, rồi thêm bản dịch ở vi/promotion.ts.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 export const promotion = {
   status: {
     label: 'Status',
@@ -16,8 +16,8 @@ export const promotion = {
   value: {
     freeShipping: 'Free shipping',
   },
-  // Trang danh sách
   title: 'Promotion Management',
+  subtitle: 'Discount codes attached to books and their running time.',
   newPromotion: 'New Promotion',
   columns: {
     code: 'CODE',
@@ -37,7 +37,6 @@ export const promotion = {
     endDate: 'End Date',
   },
   confirmDelete: 'Confirm you want to delete promotion "{{name}}".',
-  // Form thêm / sửa
   handle: {
     createTitle: 'Create a new promotion',
     modifyTitle: 'Modify promotion',
@@ -47,18 +46,10 @@ export const promotion = {
     reset: 'Reset',
     saveChanges: 'Save changes',
     create: 'Create promotion',
-    deleteNote:
-      'Deleting this promotion removes it from every book it applies to and recalculates their selling price.',
+    deleteNote: 'Deleting this promotion removes it from every book it applies to and recalculates their selling price.',
     deleteConfirmBefore: 'Do you want delete ',
-    deleteConfirmAfter: ", after delete you can't undo",
-    // Riêng mobile: toast khi mở sửa một khuyến mãi không còn tồn tại
+    deleteConfirmAfter: ', after delete you can\'t undo',
     notFound: 'Promotion not found',
-  },
-  // Riêng mobile: chữ dự phòng khi server không trả `msg`
-  toast: {
-    saved: 'Saved',
-    deleted: 'Deleted',
-    networkError: 'Cannot connect to the server. Please try again.',
   },
   detail: {
     title: 'Detail',
@@ -76,15 +67,13 @@ export const promotion = {
     valueRequired: 'Value is required.',
     valuePercent: 'Percentage must be greater than 0 and at most 100.',
     valuePositive: 'Value must be greater than 0.',
-    // Riêng mobile: gợi ý dưới ô Giá trị theo loại khuyến mãi
-    valuePercentHint: 'Percent (1 - 100)',
-    valueAmountHint: 'Amount in VND',
-    // Chữ trong ô chọn loại, giữ nguyên chữ thường như bản cũ (CSS viết hoa chữ cái đầu)
     typeOption: {
       PERCENTAGE: 'percentage',
       FIXED_AMOUNT: 'fixed amount',
       FREE_SHIPPING: 'free shipping',
     },
+    valuePercentHint: 'Percent (1 - 100)',
+    valueAmountHint: 'Amount in VND',
   },
   statusCard: {
     subheader: 'Start date, end date, active',
@@ -109,5 +98,10 @@ export const promotion = {
       price: 'Price',
       created: 'Created',
     },
+  },
+  toast: {
+    saved: 'Saved',
+    deleted: 'Deleted',
+    networkError: 'Cannot connect to the server. Please try again.',
   },
 };

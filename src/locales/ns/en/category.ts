@@ -1,13 +1,25 @@
 // Chép từ ../book.anhtester.com/frontend/src/locales/en/category.ts (bản web), đổi {x} thành {{x}} cho i18next.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 export const category = {
   title: 'Category Management',
+  subtitle: 'Book categories shown as filters on the Book page.',
   newCategory: 'New category',
   searchPlaceholder: 'Search category...',
   summary: '{{count}} categories · {{links}} book links',
+  summaryFiltered: '{{shown}} of {{count}} categories · {{links}} of {{totalLinks}} book links',
   columns: {
     name: 'Name',
+    status: 'Status',
     books: 'Books',
   },
+  status: {
+    active: 'On',
+    inactive: 'Off',
+  },
+  viewBooks: 'View {{count}} book(s) in "{{name}}"',
+  statusToggle: 'Turn status of "{{name}}" on/off',
+  statusHint: 'Inactive categories are hidden from the Book page tabs and the book form.',
+  statusChanged: 'Category "{{name}}" is now {{status}}.',
   form: {
     name: 'Category name',
     newName: 'New name',
@@ -21,6 +33,5 @@ export const category = {
     exists: 'Category already exists',
   },
   deleteConfirm: 'Confirm you want to delete category "{{name}}".',
-  deleteWarning:
-    '{{count}} book(s) will no longer belong to this category. The books themselves are not deleted.',
+  deleteWarning: '{{count}} book(s) will no longer belong to this category. The books themselves are not deleted.',
 };

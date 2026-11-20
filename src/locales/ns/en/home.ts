@@ -1,26 +1,23 @@
 // Chép từ ../book.anhtester.com/frontend/src/locales/en/home.ts (bản web), đổi {x} thành {{x}} cho i18next.
-// Namespace 'home'. Khoá tiếng Anh là nguồn: thêm khoá ở đây trước, rồi thêm bản dịch ở vi/home.ts.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 export const home = {
   bannerAlt: 'Free API for Testing',
   swagger: {
     title: 'Swagger API Documentation',
-    description:
-      'The Book Management system includes a RESTful API and a UI built by Anh Tester for practicing API and UI testing. Suitable for beginners and automation testers who want to practice and test, and it is completely free.',
+    description: 'The Book Management system includes a RESTful API and a UI built by Anh Tester for practicing API and UI testing. Suitable for beginners and automation testers who want to practice and test, and it is completely free.',
   },
   welcome: {
     title: 'Welcome {{name}}',
     signIn: 'Book management sign in',
-    descriptionAuth:
-      'You can manage users, books, categories and promotions: add, edit and delete them. Personalize the management page with colors and dark mode or light mode.',
-    descriptionGuest:
-      'Sign in to the book management page, including creating, updating and deleting books, categories, promotions and users.',
+    descriptionAuth: 'You can manage users, books, categories and promotions: add, edit and delete them. Personalize the management page with colors and dark mode or light mode.',
+    descriptionGuest: 'Sign in to the book management page, including creating, updating and deleting books, categories, promotions and users.',
   },
   stats: {
     total: 'total: {{count}} {{unit}}',
-    user: 'User mgt',
-    book: 'Book mgt',
-    category: 'Category mgt',
-    promotion: 'Promotion mgt',
+    user: 'Users',
+    book: 'Books',
+    category: 'Categories',
+    promotion: 'Promotions',
     users: 'users',
     books: 'books',
     categories: 'categories',
@@ -36,8 +33,7 @@ export const home = {
   notFound: {
     pageTitle: 'Page Not Found',
     title: 'Sorry, page not found!',
-    description:
-      'Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve mistyped the URL? Be sure to check your spelling.',
+    description: 'Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve mistyped the URL? Be sure to check your spelling.',
     goHome: 'Go to home',
   },
 };

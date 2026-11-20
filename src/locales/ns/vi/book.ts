@@ -1,5 +1,6 @@
 import type { book as en } from '../en/book';
 // Chép từ ../book.anhtester.com/frontend/src/locales/vi/book.ts (bản web), đổi {x} thành {{x}} cho i18next.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 import type { Translation } from '../../types';
 
 export const book: Translation<typeof en> = {
@@ -44,8 +45,7 @@ export const book: Translation<typeof en> = {
     reset: 'Đặt lại',
     saveChanges: 'Lưu thay đổi',
     createBook: 'Tạo sách',
-    deleteNote:
-      'Cuốn sách này từng thuộc kho hàng của bạn, hiện không còn kinh doanh và đang được bán cho người mua quan tâm đang tìm một món hời.',
+    deleteNote: 'Cuốn sách này từng thuộc kho hàng của bạn, hiện không còn kinh doanh và đang được bán cho người mua quan tâm đang tìm một món hời.',
     deleteConfirmBefore: 'Bạn có muốn xoá',
     deleteConfirmAfter: ', sau khi xoá sẽ không thể hoàn tác',
   },
@@ -64,10 +64,49 @@ export const book: Translation<typeof en> = {
     price: 'Giá gốc',
     categories: 'Danh mục',
   },
+  moreInfo: {
+    title: 'Thông tin thêm',
+    subheader: 'Tác giả, nhà xuất bản, ISBN… (không bắt buộc)',
+    author: 'Tác giả',
+    publisher: 'Nhà xuất bản',
+    publishYear: 'Năm xuất bản',
+    pageCount: 'Số trang',
+    isbn: 'ISBN',
+    isbnHelper: 'ISBN-10 hoặc ISBN-13, có thể có dấu gạch ngang',
+    language: 'Ngôn ngữ',
+  },
   promotion: {
     title: 'Khuyến mãi',
     subheader: 'Chọn khuyến mãi',
     removeAll: 'Bỏ {{count}} khuyến mãi',
+    price: {
+      original: 'Giá gốc',
+      current: 'Giá bán hiện tại',
+      upcoming: 'Giá khi khuyến mãi sắp chạy bắt đầu',
+      noPriceChange: 'Không đổi giá',
+      viewDetail: 'Bấm để xem chi tiết khuyến mãi',
+      warning: 'Một số khuyến mãi đã chọn chưa được trừ vào giá bán:',
+    },
+    detail: {
+      title: 'Chi tiết khuyến mãi',
+      code: 'Mã',
+      name: 'Tên',
+      description: 'Mô tả',
+      noDescription: 'Không có mô tả',
+      type: 'Loại',
+      value: 'Giá trị',
+      period: 'Thời gian',
+      discount: 'Giảm cho sách này',
+      notApplied: {
+        running: 'đang áp dụng',
+        scheduled: 'chưa bắt đầu, áp dụng từ {{date}}',
+        expired: 'đã hết hạn, không còn áp dụng',
+        disabled: 'đã tắt, không áp dụng',
+      },
+      openPage: 'Mở trang khuyến mãi',
+      unselect: 'Bỏ khỏi sách',
+      close: 'Đóng',
+    },
     columns: {
       code: 'MÃ',
       name: 'Tên',
@@ -91,17 +130,22 @@ export const book: Translation<typeof en> = {
     slugRequired: 'Slug là bắt buộc.',
     slugMaxLength: 'Slug phải ít hơn 100 ký tự.',
     descriptionMaxLength: 'Mô tả phải ít hơn 500 ký tự.',
-    fileSize: 'Kích thước tệp phải nhỏ hơn 5MB',
+    fileSize: 'Tổng dung lượng ảnh mới mỗi lần lưu tối đa 4MB.',
     maxFiles: 'Chỉ được tải lên tối đa 30 tệp',
     minFiles: 'Phải tải lên ít nhất 1 tệp',
     priceRequired: 'Giá là bắt buộc.',
     priceMin: 'Giá phải lớn hơn 1000 VNĐ.',
     priceMax: 'Giá phải nhỏ hơn 1 tỷ VNĐ.',
-    priceMaxInt: 'Giá không được vượt quá 2.147.483.647 VNĐ.',
     priceNumber: 'Giá phải là số.',
     priceInteger: 'Giá phải là số nguyên.',
     categoryRequired: 'Vui lòng chọn ít nhất một danh mục',
     categoryMaxLength: 'Mỗi tên danh mục phải ít hơn 25 ký tự',
+    maxLength: 'Tối đa {{max}} ký tự.',
+    integer: 'Phải là số nguyên.',
+    publishYearRange: 'Năm xuất bản phải từ {{min}} đến {{max}}.',
+    pageCountRange: 'Số trang phải từ 1 đến {{max}}.',
+    isbn: 'ISBN phải có 10 ký tự (ký tự cuối có thể là X) hoặc 13 chữ số.',
+    priceMaxInt: 'Giá không được vượt quá 2.147.483.647 VNĐ.',
   },
   toast: {
     uploadingImage: 'Đang tải ảnh lên...',

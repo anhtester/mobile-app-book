@@ -1,5 +1,5 @@
 // Chép từ ../book.anhtester.com/frontend/src/locales/en/components.ts (bản web), đổi {x} thành {{x}} cho i18next.
-// Namespace 'components'. Khoá tiếng Anh là nguồn: thêm khoá ở đây trước, rồi thêm bản dịch ở vi/components.ts.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 export const components = {
   button: {
     clickToDelete: 'Click to delete',
@@ -9,7 +9,6 @@ export const components = {
     confirmDelete: 'Confirm delete',
     message: 'Message',
   },
-  // Chữ mặc định của MUI TablePagination / Pagination, giữ nguyên văn bản tiếng Anh của MUI
   table: {
     rowsPerPage: 'Rows per page:',
     displayedRows: '{{from}}–{{to}} of {{count}}',
@@ -74,5 +73,30 @@ export const components = {
     loading: 'Loading...',
     success: 'Success',
     error: 'Error',
+  },
+  address: {
+    title: 'Address',
+    division: 'Division',
+    ward: 'Ward',
+    detail: 'Address',
+  },
+  autocomplete: {
+    noOptions: 'No options',
+    loading: 'Loading…',
+    open: 'Open',
+    close: 'Close',
+    clear: 'Clear',
+  },
+  lightbox: {
+    zoomIn: 'Zoom in (+)',
+    zoomOut: 'Zoom out (-)',
+    rotate: 'Rotate 90°',
+    reset: 'Reset (0)',
+    openOriginal: 'Open original image',
+    close: 'Close (Esc)',
+    prev: 'Previous image (←)',
+    next: 'Next image (→)',
+    image: 'Image',
+    hint: 'Scroll or double-click to zoom · drag to move · ← → to switch · Esc to close',
   },
 };

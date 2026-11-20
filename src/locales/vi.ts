@@ -1,9 +1,11 @@
 import { auth as authNs } from './ns/vi/auth';
 import { book as bookNs } from './ns/vi/book';
 import { home as homeNs } from './ns/vi/home';
+import { shop as shopNs } from './ns/vi/shop';
 import { user as userNs } from './ns/vi/user';
 import { common as commonNs } from './ns/vi/common';
 import { category as categoryNs } from './ns/vi/category';
+import { bookstore as bookstoreNs } from './ns/vi/bookstore';
 import { promotion as promotionNs } from './ns/vi/promotion';
 import { components as componentsNs } from './ns/vi/components';
 
@@ -36,6 +38,17 @@ export const vi: typeof en = {
     promotion: 'Khuyến mãi',
     file: 'Tệp',
     contact: 'Liên hệ',
+    category: 'Danh mục',
+    cart: 'Giỏ hàng',
+    orders: 'Đơn hàng của tôi',
+    menu: 'Mở menu',
+    closeMenu: 'Đóng menu',
+    groups: {
+      manage: 'Quản lý',
+      shop: 'Mua sắm',
+      account: 'Tài khoản',
+      other: 'Khác',
+    },
   },
   contact: {
     title: 'Liên hệ',
@@ -61,6 +74,7 @@ export const vi: typeof en = {
   },
   account: {
     home: 'Trang chủ',
+    orders: 'Đơn hàng của tôi',
     profile: 'Hồ sơ',
     settings: 'Cài đặt',
     exitApp: 'Thoát ứng dụng',
@@ -93,6 +107,12 @@ export const vi: typeof en = {
   promotion: promotionNs,
   home: homeNs,
   category: categoryNs,
+  shop: shopNs,
+  bookstore: {
+    ...bookstoreNs,
+    // Mobile: không có rê chuột, đổi câu gợi ý theo thao tác chạm
+    detail: { ...bookstoreNs.detail, zoomHint: 'Chạm ảnh nhỏ để đổi trang · chạm ảnh lớn để xem toàn màn hình' },
+  },
   components: componentsNs,
   language: {
     label: 'Ngôn ngữ',

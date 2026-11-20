@@ -1,5 +1,5 @@
 // Chép từ ../book.anhtester.com/frontend/src/locales/en/book.ts (bản web), đổi {x} thành {{x}} cho i18next.
-// Namespace 'book'. Khoá tiếng Anh là nguồn: thêm khoá ở đây trước, rồi thêm bản dịch ở vi/book.ts.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 export const book = {
   title: 'Book Management',
   newBook: 'New book',
@@ -42,10 +42,9 @@ export const book = {
     reset: 'Reset',
     saveChanges: 'Save changes',
     createBook: 'Create book',
-    deleteNote:
-      'This book, previously part of your business inventory, is no longer in active commerce and is now available for sale to interested buyers looking for a great deal.',
+    deleteNote: 'This book, previously part of your business inventory, is no longer in active commerce and is now available for sale to interested buyers looking for a great deal.',
     deleteConfirmBefore: 'Do you want delete',
-    deleteConfirmAfter: ", after delete you can't undo",
+    deleteConfirmAfter: ', after delete you can\'t undo',
   },
   detail: {
     title: 'Detail',
@@ -62,10 +61,49 @@ export const book = {
     price: 'Regular price',
     categories: 'Categories',
   },
+  moreInfo: {
+    title: 'More information',
+    subheader: 'Author, publisher, ISBN… (optional)',
+    author: 'Author',
+    publisher: 'Publisher',
+    publishYear: 'Publish year',
+    pageCount: 'Pages',
+    isbn: 'ISBN',
+    isbnHelper: 'ISBN-10 or ISBN-13, hyphens allowed',
+    language: 'Language',
+  },
   promotion: {
     title: 'Promotion',
     subheader: 'Select promotion',
     removeAll: 'Remove {{count}} promotions',
+    price: {
+      original: 'Original price',
+      current: 'Selling price now',
+      upcoming: 'Price once the upcoming promotions start',
+      noPriceChange: 'No price change',
+      viewDetail: 'Click to view promotion details',
+      warning: 'Some selected promotions are not deducted from the selling price yet:',
+    },
+    detail: {
+      title: 'Promotion details',
+      code: 'Code',
+      name: 'Name',
+      description: 'Description',
+      noDescription: 'No description',
+      type: 'Type',
+      value: 'Value',
+      period: 'Period',
+      discount: 'Discount on this book',
+      notApplied: {
+        running: 'in effect',
+        scheduled: 'not started yet, applies from {{date}}',
+        expired: 'expired, no longer applied',
+        disabled: 'turned off, not applied',
+      },
+      openPage: 'Open promotion page',
+      unselect: 'Remove from book',
+      close: 'Close',
+    },
     columns: {
       code: 'CODE',
       name: 'Name',
@@ -89,18 +127,22 @@ export const book = {
     slugRequired: 'Slug is required.',
     slugMaxLength: 'Slug must be less than 100 characters.',
     descriptionMaxLength: 'Description must be less than 500 characters.',
-    fileSize: 'File size must be less than 5MB',
+    fileSize: 'New images must be at most 4MB in total per save.',
     maxFiles: 'You can upload up to 30 files',
     minFiles: 'You must upload at least 1 file',
     priceRequired: 'Price is required.',
     priceMin: 'Price must be greater than 1000 VNĐ.',
     priceMax: 'Price must be less than 1 billion VNĐ.',
-    // Chỉ mobile: giới hạn theo kiểu INT của DB
-    priceMaxInt: 'Price must be at most 2,147,483,647 VNĐ.',
     priceNumber: 'Price must be a number.',
     priceInteger: 'Price must be a whole number.',
     categoryRequired: 'Please select at least one category',
     categoryMaxLength: 'Each category name must be less than 25 characters',
+    maxLength: 'Must be at most {{max}} characters.',
+    integer: 'Must be a whole number.',
+    publishYearRange: 'Publish year must be between {{min}} and {{max}}.',
+    pageCountRange: 'Pages must be between 1 and {{max}}.',
+    isbn: 'ISBN must have 10 characters (last one may be X) or 13 digits.',
+    priceMaxInt: 'Price must be at most 2,147,483,647 VNĐ.',
   },
   toast: {
     uploadingImage: 'Uploading image...',
@@ -109,7 +151,6 @@ export const book = {
     updateNewImage: 'Update new image...',
     updateBook: 'Update book...',
     updateError: 'Error in update book',
-    // Chỉ mobile: chữ dự phòng khi server không trả msg
     createError: 'Error in create book',
     deleteError: 'Error in delete book',
     getError: 'Error in get book',

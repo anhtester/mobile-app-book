@@ -1,9 +1,11 @@
 import { auth as authNs } from './ns/en/auth';
 import { book as bookNs } from './ns/en/book';
 import { home as homeNs } from './ns/en/home';
+import { shop as shopNs } from './ns/en/shop';
 import { user as userNs } from './ns/en/user';
 import { common as commonNs } from './ns/en/common';
 import { category as categoryNs } from './ns/en/category';
+import { bookstore as bookstoreNs } from './ns/en/bookstore';
 import { promotion as promotionNs } from './ns/en/promotion';
 import { components as componentsNs } from './ns/en/components';
 
@@ -36,6 +38,17 @@ export const en = {
     promotion: 'Promotion',
     file: 'File',
     contact: 'Contact',
+    category: 'Category',
+    cart: 'Cart',
+    orders: 'My orders',
+    menu: 'Open menu',
+    closeMenu: 'Close menu',
+    groups: {
+      manage: 'Management',
+      shop: 'Shopping',
+      account: 'Account',
+      other: 'Other',
+    },
   },
   contact: {
     title: 'Contact',
@@ -61,6 +74,7 @@ export const en = {
   },
   account: {
     home: 'Home',
+    orders: 'My orders',
     profile: 'Profile',
     settings: 'Settings',
     exitApp: 'Exit app',
@@ -93,6 +107,12 @@ export const en = {
   promotion: promotionNs,
   home: homeNs,
   category: categoryNs,
+  shop: shopNs,
+  bookstore: {
+    ...bookstoreNs,
+    // Mobile: không có rê chuột, đổi câu gợi ý theo thao tác chạm
+    detail: { ...bookstoreNs.detail, zoomHint: 'Tap a thumbnail to change page · tap the image to view full screen' },
+  },
   components: componentsNs,
   language: {
     label: 'Language',

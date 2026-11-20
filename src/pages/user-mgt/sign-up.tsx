@@ -64,7 +64,7 @@ export default function SignUp() {
         </Typography>
       </Box>
       <ContentUser isColumn isActive={false} isAvatar={false} />
-      <Button
+      <Button id="sign-up-submit"
         size="large"
         variant="contained"
         color="secondary"

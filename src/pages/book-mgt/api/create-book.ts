@@ -1,9 +1,10 @@
-import i18n from 'src/locales';
 import { axios } from 'src/api/axios';
+import { translate } from 'src/locales';
 
 import { toast } from 'src/components/toast';
 
 import { setError } from '../stores/form-add';
+import { bookExtraPayload } from '../utils/book-extra';
 
 export const slugify = (s: string) =>
   s
@@ -12,48 +13,45 @@ export const slugify = (s: string) =>
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
+    .replace(/[^a-z0-9\s_-]/g, '')
+    .replace(/[\s_]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
 
-// Upload can take long on mobile networks (up to 20 files x 5MB)
+// ---- Phần riêng mobile (giữ khi chép lại từ web) ---------------------------------------------
+// Mạng điện thoại chậm: upload ảnh (tối đa 4MB / lần) có thể quá timeout 10s mặc định của axios.
 export const UPLOAD_TIMEOUT = 60000;
 
-/** Delete uploaded files one by one (never the folder, it may belong to another book). */
+/** Xoá ảnh vừa upload từng file một (không bao giờ xoá cả thư mục: có thể là của sách khác trùng slug). */
 export const deleteFiles = (paths: string[]) =>
   Promise.allSettled(
     paths.filter(Boolean).map((path) => axios.delete('/file', { params: { path } }))
   );
 
-// Backend field name -> form field name
+// Tên trường của API → tên ô trong form (API dùng `pictures`, form dùng `picture`)
 const FIELD_MAP: Record<string, keyof BookForm> = {
-  name: 'name',
-  slug: 'slug',
-  description: 'description',
-  status: 'status',
   pictures: 'picture',
-  categories: 'categories',
-  price: 'price',
-  promotions: 'promotions',
 };
 
-/** Set backend 422 `{ fields }` errors on the book form, ignoring unknown keys. */
+/** Gán lỗi 422 `{ fields }` của server vào từng ô form; khoá dạng `items/0/x` lấy phần đầu. */
 export const setFieldErrors = (fields?: Record<string, string[]>) => {
   if (!fields || typeof fields !== 'object') return;
   for (const [key, value] of Object.entries(fields)) {
-    const name = FIELD_MAP[key.split('/')[0]];
+    const base = key.split('/')[0];
+    const name = FIELD_MAP[base] ?? (base as keyof BookForm);
     const message = Array.isArray(value) ? value[0] : undefined;
-    if (name && message) {
-      setError(name, { type: 'manual', message });
-    }
+    if (message) setError(name, { type: 'manual', message });
   }
 };
+// ----------------------------------------------------------------------------------------------
 
 export const handleCreateBook = async (book: BookForm) => {
   const id = 'create-book';
-  let paths: string[] = [];
   try {
-    toast.custom(i18n.t('book.toast.uploadingImage'), 'loading', { hiddenCloseButton: true, id });
+    toast.custom(translate('book.toast.uploadingImage'), 'loading', {
+      hiddenCloseButton: true,
+      id,
+    });
     const form = new FormData();
     book.picture?.forEach((f) => {
       if (f instanceof File) {
@@ -64,30 +62,44 @@ export const handleCreateBook = async (book: BookForm) => {
       }
     });
     form.append('path', `/$book-image/${book.slug}`);
-    paths = await axios
+    const paths: string[] = await axios
       .post('/file', form, { timeout: UPLOAD_TIMEOUT })
       .then((res) => res.data.paths ?? []);
     // upload book
-    toast.custom(i18n.t('book.toast.uploadingBook'), 'loading', { hiddenCloseButton: true, id });
-    const res = await axios.post('/book', {
-      name: book.name,
-      description: book.description,
-      status: book.status,
-      categories: book.categories,
-      slug: book.slug,
-      price: Number(book.price),
-      pictures: paths,
-      promotions: (book.promotions ?? []).map((x) => x.id),
+    toast.custom(translate('book.toast.uploadingBook'), 'loading', {
+      hiddenCloseButton: true,
+      id,
+      duration: Infinity,
     });
-    toast.success(res.data.msg, { id, duration: 3000 });
-    return res;
+
+    // `await` để lỗi rơi vào catch bên dưới (gán lỗi 422 vào từng ô của form)
+    return await axios
+      .post('/book', {
+        name: book.name,
+        description: book.description,
+        status: book.status,
+        categories: book.categories,
+        slug: book.slug,
+        price: Number(book.price),
+        pictures: paths,
+        promotions: book.promotions?.map((x) => x.id) ?? [],
+        ...bookExtraPayload(book),
+      })
+      .then((res) => {
+        toast.success(res.data.msg, { id, duration: 3000 });
+        return res;
+      })
+      .catch((err) => {
+        // Chỉ xoá ảnh vừa upload; không xoá cả thư mục (có thể là của sách khác trùng slug)
+        if (paths.length) deleteFiles(paths);
+        throw err;
+      });
   } catch (err: any) {
-    // rollback only the files just uploaded
-    if (paths.length > 0) deleteFiles(paths);
-    if (err?.response?.status === 422) {
-      setFieldErrors(err.response.data?.fields);
-    }
-    toast.error(err?.response?.data?.msg || i18n.t('book.toast.createError'), { id, duration: 3000 });
+    if (err?.response?.status === 422) setFieldErrors(err.response.data?.fields);
+    toast.error(err?.response?.data?.msg ?? translate('book.toast.createError'), {
+      id,
+      duration: 3000,
+    });
     throw err;
   }
 };

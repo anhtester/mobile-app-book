@@ -51,6 +51,10 @@ const routesSection: RouteObject[] = [
         Component: lazy(() => import('src/pages/book-mgt/detail')),
       },
       {
+        path: 'category-management',
+        Component: lazy(() => import('src/pages/category-mgt/page')),
+      },
+      {
         path: 'promotion-book-management',
         Component: lazy(() => import('src/pages/promotions-mgt/page')),
       },
@@ -61,6 +65,22 @@ const routesSection: RouteObject[] = [
       {
         path: 'user-management/setting-account',
         Component: lazy(() => import('src/pages/user-mgt/setting')),
+      },
+      {
+        path: 'cart',
+        Component: lazy(() => import('src/pages/shop/cart-page')),
+      },
+      {
+        path: 'checkout',
+        Component: lazy(() => import('src/pages/shop/checkout-page')),
+      },
+      {
+        path: 'orders',
+        Component: lazy(() => import('src/pages/shop/orders-page')),
+      },
+      {
+        path: 'orders/:code',
+        Component: lazy(() => import('src/pages/shop/order-detail-page')),
       },
       {
         path: 'contact',

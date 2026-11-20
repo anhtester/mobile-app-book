@@ -34,7 +34,7 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
         title={t('promotion.detail.title')}
         subheader={t('promotion.detail.subheader')}
         action={
-          <IconButton onClick={() => setExpen(!expen)}>
+          <IconButton id="promotion-form-toggle-detail" onClick={() => setExpen(!expen)}>
             <Iconify
               sx={{ transition: 'all .1s ease-in-out' }}
               style={{ rotate: !expen ? '0deg' : '90deg' }}
@@ -59,7 +59,7 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
               },
             }}
             render={({ field, fieldState: { invalid, error } }) => (
-              <TextField
+              <TextField id="promotion-form-name"
                 fullWidth
                 label={t('promotion.detail.name')}
                 {...field}
@@ -81,7 +81,7 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
                 t('promotion.detail.codeLength'),
             }}
             render={({ field, fieldState: { invalid, error } }) => (
-              <TextField
+              <TextField id="promotion-form-code"
                 sx={{ flex: 1 }}
                 label={t('promotion.detail.code')}
                 error={invalid}
@@ -105,7 +105,7 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
               },
             }}
             render={({ field, fieldState: { invalid, error } }) => (
-              <TextField
+              <TextField id="promotion-form-description"
                 multiline
                 minRows={5}
                 fullWidth
@@ -123,7 +123,7 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
               defaultValue="FIXED_AMOUNT"
               rules={{ deps: ['value'] }}
               render={({ field, fieldState: { invalid, error } }) => (
-                <TextField
+                <TextField id="promotion-form-type"
                   fullWidth
                   sx={{ textTransform: typeTextTransform }}
                   select
@@ -155,7 +155,7 @@ export function CardDetail({ originalCode }: { originalCode?: string }) {
                 },
               }}
               render={({ field, fieldState: { invalid, error } }) => (
-                <TextField
+                <TextField id="promotion-form-value"
                   disabled={type === 'FREE_SHIPPING'}
                   type="number"
                   label={t('promotion.detail.value')}

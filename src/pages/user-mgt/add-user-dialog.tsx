@@ -36,10 +36,10 @@ export function AddUserDialog({ callback }: AddUserDialogProps) {
         <ContentUser />
       </DialogContent>
       <DialogActions>
-        <Button color="inherit" onClick={() => setOpen(false)}>
+        <Button id="user-dialog-cancel" color="inherit" onClick={() => setOpen(false)}>
           {t('common.actions.cancel')}
         </Button>
-        <Button
+        <Button id="user-dialog-submit"
           loading={isSubmitting}
           onClick={formControl.handleSubmit((d) =>
             id ? handleUpdateUser(id, d) : handleCreateUser(d)

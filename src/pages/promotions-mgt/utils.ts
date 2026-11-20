@@ -1,4 +1,5 @@
-import type { TFunction } from 'i18next';
+// Nhận cả `t` của useTranslation() lẫn của useTranslate()
+type TFunction = (...args: any[]) => any;
 import type { LabelColor } from 'src/components/label';
 
 import dayjs from 'dayjs';

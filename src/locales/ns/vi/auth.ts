@@ -1,5 +1,6 @@
 import type { auth as en } from '../en/auth';
 // Chép từ ../book.anhtester.com/frontend/src/locales/vi/auth.ts (bản web), đổi {x} thành {{x}} cho i18next.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 import type { Translation } from '../../types';
 
 export const auth: Translation<typeof en> = {

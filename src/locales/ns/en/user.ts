@@ -1,8 +1,8 @@
 // Chép từ ../book.anhtester.com/frontend/src/locales/en/user.ts (bản web), đổi {x} thành {{x}} cho i18next.
-// Namespace 'user'. Khoá tiếng Anh là nguồn: thêm khoá ở đây trước, rồi thêm bản dịch ở vi/user.ts.
-// Màn quản lý user, form thêm/sửa user (dùng cả ở sign-up), profile, setting.
+// Gộp bằng script 2026-11-21: chữ lấy theo web, giữ khoá chỉ mobile có (xem memory/notes/i18n.md).
 export const user = {
   title: 'User Management',
+  subtitle: 'Accounts that can sign in, their contact info and status.',
   newUser: 'New user',
   searchPlaceholder: 'Search user (name, email, phone or address)',
   deleteConfirm: 'Confirm you want to delete user "{{name}}".',
@@ -61,16 +61,9 @@ export const user = {
     uploadProfile: 'Upload profile...',
     loginFirst: 'Please login first',
     networkError: 'Cannot connect to the server. Please try again.',
-    // Riêng mobile: câu dự phòng khi server không trả msg
     createFailed: 'Create user failed.',
     updateFailed: 'Update user failed.',
     updateProfileFailed: 'Update profile failed.',
-  },
-  // Riêng mobile: ô địa chỉ (components/fields/address-field.tsx). Nhãn khung dùng common.fields.address
-  address: {
-    division: 'Division',
-    ward: 'Ward',
-    detail: 'Address',
   },
   breadcrumb: {
     userManagement: 'User management',
@@ -85,13 +78,17 @@ export const user = {
   setting: {
     title: 'Setting account',
     themeTitle: 'Theme',
-    themeSubheader:
-      'Switch between Light, Dark, or System themes for a personalized and comfortable experience.',
+    themeSubheader: 'Switch between Light, Dark, or System themes for a personalized and comfortable experience.',
     themeLight: 'Light',
     themeDark: 'Dark',
     themeSystem: 'System',
     colorTitle: 'Select color',
     colorSubheader: 'Select color for your account.',
     reset: 'Reset',
+  },
+  address: {
+    division: 'Division',
+    ward: 'Ward',
+    detail: 'Address',
   },
 };

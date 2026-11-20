@@ -20,6 +20,7 @@ export function Footer() {
   const router = useRouter();
   const { t } = useTranslation();
   const { bottom } = useLayoutPadding();
+  const current = '/' + pathname.split('/')[1];
 
   return (
     <Box
@@ -38,7 +39,9 @@ export function Footer() {
       })}
     >
       <Tabs
-        value={'/' + pathname.split('/')[1]}
+        // Trang không có tab riêng (giỏ hàng, thanh toán, đơn hàng) thì không chọn tab nào; truyền đường
+        // dẫn không có trong danh sách tab làm MUI báo lỗi "value provided to the Tabs component is invalid"
+        value={navData.some((i) => i.path === current) ? current : false}
         onChange={(_, value) => router.push(value)}
         variant="fullWidth"
         // Cao cố định 64dp: FAB (PageAction) và phần đệm đáy trang tính theo con số này

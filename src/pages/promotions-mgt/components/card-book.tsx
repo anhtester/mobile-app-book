@@ -74,7 +74,7 @@ export function CardBook() {
         title={t('promotion.books.title')}
         subheader={t('promotion.books.subheader')}
         action={
-          <IconButton onClick={() => setExpen(!expen)}>
+          <IconButton id="promotion-form-toggle-books" onClick={() => setExpen(!expen)}>
             <Iconify
               sx={{ transition: 'all .1s ease-in-out' }}
               style={{ rotate: !expen ? '0deg' : '90deg' }}
@@ -106,9 +106,20 @@ export function CardBook() {
 
           {selected.length > 0 && <>
             <Divider />
-            <Box p={2} display="flex" flexWrap="unset" gap={1}>
+            {/* Sách đã chọn: chip tự xuống hàng, tên dài cắt "…" (giống web 2026-11-21-05).
+                Trước đây `flexWrap="unset"` nên chọn nhiều sách là dải chip tràn ngang khỏi màn hình. */}
+            <Box
+              p={2}
+              display="flex"
+              flexWrap="wrap"
+              gap={1}
+              data-testid="selected-books"
+              sx={{ maxHeight: 220, overflowY: 'auto' }}
+            >
               {selected.map((item) => (
                 <Chip
+                  title={item.name}
+                  sx={{ maxWidth: 1 }}
                   avatar={
                     <Avatar src={item.picture?.[0] ? formatFilePath(item.picture[0]) : undefined}>
                       <Iconify width={0.6} icon="solar:album-outline" />

@@ -14,6 +14,7 @@ import {
 
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
+import { searchInputProps } from 'src/components/fields/search-input-props';
 
 import { formControl } from '../store/form-control';
 import { TableFilterItemView } from './table-filter-item-view';
@@ -104,6 +105,7 @@ export function TableFilterView<T>({
           <Stack direction="row" spacing={1} alignItems="center">
             <OutlinedInput
               fullWidth
+              inputProps={searchInputProps}
               placeholder={placeholder ?? t('common.search')}
               value={search}
               onChange={(e) => {
@@ -116,7 +118,7 @@ export function TableFilterView<T>({
                 </InputAdornment>
               }
             />
-            <IconButton
+            <IconButton id="table-filter-toggle"
               onClick={() => {
                 if (fieldsControl.length === 0) {
                   reset({

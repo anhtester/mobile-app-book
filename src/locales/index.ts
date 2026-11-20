@@ -3,11 +3,13 @@ import 'dayjs/locale/en';
 
 import dayjs from 'dayjs';
 import i18n from 'i18next';
-import { useSyncExternalStore } from 'react';
-import { initReactI18next } from 'react-i18next';
+import { useMemo, useSyncExternalStore } from 'react';
+import { useTranslation, initReactI18next } from 'react-i18next';
 
 import { en } from './en';
 import { vi } from './vi';
+
+import type { Leaves } from './types';
 
 // ----------------------------------------------------------------------
 // Đa ngôn ngữ vi/en (rule 9 trong CLAUDE.md).
@@ -77,6 +79,37 @@ function subscribeLanguage(onChange: () => void) {
  */
 export function useLanguage(): Language {
   return useSyncExternalStore(subscribeLanguage, currentLanguage);
+}
+
+// ----------------------------------------------------------------------
+// Lớp tương thích với API i18n của bản web (`useTranslate`, `translate`, `TKey`) để chép file web
+// sang gần như nguyên bản (2026-11-21). Bên dưới vẫn là i18next; chuỗi dùng `{{x}}` như mọi khoá khác.
+// ----------------------------------------------------------------------
+
+/** Mọi khoá dịch hợp lệ, dạng 'book.title' (TypeScript báo khoá sai) */
+export type TKey = Leaves<typeof en>;
+export type TParams = Record<string, string | number>;
+/** Hàm dịch truyền vào hàm tạo cột / bộ lọc (tránh bẫy React Compiler) */
+export type TFn = (key: TKey, params?: TParams) => string;
+
+/** Dịch ngoài component (file api, hàm tiện ích) */
+export const translate = (key: TKey, params?: TParams): string => i18n.t(key, params ?? {});
+
+/**
+ * Hook dịch giống bản web. `t` đổi danh tính khi đổi ngôn ngữ nên React Compiler không giữ chữ cũ
+ * (xem bẫy React Compiler ở memory/notes/i18n.md).
+ */
+export function useTranslate() {
+  const { t } = useTranslation();
+  const lang = useLanguage();
+  return useMemo(
+    () => ({
+      lang,
+      setLang: setLanguage,
+      t: (key: TKey, params?: TParams) => t(key, { ...params, lng: lang }),
+    }),
+    [lang, t]
+  );
 }
 
 export default i18n;

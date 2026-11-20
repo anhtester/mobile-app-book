@@ -97,7 +97,7 @@ export function TableHeaderView<T>({
       <TableRow>
         {select && (
           <TableCell padding="checkbox">
-            <Checkbox
+            <Checkbox id="table-select-all"
               onClick={handleSelect}
               indeterminate={isSelect && !isSelectAll}
               checked={isSelectAll}

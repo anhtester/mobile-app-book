@@ -4,6 +4,7 @@
 /* Inter: font của AT UI kit (anhtester.com), có bộ ký tự tiếng Việt.
    DM Sans cũ không có tiếng Việt nên chữ có dấu bị lẫn font dự phòng. */
 @import '@fontsource-variable/inter';
+@import '@fontsource-variable/merriweather';
 
 /** **************************************
 * Plugins
@@ -66,4 +67,12 @@ input[type='number']::-webkit-inner-spin-button {
 
 * {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Ô tìm kiếm dùng type="search" (chặn trình duyệt tự điền, xem components/fields/search-input-props.ts):
+   ẩn nút × mặc định của trình duyệt vì ô đã có nút xoá riêng */
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
 }

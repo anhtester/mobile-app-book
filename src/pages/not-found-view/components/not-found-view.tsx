@@ -50,7 +50,7 @@ export function NotFoundView() {
           }}
         />
 
-        <Button component={RouterLink} href="/" size="large" variant="contained" color="primary">
+        <Button id="not-found-go-home" component={RouterLink} href="/" size="large" variant="contained" color="primary">
           {t('home.notFound.goHome')}
         </Button>
       </Container>

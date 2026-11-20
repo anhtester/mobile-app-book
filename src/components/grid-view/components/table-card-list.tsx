@@ -85,7 +85,7 @@ export function TableCardList<T>({
           sx={{ px: 2, py: 1.5, borderTop: (theme) => `1px solid ${theme.vars.palette.divider}` }}
         >
           {select && (
-            <Checkbox
+            <Checkbox id="table-card-select-all"
               data-testid="table-card-select-all"
               inputProps={{ 'aria-label': t('common.selectAll') }}
               checked={isAllSelected}
@@ -96,7 +96,7 @@ export function TableCardList<T>({
           )}
           {sortable.length > 0 && (
             <>
-              <TextField
+              <TextField id="table-card-sort-by"
                 select
                 size="small"
                 label={t('common.sortBy')}
@@ -111,7 +111,7 @@ export function TableCardList<T>({
                   </MenuItem>
                 ))}
               </TextField>
-              <IconButton
+              <IconButton id="table-card-sort-direction"
                 data-testid="table-card-sort-direction"
                 aria-label={config.orderBy === 'desc' ? t('common.descending') : t('common.ascending')}
                 disabled={!config.order}
@@ -164,7 +164,7 @@ export function TableCardList<T>({
               })}
             >
               {select && (
-                <Checkbox
+                <Checkbox id={`table-card-select-${key}`}
                   checked={isSelected}
                   onClick={(e) => e.stopPropagation()}
                   onChange={() => toggleRow(row)}
@@ -206,7 +206,21 @@ export function TableCardList<T>({
                         </Typography>
                         <Box
                           component="dd"
-                          sx={{ m: 0, minWidth: 0, overflowWrap: 'break-word', typography: 'body2' }}
+                          sx={{
+                            m: 0,
+                            minWidth: 0,
+                            overflowWrap: 'break-word',
+                            typography: 'body2',
+                            // Cột ngày (Stack: ngày + giờ dạng caption) vẽ cho bảng desktop thành 2 dòng;
+                            // trong thẻ thì để giờ nằm cùng dòng với ngày cho gọn, hết chỗ mới xuống dòng.
+                            '& > .MuiStack-root:has(> .MuiTypography-root + .MuiTypography-caption:last-child)':
+                              {
+                                flexDirection: 'row',
+                                flexWrap: 'wrap',
+                                alignItems: 'baseline',
+                                columnGap: 1,
+                              },
+                          }}
                         >
                           {column.render(row)}
                         </Box>
@@ -217,7 +231,7 @@ export function TableCardList<T>({
               </Box>
 
               {renderAction && (
-                <IconButton
+                <IconButton id={`table-card-action-${key}`}
                   data-testid={`table-card-action-${key}`}
                   aria-label={t('common.more')}
                   onClick={(e) => {

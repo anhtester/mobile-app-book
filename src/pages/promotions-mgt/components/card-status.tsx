@@ -21,7 +21,7 @@ export function CardStatus() {
         title={t('promotion.status.label')}
         subheader={t('promotion.statusCard.subheader')}
         action={
-          <IconButton onClick={() => setExpen(!expen)}>
+          <IconButton id="promotion-form-toggle-status" onClick={() => setExpen(!expen)}>
             <Iconify
               sx={{ transition: 'all .1s ease-in-out' }}
               style={{ rotate: !expen ? '0deg' : '90deg' }}
