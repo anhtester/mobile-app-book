@@ -97,11 +97,11 @@ const MuiButton: Components<Theme>['MuiButton'] = {
         border: `1.5px solid ${theme.vars.palette.divider}`,
       },
     }),
-    sizeSmall: { minHeight: atKit.btnHeight.small, fontSize: 13, borderRadius: atKit.radius.sm },
+    sizeSmall: { minHeight: atKit.btnHeight.small, fontSize: 14, borderRadius: atKit.radius.sm },
     sizeMedium: { minHeight: atKit.btnHeight.medium, paddingLeft: 18, paddingRight: 18 },
     sizeLarge: {
       minHeight: atKit.btnHeight.large,
-      fontSize: 14.5,
+      fontSize: 15.5,
       paddingLeft: 22,
       paddingRight: 22,
       borderRadius: atKit.radius.md,
@@ -204,7 +204,7 @@ const MuiPaper: Components<Theme>['MuiPaper'] = {
 const MuiTableCell: Components<Theme>['MuiTableCell'] = {
   styleOverrides: {
     head: ({ theme }) => ({
-      fontSize: theme.typography.pxToRem(14),
+      fontSize: theme.typography.pxToRem(15),
       color: theme.vars.palette.text.secondary,
       fontWeight: theme.typography.fontWeightSemiBold,
       backgroundColor: theme.vars.palette.background.neutral,

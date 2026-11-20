@@ -21,7 +21,7 @@ export function OrderStatusPill({ status }: { status: OrderStatus }) {
         display: 'inline-flex',
         alignItems: 'center',
         borderRadius: 999,
-        fontSize: 13,
+        fontSize: 13.5,
         fontWeight: 600,
         bgcolor: atBg(tone),
         color: atInk(tone),

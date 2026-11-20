@@ -184,7 +184,7 @@ export default function CheckoutPage() {
       sx={{
         mb: 3,
         mx: -1,
-        '& .MuiStepLabel-label': { mt: '6px !important', fontSize: 12, lineHeight: 1.3 },
+        '& .MuiStepLabel-label': { mt: '6px !important', fontSize: 13, lineHeight: 1.3 },
       }}
     >
       {steps.map((label) => (

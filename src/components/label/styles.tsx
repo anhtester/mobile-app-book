@@ -94,7 +94,7 @@ export const LabelRoot = styled('span', {
   };
 
   return {
-    height: 24,
+    height: 26,
     minWidth: 24,
     lineHeight: 0,
     flexShrink: 0,
@@ -104,9 +104,9 @@ export const LabelRoot = styled('span', {
     display: 'inline-flex',
     gap: theme.spacing(0.75),
     justifyContent: 'center',
-    // Hình dạng at-pill: bo tròn hẳn, 12.5px / 600
+    // Hình dạng at-pill: bo tròn hẳn, 13.5px / 600 (kit 12.5, nâng cho điện thoại)
     padding: theme.spacing(0, 1.25),
-    fontSize: theme.typography.pxToRem(12.5),
+    fontSize: theme.typography.pxToRem(13.5),
     fontWeight: theme.typography.fontWeightSemiBold,
     borderRadius: 999,
     transition: theme.transitions.create(['all'], { duration: theme.transitions.duration.shorter }),

@@ -70,7 +70,7 @@ function Pill({
         px: 1.25,
         py: 0.5,
         borderRadius: 999,
-        fontSize: 13.5,
+        fontSize: 14,
         fontWeight: 600,
         bgcolor: atBg(tone),
         color: atInk(tone),
@@ -222,7 +222,7 @@ export default function BookDetail() {
                   sx={{
                     px: 1.25,
                     py: 0.4,
-                    fontSize: 13.5,
+                    fontSize: 14,
                     fontWeight: 600,
                     borderRadius: 999,
                     textDecoration: 'none',
@@ -334,7 +334,7 @@ export default function BookDetail() {
                         py: 0.25,
                         color: '#fff',
                         fontWeight: 700,
-                        fontSize: 13,
+                        fontSize: 14,
                         borderRadius: 999,
                         backgroundImage: 'var(--at-grad-orange)',
                       }}

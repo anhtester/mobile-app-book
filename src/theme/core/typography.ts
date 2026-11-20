@@ -43,10 +43,10 @@ function responsiveFontSizes(obj: ResponsiveFontSizesInput): ResponsiveFontSizes
 const primaryFont = setFont(themeConfig.fontFamily.primary);
 const secondaryFont = setFont(themeConfig.fontFamily.secondary);
 
-// Thang chữ theo AT UI kit (anhtester_lms at-ui.css), tối ưu cho màn điện thoại:
-// tiêu đề trang 22/800 (at-page-head__title, 19 trên màn hẹp), tiêu đề khối 17/700,
-// tiêu đề dòng 14-15/600 (at-row__title), nội dung 15 (body của site), phụ 13-14 (at-row__meta),
-// nút 14/600 (at-btn), nhãn in hoa 12/700 (at-label), pill 12.5/600.
+// Thang chữ theo AT UI kit (anhtester_lms at-ui.css), nâng ~1px cho màn điện thoại (2026-11-21:
+// thang cũ 15/14/12.5 đo trên emulator đọc bị nhỏ). Tiêu đề trang 22/800, tiêu đề khối 18/700,
+// tiêu đề dòng 16/600, nội dung 16/15, phụ 13.5, nút 15/600, nhãn in hoa 13/700, pill 13.5/600.
+// Không xuống dưới 13px cho chữ người dùng phải đọc.
 export const typography: TypographyVariantsOptions = {
   fontFamily: primaryFont,
   fontSecondaryFamily: secondaryFont,
@@ -77,56 +77,56 @@ export const typography: TypographyVariantsOptions = {
   h4: {
     fontWeight: 800,
     lineHeight: 1.3,
-    fontSize: pxToRem(20),
-    ...responsiveFontSizes({ sm: 22 }),
+    fontSize: pxToRem(22),
+    ...responsiveFontSizes({ sm: 24 }),
   },
   h5: {
     fontWeight: 700,
     lineHeight: 1.35,
-    fontSize: pxToRem(19),
-    ...responsiveFontSizes({ sm: 20 }),
+    fontSize: pxToRem(20),
+    ...responsiveFontSizes({ sm: 21 }),
   },
   // Tiêu đề khối, card, dialog
   h6: {
     fontWeight: 700,
     lineHeight: 1.4,
-    fontSize: pxToRem(17),
+    fontSize: pxToRem(18),
   },
   // Tiêu đề dòng trong danh sách
   subtitle1: {
     fontWeight: 600,
     lineHeight: 1.4,
-    fontSize: pxToRem(15),
+    fontSize: pxToRem(16),
   },
   subtitle2: {
     fontWeight: 600,
     lineHeight: 1.4,
-    fontSize: pxToRem(14),
+    fontSize: pxToRem(15),
   },
   body1: {
     lineHeight: 1.55,
-    fontSize: pxToRem(15),
+    fontSize: pxToRem(16),
   },
   body2: {
     lineHeight: 1.5,
-    fontSize: pxToRem(14),
+    fontSize: pxToRem(15),
   },
   caption: {
     lineHeight: 1.45,
-    fontSize: pxToRem(12.5),
+    fontSize: pxToRem(13.5),
   },
   // Nhãn nhóm in hoa (at-label)
   overline: {
     fontWeight: 700,
     lineHeight: 1.5,
-    fontSize: pxToRem(12),
+    fontSize: pxToRem(13),
     letterSpacing: '0.06em',
     textTransform: 'uppercase',
   },
   button: {
     fontWeight: 600,
     lineHeight: 1.2,
-    fontSize: pxToRem(14),
+    fontSize: pxToRem(15),
     textTransform: 'unset',
   },
 };

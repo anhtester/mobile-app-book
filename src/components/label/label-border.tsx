@@ -21,7 +21,7 @@ export function LabelBorder({
         borderRadius: 2,
         bgcolor: 'background.paper',
         transform: 'translateY(-50%)',
-        fontSize: '0.75rem',
+        fontSize: '0.8125rem',
         fontWeight: 600,
         border: 'solid 1px',
         borderColor: 'divider',

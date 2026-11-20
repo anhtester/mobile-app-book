@@ -157,7 +157,7 @@ export function NavDrawer() {
                 <Typography
                   variant="overline"
                   component="p"
-                  sx={{ px: 1.5, mb: 0.5, color: 'text.disabled', fontSize: 11.5 }}
+                  sx={{ px: 1.5, mb: 0.5, color: 'text.disabled', fontSize: 12.5 }}
                 >
                   {t(group.tKey)}
                 </Typography>

@@ -63,7 +63,7 @@ export function Footer() {
               pt: 1,
               pb: 0.75,
               gap: 0.25,
-              fontSize: theme.typography.pxToRem(11.5),
+              fontSize: theme.typography.pxToRem(12.5),
               fontWeight: 500,
               lineHeight: 1.2,
               color: theme.vars.palette.text.secondary,
