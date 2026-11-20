@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Ghi đè cho bản debug (live reload với backend local) để phân biệt với bản release gọi production -->
+<resources>
+    <string name="app_name">Book Local</string>
+    <string name="title_activity_main">Book Local</string>
+</resources>

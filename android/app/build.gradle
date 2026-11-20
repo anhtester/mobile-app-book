@@ -17,6 +17,13 @@ android {
         }
     }
     buildTypes {
+        // Bản debug cài cạnh bản release trên cùng máy: package `com.anhtester.book.local`, tên "Book Local"
+        // (strings ở src/debug/res). Dùng cho live reload với backend local; release giữ `com.anhtester.book`
+        // gọi production. Xem memory/notes/android-build.md.
+        debug {
+            applicationIdSuffix ".local"
+            versionNameSuffix "-local"
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
