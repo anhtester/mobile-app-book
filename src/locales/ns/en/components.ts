@@ -67,6 +67,7 @@ export const components = {
     uploadPhoto: 'Upload photo',
     allowed: 'Allowed {{types}}',
     maxSize: 'max size of {{size}}',
+    optimizing: 'Optimizing photos for upload...',
   },
   toast: {
     errorDefault: 'Error in processing request',

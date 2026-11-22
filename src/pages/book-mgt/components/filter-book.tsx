@@ -243,7 +243,12 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
 
       <Divider sx={{ mt: 1, mb: 2, borderStyle: 'dashed' }} />
 
-      <Dialog open={open} fullWidth maxWidth="xs">
+      <Dialog
+        open={open}
+        fullWidth
+        maxWidth="xs"
+        onClose={(_, reason) => reason === 'escapeKeyDown' && setOpen(false)}
+      >
         <DialogTitle>
           {t('book.category.title')} <Label>{data.length}</Label>
         </DialogTitle>

@@ -6,6 +6,7 @@ import { useRef, useState, useEffect, forwardRef, useCallback } from 'react';
 
 import { Box, Stack, Typography } from '@mui/material';
 
+import { compressImages } from 'src/utils/compress-image';
 import { formatFilePath } from 'src/utils/format-filepath';
 
 import { useTranslate } from 'src/locales';
@@ -34,16 +35,26 @@ export const AvatarField = forwardRef<HTMLInputElement, AvatarFieldProps>((props
   const hasPreview = !!preview && !broken;
 
   const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      const file = acceptedFiles && acceptedFiles.length ? acceptedFiles[0] : undefined;
+    async (acceptedFiles: File[]) => {
+      const picked = acceptedFiles && acceptedFiles.length ? acceptedFiles[0] : undefined;
+      // Ảnh chụp điện thoại thường vượt giới hạn avatar → thu nhỏ trước, validation của form kiểm sau
+      const [file] = picked
+        ? await compressImages([picked], {
+            maxSide: 800,
+            targetBytes: 300 * 1024,
+            skipBelow: 300 * 1024,
+          })
+        : [undefined];
       onChange(file);
       flagUserHandle.current = true;
     },
     [onChange]
   );
 
+  // `maxSize` chỉ để hiện chữ hướng dẫn: đưa vào dropzone thì ảnh lớn bị loại âm thầm trước khi kịp nén
   const { getRootProps, getInputProps } = useDropzone({
     ...opt,
+    maxSize: undefined,
     multiple: false,
     accept: opt?.accept || accepImg,
     onDrop,

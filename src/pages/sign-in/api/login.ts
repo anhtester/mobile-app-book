@@ -1,3 +1,4 @@
+import i18n from 'src/locales';
 import { axios } from 'src/api/axios';
 
 import { toast } from 'src/components/toast';
@@ -14,7 +15,7 @@ export async function loginHanle(prop: { email: string; password: string }) {
       toast.success(res.data.msg);
     })
     .catch((err) => {
-      toast.error(err.response?.data?.msg ?? 'Network error');
+      toast.error(err.response?.data?.msg ?? i18n.t('auth.toast.networkError'));
       const fields = err.response?.data?.fields;
       if (fields) {
         for (const [key, value] of Object.entries(fields)) {

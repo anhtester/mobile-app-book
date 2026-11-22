@@ -70,6 +70,7 @@ export const components: Translation<typeof en> = {
     uploadPhoto: 'Tải ảnh lên',
     allowed: 'Cho phép {{types}}',
     maxSize: 'dung lượng tối đa {{size}}',
+    optimizing: 'Đang tối ưu ảnh để tải lên...',
   },
   toast: {
     errorDefault: 'Có lỗi khi xử lý yêu cầu',

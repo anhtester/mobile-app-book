@@ -8,10 +8,12 @@ import { Box, Link, Button, TextField, Typography } from '@mui/material';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
+import i18n from 'src/locales';
 import { axios } from 'src/api/axios';
 import { useAuth } from 'src/store/auth';
 import { AuthLayout } from 'src/layouts/auth';
 
+import { toast } from 'src/components/toast';
 import { PasswordField } from 'src/components/fields/password-field';
 
 import { loginHanle } from '../api/login';
@@ -25,17 +27,28 @@ export function ContentFieldsLogin() {
   const router = useRouter();
   const { t } = useTranslation();
 
+  // formControl sống ở cấp module: cờ isSubmitSuccessful của lần đăng nhập trước không được
+  // còn lại khi mở /sign-in lần sau, nếu không trang tự chuyển đi ngay (web sửa 2026-11-22).
   useEffect(() => {
-    if (isSubmitSuccessful) {
-      formControl.reset();
-      setAuthChecked(false);
-      axios
-        .get('/me')
-        .then((res) => setAuth(res.data))
-        .catch(() => setAuth(null))
-        .finally(() => setAuthChecked(true));
-      router.replace(redirect ?? '/');
-    }
+    formControl.reset();
+  }, []);
+
+  useEffect(() => {
+    if (!isSubmitSuccessful) return;
+    // Chỉ rời trang khi đã lấy được tài khoản: /me lỗi mà vẫn chuyển trang thì app ở trạng thái
+    // khách dù vừa báo đăng nhập thành công.
+    axios
+      .get('/me')
+      .then((res) => {
+        setAuth(res.data);
+        setAuthChecked(true);
+        router.replace(redirect ?? '/');
+      })
+      .catch(() => {
+        localStorage.removeItem('accessToken');
+        toast.error(i18n.t('auth.toast.loadAccountFailed'), { id: 'msg' });
+      })
+      .finally(() => formControl.reset());
   }, [isSubmitSuccessful, redirect, router, setAuth, setAuthChecked]);
 
   return (

@@ -25,7 +25,15 @@ export default function ConfigDialog() {
   }, [setOpen]);
 
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} {...config}>
+    <Dialog
+      fullWidth
+      maxWidth="sm"
+      open={open}
+      // Nút Back của Android gửi Escape (use-android-back-button). Bấm ra ngoài vẫn không đóng
+      // để không mất dữ liệu đang nhập trong form.
+      onClose={(_, reason) => reason === 'escapeKeyDown' && setOpen(false)}
+      {...config}
+    >
       {content && content.content()}
     </Dialog>
   );

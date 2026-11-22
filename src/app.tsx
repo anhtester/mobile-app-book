@@ -18,6 +18,7 @@ import { createPaletteChannel } from 'minimal-shared/utils';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
+import { useAndroidBackButton } from './hooks/use-android-back-button';
 import { useThemeData, generateColorPalette } from './hooks/use-theme-data';
 // ----------------------------------------------------------------------
 
@@ -31,6 +32,7 @@ type AppProps = {
 
 export default function App({ children }: AppProps) {
   useScrollToTop();
+  useAndroidBackButton();
   const { primary = BRAND_GREEN } = useThemeData();
   const { i18n } = useTranslation();
 

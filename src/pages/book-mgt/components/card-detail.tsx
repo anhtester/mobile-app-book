@@ -168,6 +168,7 @@ export function CardDetail() {
                   <UploadField
                     viewMode="grid"
                     showMode
+                    compress
                     {...field}
                     delFiles={pictureDel}
                     setDelFiles={setPictureDel}

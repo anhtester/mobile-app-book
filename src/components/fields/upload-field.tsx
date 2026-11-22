@@ -16,6 +16,8 @@ import {
 
 import { Box, Stack, ToggleButton, FormHelperText, ToggleButtonGroup } from '@mui/material';
 
+import { compressImages } from 'src/utils/compress-image';
+
 import { Iconify } from '../iconify';
 import { UploadImg } from './upload-img';
 import { SortableImage } from './components/sortable';
@@ -81,6 +83,8 @@ type UploadFieldProps = {
   helperText?: string;
   viewMode?: 'list' | 'grid';
   showMode?: boolean;
+  /** Thu nhỏ + nén ảnh lớn trước khi đưa vào form (ảnh sách). Màn File giữ nguyên file gốc. */
+  compress?: boolean;
 };
 
 export const checkType = (
@@ -107,6 +111,7 @@ export const UploadField = forwardRef<HTMLDivElement, UploadFieldProps>(
       onFocus,
       disabled,
       showMode = false,
+      compress = false,
     },
     ref
   ) => {
@@ -117,10 +122,14 @@ export const UploadField = forwardRef<HTMLDivElement, UploadFieldProps>(
     const flagUserHandle = useRef<boolean>(false);
     const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-      setFiles((f) => [...f, ...acceptedFiles]);
-      flagUserHandle.current = true;
-    }, []);
+    const onDrop = useCallback(
+      async (acceptedFiles: File[]) => {
+        const added = compress ? await compressImages(acceptedFiles) : acceptedFiles;
+        setFiles((f) => [...f, ...added]);
+        flagUserHandle.current = true;
+      },
+      [compress]
+    );
 
     const { getRootProps, getInputProps } = useDropzone({
       ...opt,
