@@ -59,13 +59,16 @@ export function Footer() {
               minWidth: 0,
               height: 64,
               minHeight: 64,
-              px: 0.5,
+              px: 0.25,
               pt: 1,
               pb: 0.75,
               gap: 0.25,
               fontSize: theme.typography.pxToRem(12.5),
               fontWeight: 500,
               lineHeight: 1.2,
+              // Màn 390dp (iPhone): "Khuyến mãi" in đậm khi đang chọn bị xuống 2 dòng ⇒ giữ 1 dòng, thu chữ ở màn hẹp (2026-11-25)
+              whiteSpace: 'nowrap',
+              '@media (max-width: 399.95px)': { fontSize: theme.typography.pxToRem(11.5) },
               color: theme.vars.palette.text.secondary,
               '& .minimal__svg__color__root': {
                 width: 24,

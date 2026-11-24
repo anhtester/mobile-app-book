@@ -176,7 +176,7 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
           scrollButtons="auto"
           indicatorColor="primary"
           // Tab thể loại dạng pill theo AT UI kit: tab đang chọn tô gradient xanh lá
-          sx={{
+          sx={(theme) => ({
             flex: 1,
             // Thiếu minWidth: 0 thì Tabs không co lại trong hàng flex, tab cuối chui dưới nút ⚙ (mobile 2026-11-21)
             minWidth: 0,
@@ -197,6 +197,20 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
               transition: 'all .15s',
               '&:hover': { color: 'text.primary' },
               '& .MuiChip-root, & .label': { transition: 'none' },
+              // Điện thoại: pill gọn hơn (cao 34, chữ 13) — bản 38/15 chiếm quá nhiều chỗ (2026-11-25)
+              [theme.breakpoints.down('sm')]: {
+                minHeight: 34,
+                minWidth: 0,
+                py: 0.5,
+                px: 1.5,
+                fontSize: theme.typography.pxToRem(13),
+                '& span[class*="label"], & .MuiBox-root > span:last-of-type': {
+                  height: 20,
+                  minWidth: 20,
+                  px: 0.75,
+                  fontSize: theme.typography.pxToRem(11),
+                },
+              },
             },
             '& .MuiTab-root.Mui-selected': {
               color: '#fff',
@@ -207,7 +221,7 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
                 bgcolor: 'rgba(255,255,255,.22)',
               },
             },
-          }}
+          })}
           // Chưa tải xong / category không tồn tại thì không chọn tab nào (tránh cảnh báo MUI)
           value={!category || data.some((c) => c.name === category) ? category : false}
           onChange={(_, value) => setCategory(value)}

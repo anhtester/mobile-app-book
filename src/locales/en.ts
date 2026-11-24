@@ -113,7 +113,11 @@ export const en = {
     // Mobile: không có rê chuột, đổi câu gợi ý theo thao tác chạm
     detail: { ...bookstoreNs.detail, zoomHint: 'Tap a thumbnail to change page · tap the image to view full screen' },
   },
-  components: componentsNs,
+  components: {
+    ...componentsNs,
+    // Bộ lọc dạng khối trên điện thoại (table-filter-item-view.tsx)
+    filter: { ...componentsNs.filter, condition: 'Condition {{n}}', removeCondition: 'Remove condition' },
+  },
   language: {
     label: 'Language',
     switchTo: 'Switch language',

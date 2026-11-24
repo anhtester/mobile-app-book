@@ -100,7 +100,7 @@ export function TableFilterView<T>({
 
   return (
     <Scrollbar>
-      <Stack p={3}>
+      <Stack sx={{ p: { xs: 2, sm: 3 } }}>
         <Collapse in={!isFilter} mountOnEnter unmountOnExit>
           <Stack direction="row" spacing={1} alignItems="center">
             <OutlinedInput
@@ -140,7 +140,8 @@ export function TableFilterView<T>({
           </Stack>
         </Collapse>
         <Collapse in={isFilter} mountOnEnter unmountOnExit>
-          <Stack spacing={2} minWidth={600}>
+          {/* Điện thoại: điều kiện xếp dạng khối (table-filter-item-view), không cần bề ngang 600 để cuộn ngang */}
+          <Stack spacing={{ xs: 1.5, sm: 2 }} sx={{ minWidth: { sm: 600 } }}>
             {fieldsControl.map((field, index) => (
               <TableFilterItemView
                 key={field.id}
@@ -161,7 +162,13 @@ export function TableFilterView<T>({
                 }
               />
             ))}
-            <Box display="flex" justifyContent="flex-end" gap={2}>
+            <Box
+              display="flex"
+              justifyContent="flex-end"
+              gap={{ xs: 1.5, sm: 2 }}
+              // Điện thoại: hai nút chia đôi hàng thay vì dồn sang phải
+              sx={{ '& > .MuiButton-root': { flex: { xs: 1, sm: 'none' } } }}
+            >
               <Button
                 id="add-filter"
                 color="inherit"

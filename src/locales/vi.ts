@@ -113,7 +113,11 @@ export const vi: typeof en = {
     // Mobile: không có rê chuột, đổi câu gợi ý theo thao tác chạm
     detail: { ...bookstoreNs.detail, zoomHint: 'Chạm ảnh nhỏ để đổi trang · chạm ảnh lớn để xem toàn màn hình' },
   },
-  components: componentsNs,
+  components: {
+    ...componentsNs,
+    // Bộ lọc dạng khối trên điện thoại (table-filter-item-view.tsx)
+    filter: { ...componentsNs.filter, condition: 'Điều kiện {{n}}', removeCondition: 'Xoá điều kiện' },
+  },
   language: {
     label: 'Ngôn ngữ',
     switchTo: 'Đổi ngôn ngữ',
