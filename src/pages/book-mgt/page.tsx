@@ -1,5 +1,5 @@
-import { useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useRef, useEffect, useCallback } from 'react';
 
 import { Grid, Stack, Typography, Pagination, useMediaQuery } from '@mui/material';
 
@@ -45,6 +45,7 @@ export function BookView() {
 
   const {
     loading,
+    error: listError,
     data: { list = [], pagination: { totalPage, total } } = {
       list: [],
       pagination: { totalPage: 0, total: 0 },
@@ -66,7 +67,11 @@ export function BookView() {
   const to = Math.min(page * BOOKS_PER_PAGE, total);
 
   // Băng rôn: 3 sách xem nhiều nhất + tổng số sách / thể loại (không phụ thuộc bộ lọc)
-  const { data: featured } = useRequest(
+  const {
+    data: featured,
+    error: featuredError,
+    request: requestFeatured,
+  } = useRequest(
     useCallback(
       () =>
         getBooks({
@@ -80,7 +85,22 @@ export function BookView() {
       [auth]
     )
   );
-  const { data: categories = [] } = useRequest(useCallback(() => Category.get(), []));
+  const {
+    data: categories = [],
+    error: categoriesError,
+    request: requestCategories,
+  } = useRequest(Category.get);
+
+  // Băng rôn chỉ gọi một lần: lỗi lúc mở trang (backend đang khởi động, mất mạng) là kẹt
+  // "0 books / 0 categories" dù danh sách bên dưới tải lại được (thấy trên emulator 2026-11-24).
+  // Danh sách tải xong mà băng rôn còn lỗi thì gọi lại băng rôn.
+  useEffect(() => {
+    if (loading || listError) return;
+    if (featuredError) requestFeatured();
+    if (categoriesError) requestCategories();
+    // Chỉ chạy lại khi danh sách vừa tải xong, không theo lỗi của băng rôn (tránh gọi lại liên tục)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, listError]);
   const categoryCount = categories.filter((c) => c.isActive && c.bookCount > 0).length;
 
   const renderLinkNew = (() => {
@@ -105,7 +125,7 @@ export function BookView() {
         action={auth && <NewBookButton href={renderLinkNew} />}
       />
 
-      <FilterBook config={config} />
+      <FilterBook config={config} listLoading={loading} />
 
       <Typography
         ref={resultsRef}

@@ -264,32 +264,25 @@ const Shortcut = ({
   </Box>
 );
 
+// Hàm cấp module (tham chiếu cố định): callback viết thẳng vào useRequest chỉ ổn định khi React
+// Compiler tối ưu được component, nó bỏ qua là mỗi lần render gọi API lại ⇒ vòng lặp (2026-11-25)
+const getTotal = (path: string) =>
+  axios.get(path, { params: { limit: 1 } }).then((e) => e.data.pagination.total as number);
+const getTotalUser = () => getTotal('/user');
+const getTotalBook = () => getTotal('/book');
+const getTotalPromotion = () => getTotal('/promotion-book');
+const getTotalCategory = () => getTotal('/category-book');
+
 export default function Page() {
   const { t } = useTranslation();
   const { auth } = useAuth();
   const cartCount = useCartCount();
   const form = useForm<{ time: number; code: number }>();
 
-  const { data: totalUser = 0 } = useRequest(
-    async () =>
-      await axios.get('/user', { params: { limit: 1 } }).then((e) => e.data.pagination.total)
-  );
-
-  const { data: totalBook = 0 } = useRequest(
-    async () =>
-      await axios.get('/book', { params: { limit: 1 } }).then((e) => e.data.pagination.total)
-  );
-
-  const { data: totalPromotion = 0 } = useRequest(
-    async () =>
-      await axios
-        .get('/promotion-book', { params: { limit: 1 } })
-        .then((e) => e.data.pagination.total)
-  );
-
-  const { data: totalCategory = 0 } = useRequest(
-    async () => await axios.get('/category-book').then((e) => e.data.pagination.total)
-  );
+  const { data: totalUser = 0 } = useRequest(getTotalUser);
+  const { data: totalBook = 0 } = useRequest(getTotalBook);
+  const { data: totalPromotion = 0 } = useRequest(getTotalPromotion);
+  const { data: totalCategory = 0 } = useRequest(getTotalCategory);
 
   const handleAction = (item: { code: number; msg: string; time?: number }) => () => {
     toast.loading(

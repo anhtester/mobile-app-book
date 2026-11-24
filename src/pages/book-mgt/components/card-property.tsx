@@ -28,7 +28,8 @@ import { control } from '../stores/form-add';
 export function CardProperty() {
   const { t } = useTranslate();
   const [expen, setExpen] = useState(true);
-  const { data = [] } = useRequest(() => Category.get());
+  // Truyền hàm cố định, không viết `() => Category.get()` (vòng lặp request khi Compiler bỏ qua, xem filter-book.tsx)
+  const { data = [] } = useRequest(Category.get);
   const mapCategory = data.reduce(
     (acc, cur) => {
       acc[cur.name] = cur;

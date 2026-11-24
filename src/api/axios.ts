@@ -65,9 +65,16 @@ axios.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // 401 của /login là sai mật khẩu, không phải token hết hạn. /refetch-token trả 401 mà cũng
+    // vào nhánh làm mới thì tự chờ chính nó trong hàng đợi ⇒ treo. Giống bản web (2026-11-25)
+    const url = String(originalRequest?.url ?? '');
+    const isAuthEndpoint = ['/login', '/register', '/refetch-token'].some((p) => url.endsWith(p));
+
     // Kiểm tra lỗi 401 và chưa retry
     if (
       error.response?.status === 401 &&
+      originalRequest &&
+      !isAuthEndpoint &&
       !originalRequest._retry &&
       !originalRequest.skipAuth
     ) {

@@ -72,7 +72,14 @@ function getPriceLabel(t: TFn, price: { from?: number | null; to?: number | null
   return t('book.filter.priceNotSpecified');
 }
 
-export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
+export function FilterBook({
+  config,
+  listLoading,
+}: {
+  config: ReturnUseFileterBook;
+  /** Danh sách sách đang tải: tải xong mà tab thể loại còn lỗi thì gọi lại */
+  listLoading?: boolean;
+}) {
   const {
     isFilter,
     setIsFilter,
@@ -89,7 +96,15 @@ export function FilterBook({ config }: { config: ReturnUseFileterBook }) {
   const { t } = useTranslate();
   const { auth } = useAuth();
   const { setId, id } = useEdit();
-  const { data = [], request, setData } = useRequest(() => Category.get());
+  // Category.get là hàm cố định. Từng viết `() => Category.get()`: React Compiler bỏ qua component
+  // này thì mỗi lần render gọi /category-book lại ⇒ vòng lặp hàng nghìn request (2026-11-25)
+  const { data = [], request, setData, error } = useRequest(Category.get);
+
+  // Lỗi lúc mở trang (backend khởi động, mất mạng) thì hàng tab kẹt ở "All": gọi lại khi danh sách tải xong
+  useEffect(() => {
+    if (listLoading === false && error) request();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listLoading]);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
 

@@ -37,6 +37,10 @@ const decodeAddress = (address: string) => {
   };
 };
 
+// Hàm cấp module (tham chiếu cố định): callback viết thẳng vào useRequest chỉ ổn định khi React
+// Compiler tối ưu được component, nó bỏ qua là mỗi lần render gọi API lại ⇒ vòng lặp (2026-11-25)
+const getDivisions = () => axios.get('/address').then((res) => res.data as string[]);
+
 const encodeAddress = (address: string, ward: string, div: string) =>
   [address, ward, div].filter(x=>x.trim()).join(', ');
 
@@ -48,9 +52,7 @@ export const AddressField = forwardRef<HTMLDivElement, AddressFieldProps>(
     const flagUserHandle = useRef<boolean>(false);
     const { t } = useTranslation();
 
-    const { data: listDiv = [], loading: isLoadingDiv } = useRequest(() =>
-      axios.get('/address').then((res) => res.data as string[])
-    );
+    const { data: listDiv = [], loading: isLoadingDiv } = useRequest(getDivisions);
 
     const { data: listWard = [], loading: isLoadingWard } = useRequest(
       useCallback(

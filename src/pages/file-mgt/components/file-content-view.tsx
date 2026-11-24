@@ -53,6 +53,10 @@ type FileContentViewProps = {
   isSmall?: boolean;
 };
 
+// Hàm cấp module (tham chiếu cố định): callback viết thẳng vào useRequest chỉ ổn định khi React
+// Compiler tối ưu được component, nó bỏ qua là mỗi lần render gọi API lại ⇒ vòng lặp (2026-11-25)
+const getAllFolders = () => getFolder('/', '*').then((r) => r.filter((f) => !f.isFile));
+
 export default function FileContentView({
   root = '/',
   isSmall: defaultIsSmall = false,
@@ -95,9 +99,7 @@ export default function FileContentView({
     await Promise.all([requestList(), requestInfo()]);
   }, [requestInfo, requestList]);
 
-  const { data: allFolder = [] } = useRequest(() =>
-    getFolder('/', '*').then((r) => r.filter((f) => !f.isFile))
-  );
+  const { data: allFolder = [] } = useRequest(getAllFolders);
 
   const hasStorage = !!info?.maxStorage;
   const usedStorage = info?.usedStorage ?? 0;
