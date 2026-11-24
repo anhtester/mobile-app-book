@@ -10,7 +10,7 @@ Tổng hợp mobile-app-demo: https://github.com/anhtester/mobile-app-demo
 
 ---
 
-App "Book Anhtester" (quản lý sách, user, khuyến mãi, thể loại, giỏ hàng, đơn hàng) dùng để thực hành kiểm thử UI và mobile (Appium). App là **Hybrid**: giao diện React 19 + Vite + MUI chạy trong WebView, đóng gói Android/iOS bằng **Capacitor 7** (`appId: com.anhtester.book`). Bản build gọi API production `https://book.anhtester.com`.
+App "Book AnhTester" (quản lý sách, user, khuyến mãi, thể loại, giỏ hàng, đơn hàng) dùng để thực hành kiểm thử UI và mobile (Appium). App là **Hybrid**: giao diện React 19 + Vite + MUI chạy trong WebView, đóng gói Android/iOS bằng **Capacitor 7** (`appId: com.anhtester.book`). Bản build gọi API production `https://book.anhtester.com`.
 ## Mục lục
 
 1. [Yêu cầu](#1-yêu-cầu)

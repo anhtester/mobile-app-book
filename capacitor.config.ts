@@ -7,7 +7,7 @@ const liveUrl = process.env.CAP_LIVE_URL;
 
 const config: CapacitorConfig = {
   appId: 'com.anhtester.book',
-  appName: 'Book Anhtester',
+  appName: 'Book AnhTester',
   webDir: 'dist',
   ...(liveUrl && { server: { url: liveUrl, cleartext: true } }),
 };
